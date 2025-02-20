@@ -463,6 +463,17 @@ class SampleCollection:
         # get atom groups for edges and orders for all prior terms
         cg_top = self.input_traj.atom_slice(self.cg_atom_indices).topology
 
+        # we need to add an extra step for CA case: in this situation, the bonds
+        atoms = list(cg_top.atoms)
+        unique_atom_types = set([atom.name for atom in atoms])
+        if unique_atom_types == set(["CA"]):
+            # iterate over chains
+            for chain in cg_top.chains:
+                ch_atoms = list(chain.atoms)
+                # iterate over CA atoms in each chain and add bonds between them 
+                for i, _ in enumerate(ch_atoms[:-1]):
+                    cg_top.add_bond(ch_atoms[i], ch_atoms[i + 1])
+
         all_edges_and_orders = get_edges_and_orders(
             prior_builders,
             topology=cg_top,

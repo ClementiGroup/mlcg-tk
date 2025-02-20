@@ -469,3 +469,37 @@ class Gamma2:
 
     def get_fit_kwargs(self, nl_name):
         return {"n_degs": 1, "constrain_deg": 1}
+
+
+class CA_pseudo_dihedral:
+    """
+    Proper dihedral angle formed by the 4 subsequence CA.
+    It should represent the dihedral formed by 4 ca-ca
+
+    Attributes
+    ----------
+    nl_names
+        All possible outputs of bonded neighbourlist;
+        Atom groups of psi angles of each amino acid are recorded separately
+    """
+
+    nl_names = ["pseudo_ca_dihedral"]
+
+    def __call__(
+        self, topology: md.Topology, **kwargs
+    ) -> Union[List[Tuple[str, int, torch.Tensor]], Tuple[str, int, torch.Tensor]]:
+        dihedral_dict = get_dihedral_groups(
+            topology,
+            atoms_needed=["CA", "CA", "CA", "CA"],
+            offset=[0.0, 1.0, 2.0, 3.0],
+            tag="",
+        )
+        all_dihedrals = []
+        for _, v in dihedral_dict.items():
+            all_dihedrals.extend(v)
+        all_dihedrals_np = np.array(sorted(all_dihedrals, key=lambda arr: arr[0]))
+        return [("pseudo_ca_dihedral", 4, torch.tensor(all_dihedrals_np).T)]
+
+    def get_fit_kwargs(self, nl_name):
+        return {"n_degs": 5, "constrain_deg": 5}
+

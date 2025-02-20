@@ -2,12 +2,21 @@ from .raw_dataset import RawDataset, SampleCollection
 from .raw_data_loader import (
     CATH_loader,
     DIMER_loader,
+    Villin_loader,
     Trpcage_loader,
     Cln_loader,
     OPEP_loader,
 )
 
-from .embedding_maps import CGEmbeddingMap, CGEmbeddingMapFiveBead, embedding_fivebead
+
+from .embedding_maps import (
+    CGEmbeddingMap,
+    CGEmbeddingMapFiveBead,
+    CGEmbeddingMapCA,
+    embedding_fivebead,
+    embedding_ca,
+)
+
 
 from .prior_nls import (
     StandardBonds,
@@ -18,6 +27,7 @@ from .prior_nls import (
     Omega,
     Gamma1,
     Gamma2,
+    CA_pseudo_dihedral,
 )
 
 from .prior_fit import fit_harmonic_from_potential_estimates, harmonic
