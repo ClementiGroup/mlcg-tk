@@ -90,6 +90,9 @@ def compute_statistics(
     for samples in tqdm(
         dataset, f"Compute histograms of CG data for {dataset_name} dataset..."
     ):
+        if not samples.has_saved_cg_output(save_dir, prior_tag):
+            warnings.warn(f"Sample {samples.name} has no saved CG output - This entry will be skipped")
+            continue
         if weights_template_fn != None and not osp.exists(
                 osp.join(save_dir, weights_template_fn.format(samples.name))
                 ):

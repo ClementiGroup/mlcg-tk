@@ -2,6 +2,7 @@ import pandas as pd
 from typing import List, Optional, Union, Tuple, Dict
 import numpy as np
 import mdtraj as md
+import warnings
 from functools import wraps
 
 from aggforce import (LinearMap, 
@@ -217,6 +218,48 @@ def slice_coord_forces(
 
     return cg_coords, cg_forces, force_map_matrix
 
+def filter_cis_frames(
+        coords: np.ndarray,
+        forces: np.ndarray,
+        topology: md.Topology,
+        verbose: bool = True
+    ) -> Tuple[np.ndarray, np.ndarray]:
+        """
+        filters out frames containing cis-omega angles
+
+        Parameters
+        ----------
+        coords: [n_frames, n_atoms, 3]
+            Non-filtered atomistic coordinates
+        forces: [n_frames, n_atoms, 3]
+            Non-filtered atomistic forces
+        topology: 
+            mdtraj topology to load the coordinates with
+        verbose:
+            If True, will print a warning containing the number of discarded frames for this sample
+
+        Returns
+        -------
+        Tuple of np.ndarray's for filtered coarse grained coordinates and forces
+        """
+        min_omega_atoms = set(["N", "CA", "C"])
+        unique_atom_types = set([atom.name for atom in topology.atoms])
+        if not min_omega_atoms.issubset(unique_atom_types):
+            raise ValueError("Provided pdb file must contain at least N, CA and C atoms for cis-omega filtering")
+        
+        cis_omega_mask = np.zeros(coords.shape[0], dtype=bool)
+        md_traj = md.Trajectory(coords, topology)
+
+        omega_idx, omega_values = md.compute_omega(md_traj)
+
+        cis_omega_threshold = 1.0 #rad
+        mask = np.all(np.abs(omega_values) > 1, axis=1)
+        if not np.all(mask):
+            warnings.warn(f"Discarding {len(mask) - np.sum(mask)} cis frames")
+        if np.sum(mask) == 0:
+            warnings.warn(f"This amounts to removing all frames for this molecule")
+
+        return  coords[mask], forces[mask]
 
 def get_terminal_atoms(
     prior_builder: PriorBuilder,

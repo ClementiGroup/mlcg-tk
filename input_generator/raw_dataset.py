@@ -4,6 +4,7 @@ import pickle
 from typing import List, Dict, Tuple, Optional, Union
 from copy import deepcopy
 import numpy as np
+import mdtraj as md
 import torch
 import warnings
 import os
@@ -16,6 +17,7 @@ from mlcg.data.atomic_data import AtomicData
 
 from .utils import (
     map_cg_topology,
+    filter_cis_frames,
     slice_coord_forces,
     get_terminal_atoms,
     get_edges_and_orders,
@@ -78,8 +80,14 @@ class CGDataBatch:
         self.batch_size = batch_size
         self.stride = stride
         self.concat_forces = concat_forces
-        self.cg_coords = torch.from_numpy(cg_coords[::stride])
-        self.cg_forces = torch.from_numpy(cg_forces[::stride])
+        if cg_coords is None:
+            self.cg_coords = None
+        else:
+            self.cg_coords = torch.from_numpy(cg_coords[::stride])
+        if cg_forces is None:
+            self.cg_forces = None
+        else:
+            self.cg_forces = torch.from_numpy(cg_forces[::stride])
         self.cg_embeds = torch.from_numpy(cg_embeds)
         self.cg_prior_nls = cg_prior_nls
         if isinstance(weights, np.ndarray):
@@ -88,8 +96,10 @@ class CGDataBatch:
                 self.weights = self.weights/torch.sum(self.weights)
         else:
             self.weights = None
-
-        self.n_structure = self.cg_coords.shape[0]
+        if self.cg_coords is None:
+            self.n_structure = 0
+        else:
+            self.n_structure = self.cg_coords.shape[0]
         if batch_size > self.n_structure:
             self.batch_size = self.n_structure
 
@@ -279,7 +289,9 @@ class SampleCollection:
         self,
         coords: np.ndarray,
         forces: np.ndarray,
+        topology: md.Topology,
         mapping: str = "slice_aggregate",
+        filter_cis: bool = False,
         force_stride: int = 100,
         batch_size: Optional[int] = None,
     ) -> Tuple[np.ndarray, np.ndarray]:
@@ -292,8 +304,12 @@ class SampleCollection:
             Atomistic coordinates
         forces: [n_frames, n_atoms, 3]
             Atomistic forces
+        topology: 
+            mdtraj topology to lead atomistic coordinates (used for cis-omega angles filtering)
         mapping:
             Mapping scheme to be used, must be either 'slice_aggregate' or 'slice_optimize'.
+        filter_cis:
+            If True, frames containing a cis-omega angle will be filtered out
         force_stride:
             Striding to use for force projection results
         batch_size:
@@ -309,11 +325,28 @@ class SampleCollection:
             )
             return
         else:
-            cg_coords, cg_forces, force_map = slice_coord_forces(
-                coords, forces, self.cg_map, mapping, force_stride, batch_size
-            )
+            if filter_cis:
+                coords, forces = filter_cis_frames(
+                    coords, forces, topology, verbose=True
+                )
+            if coords.shape[0] != 0:
 
-            self.force_map = force_map
+                # since the cis-pro filtering might have removed a lot of frames
+                # we need to make sure the force_stride is not too large
+                # ie there are at least min(n_frames, 100) frames left after striding
+                while coords.shape[0]<100*force_stride:
+                    force_stride /= 10
+                    if force_stride == 1:
+                        break
+
+                cg_coords, cg_forces, force_map = slice_coord_forces(
+                    coords, forces, self.cg_map, mapping, force_stride, batch_size
+                )
+                self.force_map = force_map
+            else: # all frames were removed by cis-filtering
+                cg_coords = None
+                cg_forces = None
+
             self.cg_coords = cg_coords
             self.cg_forces = cg_forces
 
@@ -345,7 +378,7 @@ class SampleCollection:
             os.makedirs(save_dir)
 
         if not hasattr(self, "cg_atom_indices"):
-            print("CG mapping must be applied before outputs can be saved.")
+            warnings.warn("CG mapping must be applied before outputs can be saved.")
             return
 
         save_templ = os.path.join(save_dir, get_output_tag([self.tag, self.name], placement="before"))
@@ -359,34 +392,44 @@ class SampleCollection:
         if save_coord_force:
             if cg_coords == None:
                 if not hasattr(self, "cg_coords"):
-                    print(
+                    warnings.warn(
                         "No coordinates found; only CG structure, embeddings and loaded forces will be saved."
                     )
                 else:
-                    np.save(f"{save_templ}cg_coords.npy", self.cg_coords)
+                    if self.cg_coords is None:
+                        warnings.warn(
+                            "No coordinates found; only CG structure, embeddings and loaded forces will be saved."
+                        )
+                    else:
+                        np.save(f"{save_templ}cg_coords.npy", self.cg_coords)
             else:
                 np.save(f"{save_templ}cg_coords.npy", cg_coords)
 
             if cg_forces == None:
                 if not hasattr(self, "cg_forces"):
-                    print(
+                    warnings.warn(
                         "No forces found;  only CG structure, embeddings, and loaded coordinates will be saved."
                     )
                 else:
-                    np.save(f"{save_templ}cg_forces.npy", self.cg_forces)
+                    if self.cg_forces is None:
+                        warnings.warn(
+                            "No forces found;  only CG structure, embeddings, and loaded coordinates will be saved."
+                        )
+                    else:
+                        np.save(f"{save_templ}cg_forces.npy", self.cg_forces)
             else:
                 np.save(f"{save_templ}cg_forces.npy", cg_forces)
 
         if save_cg_maps:
             if not hasattr(self, "cg_map"):
-                print(
+                warnings.warn(
                     "No cg coordinate map found. Skipping save."
                 )
             else:
                 np.save(f"{save_templ}cg_coord_map.npy", self.cg_map)
 
             if not hasattr(self, "force_map"):
-                print(
+                warnings.warn(
                     "No cg force map found. Skipping save."
                 )
             else:
@@ -505,6 +548,32 @@ class SampleCollection:
                 pickle.dump(prior_nls, pfile)
 
         return prior_nls
+    
+    def has_saved_cg_output(self, save_dir: str, prior_tag: str = "") -> bool:
+        """
+        Returns True if cg data exists for this SampleCollection
+
+        Used to skip processing of molecules where all frames have been removed by cis conformation filtering
+        
+        Parameters
+        ----------
+        save_dir:
+            Location of saved cg data
+        prior_tag:
+            String identifying the specific combination of prior terms
+
+        Returns
+        -------
+        True if cg output for the sample corresponding to prior_tag is present in save_dir
+        False otherwise
+        """
+        save_templ = os.path.join(save_dir, get_output_tag([self.tag, self.name], placement="before"))
+        if not os.path.exists(f"{save_templ}cg_coords.npy"):
+            return False 
+        elif not os.path.exists(f"{save_templ}cg_forces.npy"):
+            return False
+        else:
+            return True
 
     def load_cg_output(self, save_dir: str, prior_tag: str = "") -> Tuple:
         """
@@ -523,8 +592,14 @@ class SampleCollection:
         structure, and prior neighbour list
         """
         save_templ = os.path.join(save_dir, get_output_tag([self.tag, self.name], placement="before"))
-        cg_coords = np.load(f"{save_templ}cg_coords.npy")
-        cg_forces = np.load(f"{save_templ}cg_forces.npy")
+        if os.path.exists(f"{save_templ}cg_coords.npy"):
+            cg_coords = np.load(f"{save_templ}cg_coords.npy")
+        else:
+            cg_coords = None
+        if os.path.exists(f"{save_templ}cg_forces.npy"):
+            cg_forces = np.load(f"{save_templ}cg_forces.npy")
+        else:
+            cg_forces = None
         cg_embeds = np.load(f"{save_templ}cg_embeds.npy")
         cg_pdb = md.load(f"{save_templ}cg_structure.pdb")
         # load NLs

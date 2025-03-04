@@ -1,4 +1,5 @@
 import os.path as osp
+import warnings
 import sys
 
 SCRIPT_DIR = osp.abspath(osp.dirname(__file__))
@@ -38,9 +39,13 @@ def merge_statistics(
     all_stats = []
     for name in names:
         stats_fn = osp.join(save_dir, f"{get_output_tag([tag, name, prior_tag], placement='before')}prior_builders.pck")
-        with open(stats_fn, "rb") as ifile:
-            stats = pkl.load(ifile)
-        all_stats.append(stats)
+        if osp.exists(stats_fn):
+            with open(stats_fn, "rb") as ifile:
+                stats = pkl.load(ifile)
+            all_stats.append(stats)
+        else:
+            warnings.warn(f"Sample {name} has no saved statistics - This entry will be skipped")
+            continue
     
     fnout =  osp.join(save_dir, f"{get_output_tag([tag, prior_tag], placement='before')}prior_builders.pck")
     builder_dict = {}

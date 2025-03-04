@@ -34,6 +34,7 @@ def process_raw_dataset(
     cg_mapping_strategy: str,
     stride: int = 1,
     force_stride: int = 100,
+    filter_cis: Optional[bool] = False,
     batch_size: Optional[int] = None
 ):
     """
@@ -69,6 +70,10 @@ def process_raw_dataset(
         currently only "slice_aggregate" and "slice_optimize" are implemented
     stride : int
         Interval by which to stride loaded data
+    force_stride : int
+        stride for inferring the force maps in aggforce 
+    filter_cis : bool 
+        if True, frames with cis-configurations will be filtered out from the dataset
     batch_size : int
         Optional size in which performing batches of AA mapping to CG, to avoid
         memory overhead in large AA dataset
@@ -91,7 +96,13 @@ def process_raw_dataset(
         )
 
         cg_coords, cg_forces = samples.process_coords_forces(
-            aa_coords, aa_forces, mapping=cg_mapping_strategy, force_stride=force_stride, batch_size=batch_size
+            aa_coords, 
+            aa_forces,
+            topology=samples.input_traj.top,
+            mapping=cg_mapping_strategy, 
+            force_stride=force_stride,
+            batch_size=batch_size,
+            filter_cis=filter_cis
         )
 
         samples.save_cg_output(save_dir, save_coord_force=True, save_cg_maps=True)
@@ -117,6 +128,7 @@ def build_neighborlists(
     raw_data_dir: Union[str, None] = None,
     cg_mapping_strategy: Union[str, None] = None,
     stride: int = 1,
+    filter_cis: bool = False,
 ):
     """
     Generates neighbour lists for all samples in dataset using prior term information

@@ -63,6 +63,9 @@ def produce_delta_forces(
     for samples in tqdm(
         dataset, f"Processing delta forces for {dataset_name} dataset..."
     ):
+        if not samples.has_saved_cg_output(save_dir, prior_tag):
+            warnings.warn(f"Sample {samples.name} has no saved CG output - This entry will be skipped")
+            continue
         coords, forces, embeds, pdb, prior_nls = samples.load_cg_output(
             save_dir=save_dir, prior_tag=prior_tag
         )
