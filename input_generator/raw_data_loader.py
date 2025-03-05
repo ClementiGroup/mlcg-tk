@@ -8,6 +8,7 @@ import mdtraj as md
 import warnings
 from pathlib import Path
 from tqdm import tqdm
+from typing import Tuple, Generator
 
 class DatasetLoader:
     r"""
@@ -402,3 +403,138 @@ class SimInput_loader(DatasetLoader):
         )
         top_dataframe = input_traj.topology.to_dataframe()[0]
         return input_traj, top_dataframe
+
+
+
+
+
+
+
+class Lipids_loader(DatasetLoader):
+    """
+    Loader object for Lipids simulation dataset
+    """
+
+    def get_traj_top(self, name: str, pdb_fn: str, lipid_name: str = 'DPPC'):
+        """
+        For a given name, returns a loaded MDTraj object at the input resolution (generally atomistic) 
+        as well as the dataframe associated with its topology.
+
+        Parameters
+        ----------
+        name:
+            Name of input sample
+        pdb_fn:
+            Path to pdb structure
+        lipid_name:
+            Name of the lipid residue to filter (e.g., 'DPPC', 'POPC')
+        """
+        pdb = md.load(pdb_fn)
+        aa_traj = pdb.atom_slice(
+            [a.index for a in pdb.topology.atoms if a.residue.name == lipid_name]
+        )
+        top_dataframe = aa_traj.topology.to_dataframe()[0]
+        
+        return aa_traj, top_dataframe
+    
+    def load_coords_forces_npy(
+        self, base_dir: str, name: str
+    ) -> Tuple[np.ndarray, np.ndarray]:
+        """
+        For a given name, returns np.ndarray's of its coordinates and forces at
+        the input resolution (generally atomistic)
+
+        Parameters
+        ----------
+        base_dir:
+            Path to coordinate and force files
+        name:
+            Name of input sample
+        """
+
+        coords_fn = os.path.join(base_dir, f"*coords*.npy")
+
+        forces_fn = os.path.join(base_dir, f"*forces*.npy")
+
+        dims_fn = os.path.join(base_dir, f"*cg_dims*.npy")
+
+        coord = np.load(coords_fn) # I don't have to convert from nm to angstrom because I am using MDAnalysis to save the coordinates and it does it already, otherwise I would need to convert it by multiplying by 10.
+        force = np.load(forces_fn) / 4.184 # convert from kJ/mol/A (in MDAnalysis) to kcal/mol/ang
+        dims = np.load(dims_fn)
+
+        assert coord.shape == force.shape
+
+        return coord, force, dims
+    
+    
+    
+    def generate_data(self, traj_dirs: list) -> Generator[Tuple[np.ndarray, np.ndarray], None, None]:
+    """
+    Generates coordinate and force data from trajectory directories.
+
+    Parameters
+    ----------
+    traj_dirs : list
+        A list of trajectory directory paths.
+
+    Yields
+    ------
+    Tuple[np.ndarray, np.ndarray]
+        Coordinates and forces extracted from each trajectory file.
+    """
+    for traj_dir in traj_dirs:
+        file_paths = glob(os.path.join(traj_dir, "production_full_output/*.npz"))
+        for file_path in file_paths:
+            data = np.load(file_path, allow_pickle=True)
+            coords = data["coords"].astype(np.float32)
+            forces = data["Fs"].astype(np.float32)
+            
+            if coords.shape != forces.shape:
+                raise ValueError("Mismatch in shapes of coordinates and forces")
+            
+            yield coords, forces
+            
+    def load_coords_forces_npz(self, base_dir: str, name: str) -> Generator[Tuple[np.ndarray, np.ndarray], None, None]:
+        """
+        Loads and yields batches of coordinates and forces from trajectory directories.
+
+        Parameters
+        ----------
+        base_dir : str
+            The base directory containing trajectory subdirectories.
+        name : str
+            The name of the dataset or simulation.
+
+        Yields
+        ------
+        Tuple[np.ndarray, np.ndarray]
+            A batch of concatenated coordinates and forces.
+        """
+        traj_dirs = [os.path.join(base_dir, f"{i}/") for i in range(1, 15)]  # Trajectory folders from 1 to 14
+        batch_size = 100  # Reduce batch size to optimize memory usage
+
+        data_generator = self.generate_data(traj_dirs)
+
+        all_coords = []
+        all_forces = []
+
+        for coords, forces in data_generator:
+            all_coords.append(coords)
+            all_forces.append(forces)
+
+            if len(all_coords) >= batch_size:
+                full_coords = np.concatenate(all_coords, axis=0)
+                full_forces = np.concatenate(all_forces, axis=0)
+                print("Remaining data size:", full_coords.shape, full_forces.shape)
+                yield full_coords, full_forces
+                
+                # Clear memory
+                all_coords.clear()
+                all_forces.clear()
+
+        # Process any remaining data
+        if all_coords:
+            full_coords = np.concatenate(all_coords, axis=0)
+            full_forces = np.concatenate(all_forces, axis=0)
+            print("Remaining data size:", full_coords.shape, full_forces.shape)
+            yield full_coords, full_forces
