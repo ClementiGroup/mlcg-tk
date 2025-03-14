@@ -5,6 +5,7 @@ from .raw_data_loader import (
     Villin_loader,
     Trpcage_loader,
     Cln_loader,
+    BBA_loader,
     OPEP_loader,
 )
 
