@@ -31,7 +31,7 @@ def produce_delta_forces(
     device: str,
     batch_size: int,
     force_tag: Optional[str] = None,
-    traj_n_batches: Optional[str] = 1
+    traj_n_batches: Optional[int] = 1
 ):
     """
     Removes prior energy terms from input forces to produce delta force input
