@@ -58,8 +58,8 @@ def produce_delta_forces(
     force_tag: str
         Optional tag to identify input for a particular run of delta force calculation
     traj_n_batches : int
-        If greater than 1, will save each molecule data into the specified number of batches 
-        that will be treated as different samples
+        If greater than 1, will load each molecule data from the specified number of batches 
+        that were be treated as different samples
     """
 
     prior_model = torch.load(open(prior_fn, "rb")).models.to(device)
