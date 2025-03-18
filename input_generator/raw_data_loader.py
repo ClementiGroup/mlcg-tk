@@ -68,6 +68,11 @@ class DatasetLoader:
             Name of input sample
         stride : int
             Interval by which to stride loaded data
+        batch: int or None
+            if trajectories are loaded by batch, indicates the batch index to load
+            must be set if n_batches > 1
+        n_batches: int
+            if greater than 1, divide the total trajectories to load into n_batches chunks
         """
         raise NotImplementedError(f"Base class {self.__class__} has no implementation")
 
@@ -116,6 +121,11 @@ class CATH_loader(DatasetLoader):
             Name of input sample
         stride : int
             Interval by which to stride loaded data
+        batch: int or None
+            if trajectories are loaded by batch, indicates the batch index to load
+            must be set if n_batches > 1
+        n_batches: int
+            if greater than 1, divide the total trajectories to load into n_batches chunks
         """
 
         outputs_fns = natsorted(glob(os.path.join(base_dir, f"output/{name}/*_part_*")))
@@ -184,6 +194,11 @@ class DIMER_loader(DatasetLoader):
             Name of input sample
         stride : int
             Interval by which to stride loaded data
+        batch: int or None
+            if trajectories are loaded by batch, indicates the batch index to load
+            must be set if n_batches > 1
+        n_batches: int
+            if greater than 1, divide the total trajectories to load into n_batches chunks
         """
         if n_batches > 1:
             raise NotImplementedError("traj_n_batches can only be used for single-protein datasets for now")
@@ -242,6 +257,13 @@ class Trpcage_loader(DatasetLoader):
             Path to coordinate and force files
         name:
             Name of input sample
+        stride : int
+            Interval by which to stride loaded data
+        batch: int or None
+            if trajectories are loaded by batch, indicates the batch index to load
+            must be set if n_batches > 1
+        n_batches: int
+            if greater than 1, divide the total trajectories to load into n_batches chunks
         """
         coords_fns = natsorted(
             glob(
@@ -297,6 +319,24 @@ class Cln_loader(DatasetLoader):
         batch: Optional[int] = None, 
         n_batches: Optional[int] = 1
     ) -> Tuple[np.ndarray, np.ndarray]:
+        """
+        For a given name, returns np.ndarray's of its coordinates and forces at
+        the input resolution (generally atomistic)
+
+        Parameters
+        ----------
+        base_dir:
+            Path to coordinate and force files
+        name:
+            Name of input sample
+        stride : int
+            Interval by which to stride loaded data
+        batch: int or None
+            if trajectories are loaded by batch, indicates the batch index to load
+            must be set if n_batches > 1
+        n_batches: int
+            if greater than 1, divide the total trajectories to load into n_batches chunks
+        """
         coords_fns = natsorted(
             glob(os.path.join(base_dir, f"coords_nowater/chig_coor_*.npy"))
         )
@@ -371,6 +411,13 @@ class BBA_loader(DatasetLoader):
             Path to coordinate and force files
         name:
             Name of input sample
+        stride : int
+            Interval by which to stride loaded data
+        batch: int or None
+            if trajectories are loaded by batch, indicates the batch index to load
+            must be set if n_batches > 1
+        n_batches: int
+            if greater than 1, divide the total trajectories to load into n_batches chunks
         """
         coords_fns = natsorted(
             glob(
@@ -425,6 +472,24 @@ class Villin_loader(DatasetLoader):
         batch: Optional[int] = None, 
         n_batches: Optional[int] = 1
     ) -> Tuple[np.ndarray, np.ndarray]:
+        """
+        For a given name, returns np.ndarray's of its coordinates and forces at
+        the input resolution (generally atomistic)
+
+        Parameters
+        ----------
+        base_dir:
+            Path to coordinate and force files
+        name:
+            Name of input sample
+        stride : int
+            Interval by which to stride loaded data
+        batch: int or None
+            if trajectories are loaded by batch, indicates the batch index to load
+            must be set if n_batches > 1
+        n_batches: int
+            if greater than 1, divide the total trajectories to load into n_batches chunks
+        """
         coords_fns = sorted(
             glob(
                 os.path.join(base_dir, f"{name}/*_coords.npy")
@@ -494,7 +559,7 @@ class OPEP_loader(DatasetLoader):
         n_batches: Optional[int] = 1
     ) -> Tuple[np.ndarray, np.ndarray]:
         """
-        For a given CATH domain name, returns np.ndarray's of its coordinates and forces at
+        For a given name, returns np.ndarray's of its coordinates and forces at
         the input resolution (generally atomistic)
 
         Parameters
@@ -503,6 +568,13 @@ class OPEP_loader(DatasetLoader):
             Path to coordinate and force files
         name:
             Name of input sample
+        stride : int
+            Interval by which to stride loaded data
+        batch: int or None
+            if trajectories are loaded by batch, indicates the batch index to load
+            must be set if n_batches > 1
+        n_batches: int
+            if greater than 1, divide the total trajectories to load into n_batches chunks
         """
         if n_batches > 1:
             raise NotImplementedError("traj_n_batches can only be used for single-protein datasets for now")
