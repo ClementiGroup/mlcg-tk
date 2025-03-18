@@ -429,6 +429,7 @@ class SampleCollection:
                 np.save(f"{save_templ}cg_forces.npy", cg_forces)
 
         if save_cg_maps:
+            map_save_templ = os.path.join(save_dir, get_output_tag([self.tag, self.mol_name], placement="before"))
             if not hasattr(self, "cg_map"):
                 warnings.warn(
                     "No cg coordinate map found. Skipping save."
@@ -441,7 +442,28 @@ class SampleCollection:
                     "No cg force map found. Skipping save."
                 )
             else:
-                np.save(f"{save_templ}cg_force_map.npy", self.force_map)
+                np.save(f"{map_save_templ}cg_force_map.npy", self.force_map)
+
+    def load_cg_force_map(
+        self,
+        save_dir: str
+    ) -> np.ndarray:
+        """
+        Helper function to load a previously saved force map for the molecule in the sample
+
+        Parameters:
+        -----------
+        save_dir: str
+            path to the directory where the force map was saved in the first batch of the molecule in the sample
+        
+        Returns:
+        --------
+        force_map: np.ndarray
+            force map corresponding to the molecule in self
+        """
+        map_save_templ = os.path.join(save_dir, get_output_tag([self.tag, self.mol_name], placement="before"))
+        force_map = np.load(f"{map_save_templ}cg_force_map.npy")
+        return force_map
 
 
     def get_prior_nls(

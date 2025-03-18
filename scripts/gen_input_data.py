@@ -99,11 +99,17 @@ def process_raw_dataset(
             raw_data_dir, samples.mol_name, stride=stride, batch=samples.batch, n_batches=samples.n_batches
         )
 
+        if samples.n_batches > 1 and samples.batch > 1:
+            # this ensures that we are using the same force map accross batches
+            mapping = samples.load_cg_force_map(save_dir)
+        else:
+            mapping = cg_mapping_strategy
+
         cg_coords, cg_forces = samples.process_coords_forces(
             aa_coords, 
             aa_forces,
             topology=samples.input_traj.top,
-            mapping=cg_mapping_strategy, 
+            mapping=mapping, 
             force_stride=force_stride,
             batch_size=batch_size,
             filter_cis=filter_cis

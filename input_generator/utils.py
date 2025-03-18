@@ -212,7 +212,9 @@ def slice_coord_forces(
     cg_map: [n_cg_atoms, n_atomistic_atoms]
         Linear map characterizing the atomistic to CG configurational map with shape.
     mapping:
-        Mapping scheme to be used, must be either 'slice_aggregate' or 'slice_optimize'.
+        Mapping scheme to be used, 
+        Can be either a string, then must be either 'slice_aggregate' or 'slice_optimize',
+        Or can be directly a numpy array to use for projection
     force_stride:
         Striding to use for force projection results
     batch_size:
@@ -227,31 +229,38 @@ def slice_coord_forces(
     config_map_matrix = config_map.standard_matrix
     # taking only first 100 frames gives same results in ~1/15th of time
     constraints = guess_pairwise_constraints(coords[:100], threshold=5e-3)
-    if mapping == "slice_aggregate":
-        method = constraint_aware_uni_map
-        force_agg_results = project_forces(
-            coords=coords[::force_stride],
-            forces=forces[::force_stride],
-            coord_map=config_map,
-            constrained_inds=constraints,
-            method=method,
-        )
-    elif mapping == "slice_optimize":
-        method = qp_linear_map
-        l2 = 1e3
-        force_agg_results = project_forces(
-            coords=coords[::force_stride],
-            forces=forces[::force_stride],
-            coord_map=config_map,
-            constrained_inds=constraints,
-            method=method,
-            l2_regularization=l2,
-        )
+    if isinstance(mapping, str):
+        if mapping == "slice_aggregate":
+            method = constraint_aware_uni_map
+            force_agg_results = project_forces(
+                coords=coords[::force_stride],
+                forces=forces[::force_stride],
+                coord_map=config_map,
+                constrained_inds=constraints,
+                method=method,
+            )
+        elif mapping == "slice_optimize":
+            method = qp_linear_map
+            l2 = 1e3
+            force_agg_results = project_forces(
+                coords=coords[::force_stride],
+                forces=forces[::force_stride],
+                coord_map=config_map,
+                constrained_inds=constraints,
+                method=method,
+                l2_regularization=l2,
+            )
+        else:
+            raise RuntimeError(
+                f"Force mapping {mapping} is neither 'slice_aggregate' nor 'slice_optimize'."
+            )
+        force_map_matrix = force_agg_results["tmap"].force_map.standard_matrix
+    elif isinstance(mapping, np.ndarray):
+        force_map_matrix = mapping 
     else:
         raise RuntimeError(
-            f"Force mapping {mapping} is neither 'slice_aggregate' nor 'slice_optimize'."
+            f"Force mapping {mapping} is neither a string nor a numpy array."
         )
-    force_map_matrix = force_agg_results["tmap"].force_map.standard_matrix
 
     if batch_size != None: 
         cg_coords = batch_matmul(config_map_matrix, coords, batch_size=batch_size)
