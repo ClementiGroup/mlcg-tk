@@ -134,6 +134,7 @@ def build_neighborlists(
     stride: int = 1,
     force_stride: int = 100,
     filter_cis: bool = False,
+    batch_size: Optional[int] = None,
     traj_n_batches: Optional[int] = 1
 ):
     """
@@ -173,6 +174,9 @@ def build_neighborlists(
         unused in this function
         present to allow the use of the same .yaml config for process_raw_dataset and build_neighborlists
     filter_cis : bool 
+        unused in this function
+        present to allow the use of the same .yaml config for process_raw_dataset and build_neighborlists
+    batch_size : bool 
         unused in this function
         present to allow the use of the same .yaml config for process_raw_dataset and build_neighborlists
     traj_n_batches : int
