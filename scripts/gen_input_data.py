@@ -35,7 +35,8 @@ def process_raw_dataset(
     stride: int = 1,
     force_stride: int = 100,
     filter_cis: Optional[bool] = False,
-    batch_size: Optional[int] = None
+    batch_size: Optional[int] = None,
+    traj_n_batches: Optional[int] = 1
 ):
     """
     Applies coarse-grained mapping to coordinates and forces using input sample
@@ -77,11 +78,14 @@ def process_raw_dataset(
     batch_size : int
         Optional size in which performing batches of AA mapping to CG, to avoid
         memory overhead in large AA dataset
+    traj_n_batches : int
+        If greater than 1, will save each molecule data into the specified number of batches 
+        that will be treated as different samples
     """
-    dataset = RawDataset(dataset_name, names, tag)
+    dataset = RawDataset(dataset_name, names, tag, n_batches=traj_n_batches)
     for samples in tqdm(dataset, f"Processing CG data for {dataset_name} dataset..."):
         samples.input_traj, samples.top_dataframe = sample_loader.get_traj_top(
-            samples.name, pdb_template_fn
+            samples.mol_name, pdb_template_fn
         )
 
         samples.apply_cg_mapping(
@@ -92,7 +96,7 @@ def process_raw_dataset(
         )
 
         aa_coords, aa_forces = sample_loader.load_coords_forces(
-            raw_data_dir, samples.name, stride=stride
+            raw_data_dir, samples.mol_name, stride=stride, batch=samples.batch, n_batches=samples.n_batches
         )
 
         cg_coords, cg_forces = samples.process_coords_forces(
@@ -128,7 +132,9 @@ def build_neighborlists(
     raw_data_dir: Union[str, None] = None,
     cg_mapping_strategy: Union[str, None] = None,
     stride: int = 1,
+    force_stride: int = 100,
     filter_cis: bool = False,
+    traj_n_batches: Optional[int] = 1
 ):
     """
     Generates neighbour lists for all samples in dataset using prior term information
@@ -159,6 +165,19 @@ def build_neighborlists(
         String identifying the specific combination of prior terms
     prior_builders : List[PriorBuilder]
         List of PriorBuilder objects and their corresponding parameters
+    
+    stride : int
+        unused in this function
+        present to allow the use of the same .yaml config for process_raw_dataset and build_neighborlists
+    force_stride : int
+        unused in this function
+        present to allow the use of the same .yaml config for process_raw_dataset and build_neighborlists
+    filter_cis : bool 
+        unused in this function
+        present to allow the use of the same .yaml config for process_raw_dataset and build_neighborlists
+    traj_n_batches : int
+        unused in this function
+        present to allow the use of the same .yaml config for process_raw_dataset and build_neighborlists
     """
     dataset = RawDataset(dataset_name, names, tag)
     for samples in tqdm(dataset, f"Building NL for {dataset_name} dataset..."):

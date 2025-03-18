@@ -3,11 +3,12 @@ import os
 from natsort import natsorted
 from glob import glob
 import h5py
-from typing import Tuple
+from typing import Tuple, Optional
 import mdtraj as md
 import warnings
 from pathlib import Path
 from tqdm import tqdm
+from .utils import chunker
 
 class DatasetLoader:
     r"""
@@ -45,7 +46,12 @@ class DatasetLoader:
         raise NotImplementedError(f"Base class {self.__class__} has no implementation")
     
     def load_coords_forces(
-        self, base_dir: str, name: str, stride: int = 1,
+        self, 
+        base_dir: str, 
+        name: str,  
+        stride: int = 1, 
+        batch: Optional[int] = None, 
+        n_batches: Optional[int] = 1
     ) -> Tuple[np.ndarray, np.ndarray]:
         r"""
         Method to load the coordinate and force data
@@ -91,7 +97,12 @@ class CATH_loader(DatasetLoader):
         return aa_traj, top_dataframe
 
     def load_coords_forces(
-        self, base_dir: str, name: str, stride: int = 1,
+        self, 
+        base_dir: str, 
+        name: str,  
+        stride: int = 1, 
+        batch: Optional[int] = None, 
+        n_batches: Optional[int] = 1
     ) -> Tuple[np.ndarray, np.ndarray]:
         """
         For a given CATH domain name, returns np.ndarray's of its coordinates and forces at
@@ -106,8 +117,12 @@ class CATH_loader(DatasetLoader):
         stride : int
             Interval by which to stride loaded data
         """
-        # return sorted(name, key=alphanum_key)
+
         outputs_fns = natsorted(glob(os.path.join(base_dir, f"output/{name}/*_part_*")))
+
+        if n_batches > 1:
+            raise NotImplementedError("traj_n_batches can only be used for single-protein datasets for now")
+
         aa_coord_list = []
         aa_force_list = []
         # load the files, checking against the mol dictionary
@@ -150,7 +165,12 @@ class DIMER_loader(DatasetLoader):
         return aa_traj, top_dataframe
 
     def load_coords_forces(
-        self, base_dir: str, name: str, stride: int = 1,
+        self, 
+        base_dir: str, 
+        name: str,  
+        stride: int = 1, 
+        batch: Optional[int] = None, 
+        n_batches: Optional[int] = 1
     ) -> Tuple[np.ndarray, np.ndarray]:
         """
         For a given DIMER pair name, returns np.ndarray's of its coordinates and forces at
@@ -165,6 +185,9 @@ class DIMER_loader(DatasetLoader):
         stride : int
             Interval by which to stride loaded data
         """
+        if n_batches > 1:
+            raise NotImplementedError("traj_n_batches can only be used for single-protein datasets for now")
+
         with h5py.File(os.path.join(base_dir, "allatom.h5"), "r") as data:
             coord = data["MINI"][name]["aa_coords"][:][::stride]
             force = data["MINI"][name]["aa_forces"][:][::stride]
@@ -202,7 +225,12 @@ class Trpcage_loader(DatasetLoader):
         return aa_traj, top_dataframe
 
     def load_coords_forces(
-        self, base_dir: str, name: str,  stride: int = 1
+        self, 
+        base_dir: str, 
+        name: str,  
+        stride: int = 1, 
+        batch: Optional[int] = None, 
+        n_batches: Optional[int] = 1
     ) -> Tuple[np.ndarray, np.ndarray]:
         """
         For a given name, returns np.ndarray's of its coordinates and forces at
@@ -227,6 +255,15 @@ class Trpcage_loader(DatasetLoader):
             )
             for fn in coords_fns
         ]
+
+        coords_fns = np.array(coords_fns)
+        forces_fns = np.array(forces_fns)
+
+        if n_batches > 1:
+            assert batch is not None, "batch id must be set if more than 1 batch"
+            chunk_ids = chunker([i for i in range(len(coords_fns))], n_batches=n_batches)
+            coords_fns = coords_fns[np.array(chunk_ids[batch])]
+            forces_fns = forces_fns[np.array(chunk_ids[batch])]
 
         aa_coord_list = []
         aa_force_list = []
@@ -253,7 +290,12 @@ class Cln_loader(DatasetLoader):
         return aa_traj, top_dataframe
 
     def load_coords_forces(
-        self, base_dir: str, name: str, stride: int = 1
+        self, 
+        base_dir: str, 
+        name: str,  
+        stride: int = 1, 
+        batch: Optional[int] = None, 
+        n_batches: Optional[int] = 1
     ) -> Tuple[np.ndarray, np.ndarray]:
         coords_fns = natsorted(
             glob(os.path.join(base_dir, f"coords_nowater/chig_coor_*.npy"))
@@ -263,6 +305,15 @@ class Cln_loader(DatasetLoader):
             fn.replace("coords_nowater/chig_coor_", "forces_nowater/chig_force_")
             for fn in coords_fns
         ]
+
+        coords_fns = np.array(coords_fns)
+        forces_fns = np.array(forces_fns)
+
+        if n_batches > 1:
+            assert batch is not None, "batch id must be set if more than 1 batch"
+            chunk_ids = chunker([i for i in range(len(coords_fns))], n_batches=n_batches)
+            coords_fns = coords_fns[np.array(chunk_ids[batch])]
+            forces_fns = forces_fns[np.array(chunk_ids[batch])]
 
         aa_coord_list = []
         aa_force_list = []
@@ -303,7 +354,12 @@ class BBA_loader(DatasetLoader):
         return aa_traj, top_dataframe
 
     def load_coords_forces(
-        self, base_dir: str, name: str,  stride: int = 1
+        self, 
+        base_dir: str, 
+        name: str,  
+        stride: int = 1, 
+        batch: Optional[int] = None, 
+        n_batches: Optional[int] = 1
     ) -> Tuple[np.ndarray, np.ndarray]:
         """
         For a given name, returns np.ndarray's of its coordinates and forces at
@@ -329,6 +385,15 @@ class BBA_loader(DatasetLoader):
             for fn in coords_fns
         ]
 
+        coords_fns = np.array(coords_fns)
+        forces_fns = np.array(forces_fns)
+
+        if n_batches > 1:
+            assert batch is not None, "batch id must be set if more than 1 batch"
+            chunk_ids = chunker([i for i in range(len(coords_fns))], n_batches=n_batches)
+            coords_fns = coords_fns[np.array(chunk_ids[batch])]
+            forces_fns = forces_fns[np.array(chunk_ids[batch])]
+
         aa_coord_list = []
         aa_force_list = []
         # load the files, checking against the mol dictionary
@@ -353,7 +418,12 @@ class Villin_loader(DatasetLoader):
         return aa_traj, top_dataframe
     
     def load_coords_forces(
-            self, base_dir: str, name: str, stride: int =1,
+        self, 
+        base_dir: str, 
+        name: str,  
+        stride: int = 1, 
+        batch: Optional[int] = None, 
+        n_batches: Optional[int] = 1
     ) -> Tuple[np.ndarray, np.ndarray]:
         coords_fns = sorted(
             glob(
@@ -366,6 +436,15 @@ class Villin_loader(DatasetLoader):
                 os.path.join(base_dir, f"{name}/*_forces.npy")
             )
         )
+
+        coords_fns = np.array(coords_fns)
+        forces_fns = np.array(forces_fns)
+
+        if n_batches > 1:
+            assert batch is not None, "batch id must be set if more than 1 batch"
+            chunk_ids = chunker([i for i in range(len(coords_fns))], n_batches=n_batches)
+            coords_fns = coords_fns[np.array(chunk_ids[batch])]
+            forces_fns = forces_fns[np.array(chunk_ids[batch])]
 
         aa_coord_list = []
         aa_force_list = []
@@ -407,7 +486,12 @@ class OPEP_loader(DatasetLoader):
         return aa_traj, top_dataframe
 
     def load_coords_forces(
-        self, base_dir: str, name: str, stride: int = 1,
+        self, 
+        base_dir: str, 
+        name: str,  
+        stride: int = 1, 
+        batch: Optional[int] = None, 
+        n_batches: Optional[int] = 1
     ) -> Tuple[np.ndarray, np.ndarray]:
         """
         For a given CATH domain name, returns np.ndarray's of its coordinates and forces at
@@ -420,6 +504,9 @@ class OPEP_loader(DatasetLoader):
         name:
             Name of input sample
         """
+        if n_batches > 1:
+            raise NotImplementedError("traj_n_batches can only be used for single-protein datasets for now")
+
         coord_files = sorted(glob(os.path.join(base_dir, f"coords_nowater/opep_{name}/*.npy")))
         if len(coord_files) == 0:
             coord_files = sorted(

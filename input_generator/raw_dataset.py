@@ -157,8 +157,16 @@ class SampleCollection:
         self,
         name: str,
         tag: str,
+        n_batches: Optional[int] = 1
     ) -> None:
         self.name = name
+        if "_batch_" in name:
+            self.mol_name = name.split("_batch_")[0]
+            self.batch = int(name.split("_batch_")[-1])
+        else:
+            self.mol_name = name
+            self.batch = None
+        self.n_batches = n_batches
         self.tag = tag
 
     def apply_cg_mapping(
@@ -603,7 +611,9 @@ class SampleCollection:
         cg_embeds = np.load(f"{save_templ}cg_embeds.npy")
         cg_pdb = md.load(f"{save_templ}cg_structure.pdb")
         # load NLs
-        ofile =  f"{save_templ}prior_nls{get_output_tag(prior_tag, placement='after')}.pkl"
+        # there is only 1 nls saved per molecule, no matter how many trajectory batches
+        nls_save_templ = os.path.join(save_dir, get_output_tag([self.tag, self.mol_name], placement="before"))
+        ofile =  f"{nls_save_templ}prior_nls{get_output_tag(prior_tag, placement='after')}.pkl"
 
         with open(ofile, "rb") as f:
             cg_prior_nls = pickle.load(f)
@@ -691,18 +701,34 @@ class RawDataset:
         List of SampleCollection objects for all samples in dataset
     """
 
-    def __init__(self, dataset_name: str, names: List[str], tag: str) -> None:
+    def __init__(
+        self, 
+        dataset_name: str, 
+        names: List[str], 
+        tag: str, 
+        n_batches: Optional[int] = 1
+    ) -> None:
         self.dataset_name = dataset_name
         self.names = names
         self.tag = tag
         self.dataset = []
 
         for name in names:
-            data_samples = SampleCollection(
-                name=name,
-                tag=tag,
-            )
-            self.dataset.append(data_samples)
+            if n_batches > 1:
+                for batch in range(n_batches):
+                    data_samples = SampleCollection(
+                        name=f"{name}_batch_{batch}",
+                        tag=tag,
+                        n_batches=n_batches,
+                    )
+                    self.dataset.append(data_samples)
+            else:
+                data_samples = SampleCollection(
+                    name=name,
+                    tag=tag,
+                    n_batches=n_batches,
+                )
+                self.dataset.append(data_samples)
 
     def __getitem__(self, idx):
         return self.dataset[idx]
