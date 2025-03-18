@@ -31,6 +31,7 @@ def produce_delta_forces(
     device: str,
     batch_size: int,
     force_tag: Optional[str] = None,
+    traj_n_batches: Optional[str] = 1
 ):
     """
     Removes prior energy terms from input forces to produce delta force input
@@ -56,10 +57,13 @@ def produce_delta_forces(
         Number of frames to take per batch
     force_tag: str
         Optional tag to identify input for a particular run of delta force calculation
+    traj_n_batches : int
+        If greater than 1, will save each molecule data into the specified number of batches 
+        that will be treated as different samples
     """
 
     prior_model = torch.load(open(prior_fn, "rb")).models.to(device)
-    dataset = RawDataset(dataset_name, names, tag)
+    dataset = RawDataset(dataset_name, names, tag, n_batches=traj_n_batches)
     for samples in tqdm(
         dataset, f"Processing delta forces for {dataset_name} dataset..."
     ):
