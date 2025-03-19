@@ -343,7 +343,7 @@ class SampleCollection:
                 # we need to make sure the force_stride is not too large
                 # ie there are at least min(n_frames, 100) frames left after striding
                 while coords.shape[0]<100*force_stride:
-                    force_stride /= 10
+                    force_stride =  force_stride // 10
                     if force_stride == 1:
                         break
 
