@@ -389,13 +389,14 @@ class SampleCollection:
             warnings.warn("CG mapping must be applied before outputs can be saved.")
             return
 
+        mol_save_templ = os.path.join(save_dir, get_output_tag([self.tag, self.mol_name], placement="before"))
         save_templ = os.path.join(save_dir, get_output_tag([self.tag, self.name], placement="before"))
         cg_xyz = self.input_traj.atom_slice(self.cg_atom_indices).xyz
         cg_traj = md.Trajectory(cg_xyz, md.Topology.from_dataframe(self.cg_dataframe))
-        cg_traj.save_pdb(f"{save_templ}cg_structure.pdb")
+        cg_traj.save_pdb(f"{mol_save_templ}cg_structure.pdb")
 
         embeds = np.array(self.cg_dataframe["type"].to_list())
-        np.save(f"{save_templ}cg_embeds.npy", embeds)
+        np.save(f"{mol_save_templ}cg_embeds.npy", embeds)
 
         if save_coord_force:
             if cg_coords == None:
@@ -429,20 +430,19 @@ class SampleCollection:
                 np.save(f"{save_templ}cg_forces.npy", cg_forces)
 
         if save_cg_maps:
-            map_save_templ = os.path.join(save_dir, get_output_tag([self.tag, self.mol_name], placement="before"))
             if not hasattr(self, "cg_map"):
                 warnings.warn(
                     "No cg coordinate map found. Skipping save."
                 )
             else:
-                np.save(f"{save_templ}cg_coord_map.npy", self.cg_map)
+                np.save(f"{mol_save_templ}cg_coord_map.npy", self.cg_map)
 
             if not hasattr(self, "force_map"):
                 warnings.warn(
                     "No cg force map found. Skipping save."
                 )
             else:
-                np.save(f"{map_save_templ}cg_force_map.npy", self.force_map)
+                np.save(f"{mol_save_templ}cg_force_map.npy", self.force_map)
 
     def load_cg_force_map(
         self,
@@ -621,6 +621,7 @@ class SampleCollection:
         Tuple of np.ndarrays containing coarse grained coordinates, forces, embeddings,
         structure, and prior neighbour list
         """
+        mol_save_templ = os.path.join(save_dir, get_output_tag([self.tag, self.mol_name], placement="before"))
         save_templ = os.path.join(save_dir, get_output_tag([self.tag, self.name], placement="before"))
         if os.path.exists(f"{save_templ}cg_coords.npy"):
             cg_coords = np.load(f"{save_templ}cg_coords.npy")
@@ -630,12 +631,10 @@ class SampleCollection:
             cg_forces = np.load(f"{save_templ}cg_forces.npy")
         else:
             cg_forces = None
-        cg_embeds = np.load(f"{save_templ}cg_embeds.npy")
-        cg_pdb = md.load(f"{save_templ}cg_structure.pdb")
+        cg_embeds = np.load(f"{mol_save_templ}cg_embeds.npy")
+        cg_pdb = md.load(f"{mol_save_templ}cg_structure.pdb")
         # load NLs
-        # there is only 1 nls saved per molecule, no matter how many trajectory batches
-        nls_save_templ = os.path.join(save_dir, get_output_tag([self.tag, self.mol_name], placement="before"))
-        ofile =  f"{nls_save_templ}prior_nls{get_output_tag(prior_tag, placement='after')}.pkl"
+        ofile =  f"{mol_save_templ}prior_nls{get_output_tag(prior_tag, placement='after')}.pkl"
 
         with open(ofile, "rb") as f:
             cg_prior_nls = pickle.load(f)
@@ -697,13 +696,37 @@ class SampleCollection:
         -------
         Tuple of np.ndarrays containing coarse grained coordinates, delta forces, and embeddings,
         """
+        mol_save_templ = os.path.join(training_data_dir, get_output_tag([self.tag, self.mol_name], placement="before"))
         save_templ = os.path.join(training_data_dir, get_output_tag([self.tag, self.name], placement="before"))
         cg_coords = np.load(f"{save_templ}cg_coords.npy")[::stride]
-        cg_embeds = np.load(f"{save_templ}cg_embeds.npy")
+        cg_embeds = np.load(f"{mol_save_templ}cg_embeds.npy")
 
         save_templ_forces = os.path.join(training_data_dir, get_output_tag([self.tag, self.name, force_tag], placement="before"))
         cg_forces = np.load(f"{save_templ_forces}delta_forces.npy")[::stride]
         
+        return cg_coords, cg_forces, cg_embeds
+    
+    def load_all_batches_training_inputs(
+        self, 
+        training_data_dir: str, 
+        force_tag: str = "", 
+        traj_n_batches: int = 1,
+        stride: int = 1
+    ):
+        mol_save_templ = os.path.join(training_data_dir, get_output_tag([self.tag, self.name], placement="before"))
+        cg_embeds = np.load(f"{mol_save_templ}cg_embeds.npy")
+        cg_coords = []
+        cg_forces = []
+        for b in range(traj_n_batches):
+            save_templ = os.path.join(training_data_dir, get_output_tag([self.tag, self.name, f"batch_{b}"], placement="before"))
+            save_templ_forces = os.path.join(training_data_dir, get_output_tag([self.tag, self.name, f"batch_{b}", force_tag], placement="before"))
+
+            cg_coords.append(np.load(f"{save_templ}cg_coords.npy"))
+            cg_forces.append(np.load(f"{save_templ_forces}delta_forces.npy"))
+
+        cg_coords = np.concatenate(cg_coords)[::stride]
+        cg_forces = np.concatenate(cg_forces)[::stride]
+
         return cg_coords, cg_forces, cg_embeds
 
 

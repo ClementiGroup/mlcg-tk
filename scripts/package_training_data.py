@@ -34,6 +34,7 @@ def package_training_data(
     train_mols: Optional[List] = None,
     val_mols: Optional[List] = None,
     random_state: Optional[str] = None,
+    traj_n_batches: Optional[int] = 1
 ):
     """
     Computes structural features and accumulates statistics on dataset samples
@@ -72,6 +73,9 @@ def package_training_data(
         Molecules to be used for validation set
     random_state : Optional[str]
         Controls shuffling applied to the data before applying the split
+    traj_n_batches : int
+        If greater than 1, will load each molecule data from the specified number of batches 
+        that were be treated as different samples
     """
 
     dataset = RawDataset(dataset_name, names, dataset_tag)
@@ -87,10 +91,17 @@ def package_training_data(
                 dataset, f"Packaging {dataset_name} dataset..."
             ):
                 try:
-                    cg_coords, cg_delta_forces, cg_embeds = samples.load_training_inputs(
-                        training_data_dir=training_data_dir,
-                        force_tag=force_tag,
-                    )
+                    if traj_n_batches > 1:
+                        cg_coords, cg_delta_forces, cg_embeds = samples.load_all_batches_training_inputs(
+                            training_data_dir=training_data_dir,
+                            force_tag=force_tag,
+                            traj_n_batches=traj_n_batches
+                        )
+                    else:
+                        cg_coords, cg_delta_forces, cg_embeds = samples.load_training_inputs(
+                            training_data_dir=training_data_dir,
+                            force_tag=force_tag,
+                        )
                 except FileNotFoundError:
                     print("Skipping molecule : ", samples.name)
                     continue
