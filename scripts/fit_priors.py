@@ -43,7 +43,7 @@ def compute_statistics(
     save_figs: bool = True,
     save_sample_statistics: bool = False,
     weights_template_fn: Optional[str] = None,
-    traj_n_batches: Optional[int] = 1
+    mol_num_batches: Optional[int] = 1
 ):
     """
     Computes structural features and accumulates statistics on dataset samples
@@ -78,7 +78,7 @@ def compute_statistics(
         Whether to plot histograms of computed statistics
     weights_template_fn : str
         Template file location of weights to use for accumulating statistics
-    traj_n_batches : int
+    mol_num_batches : int
         If greater than 1, will save each molecule data into the specified number of batches 
         that will be treated as different samples
     """
@@ -90,7 +90,7 @@ def compute_statistics(
             all_nl_names.add(nl_name)
             nl_name2prior_builder[nl_name] = prior_builder
 
-    dataset = RawDataset(dataset_name, names, tag, n_batches=traj_n_batches)
+    dataset = RawDataset(dataset_name, names, tag, n_batches=mol_num_batches)
     for samples in tqdm(
         dataset, f"Compute histograms of CG data for {dataset_name} dataset..."
     ):

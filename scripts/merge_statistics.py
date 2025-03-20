@@ -19,7 +19,7 @@ def merge_statistics(
     prior_builders: List[PriorBuilder],
     names: List[str],
     tag: Optional[str] = None,
-    traj_n_batches: Optional[int] = 1
+    mol_num_batches: Optional[int] = 1
 ):
     """
     Merges statistics computed for separate datasets or for individual samples of the same dataset.
@@ -38,8 +38,8 @@ def merge_statistics(
         Optional label included to specify dataset for which sample statistics will be merged
     """
     all_stats = []
-    if traj_n_batches > 1:
-        names = [f"{n}_batch_{b}" for b in range(traj_n_batches) for n in names]
+    if mol_num_batches > 1:
+        names = [f"{n}_batch_{b}" for b in range(mol_num_batches) for n in names]
     for name in names:
         stats_fn = osp.join(save_dir, f"{get_output_tag([tag, name, prior_tag], placement='before')}prior_builders.pck")
         if osp.exists(stats_fn):

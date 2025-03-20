@@ -39,7 +39,7 @@ If your program gets killed after the loading of the all-atom data succeeded (tq
 
 ##### Batch processing for large datasets:
 
-Should your dataset be too big to be loaded into memory at once (the tqdm bar doesn't finish before it fails), you can set the `traj_num_batches` in your `trpcage.yaml` file as well as your `trpcage_stats.yaml`, `trpcage_delta_forces.yaml` and `trpcage_packaging.yaml` file. This will seperate the trajectories in your dataset into `traj_num_batches` chunks that will be treated as separate molecules for the coarse-graining and statistics computing stages (see 2 below) and the statistics of the different batches will be automatically accumulated to get only one prior object in the end. Note that in this case, the force map will be only computed on the first batch and re-used for all subsequent batches to ensure consistency in the case of optimized force maps.
+Should your dataset be too big to be loaded into memory at once (the tqdm bar doesn't finish before it fails), you can set the `mol_num_batches` in your `trpcage.yaml` file as well as your `trpcage_stats.yaml`, `trpcage_delta_forces.yaml` and `trpcage_packaging.yaml` file. This will seperate the trajectories in your dataset into `mol_num_batches` chunks that will be treated as separate molecules for the coarse-graining and statistics computing stages (see 2 below) and the statistics of the different batches will be automatically accumulated to get only one prior object in the end. Note that in this case, the force map will be only computed on the first batch and re-used for all subsequent batches to ensure consistency in the case of optimized force maps.
 
 #### 2) Computing statistics and fitting priors
 

@@ -34,7 +34,7 @@ def package_training_data(
     train_mols: Optional[List] = None,
     val_mols: Optional[List] = None,
     random_state: Optional[str] = None,
-    traj_n_batches: Optional[int] = 1,
+    mol_num_batches: Optional[int] = 1,
     keep_batches: Optional[bool] = False
 ):
     """
@@ -74,7 +74,7 @@ def package_training_data(
         Molecules to be used for validation set
     random_state : Optional[str]
         Controls shuffling applied to the data before applying the split
-    traj_n_batches : int
+    mol_num_batches : int
         If greater than 1, will load each molecule data from the specified number of batches 
         that were be treated as different samples
     keep_batches : bool
@@ -82,8 +82,8 @@ def package_training_data(
         the partition file will be built accordingly. Otherwise, if batches exist, they will be
         accumulated into one single molecule.
     """
-    if keep_batches and traj_n_batches > 1:
-        dataset = RawDataset(dataset_name, names, dataset_tag, n_batches=traj_n_batches)
+    if keep_batches and mol_num_batches > 1:
+        dataset = RawDataset(dataset_name, names, dataset_tag, n_batches=mol_num_batches)
     else:
         dataset = RawDataset(dataset_name, names, dataset_tag)
     output_tag = get_output_tag([dataset_name, force_tag], placement="after")
@@ -98,11 +98,11 @@ def package_training_data(
                 dataset, f"Packaging {dataset_name} dataset..."
             ):
                 try:
-                    if traj_n_batches > 1 and not keep_batches:
+                    if mol_num_batches > 1 and not keep_batches:
                         cg_coords, cg_delta_forces, cg_embeds = samples.load_all_batches_training_inputs(
                             training_data_dir=training_data_dir,
                             force_tag=force_tag,
-                            traj_n_batches=traj_n_batches
+                            mol_num_batches=mol_num_batches
                         )
                     else:
                         cg_coords, cg_delta_forces, cg_embeds = samples.load_training_inputs(
@@ -129,9 +129,9 @@ def package_training_data(
         # Create partition file
         fnout_part = osp.join(save_dir, f"partition{output_tag}.yaml")
         if single_protein:
-            if keep_batches and traj_n_batches > 1:
-                train_mols = [f"{dataset_tag}{name}_batch_{b}" for b in range(traj_n_batches) for name in names]
-                val_mols = [f"{dataset_tag}{name}_batch_{b}" for b in range(traj_n_batches) for name in names]
+            if keep_batches and mol_num_batches > 1:
+                train_mols = [f"{dataset_tag}{name}_batch_{b}" for b in range(mol_num_batches) for name in names]
+                val_mols = [f"{dataset_tag}{name}_batch_{b}" for b in range(mol_num_batches) for name in names]
             else:
                 train_mols = [f"{dataset_tag}{name}" for name in names]
                 val_mols = [f"{dataset_tag}{name}" for name in names]

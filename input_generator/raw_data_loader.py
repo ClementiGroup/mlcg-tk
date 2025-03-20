@@ -131,7 +131,7 @@ class CATH_loader(DatasetLoader):
         outputs_fns = natsorted(glob(os.path.join(base_dir, f"output/{name}/*_part_*")))
 
         if n_batches > 1:
-            raise NotImplementedError("traj_n_batches can only be used for single-protein datasets for now")
+            raise NotImplementedError("mol_num_batches can only be used for single-protein datasets for now")
 
         aa_coord_list = []
         aa_force_list = []
@@ -201,7 +201,7 @@ class DIMER_loader(DatasetLoader):
             if greater than 1, divide the total trajectories to load into n_batches chunks
         """
         if n_batches > 1:
-            raise NotImplementedError("traj_n_batches can only be used for single-protein datasets for now")
+            raise NotImplementedError("mol_num_batches can only be used for single-protein datasets for now")
 
         with h5py.File(os.path.join(base_dir, "allatom.h5"), "r") as data:
             coord = data["MINI"][name]["aa_coords"][:][::stride]
@@ -577,7 +577,7 @@ class OPEP_loader(DatasetLoader):
             if greater than 1, divide the total trajectories to load into n_batches chunks
         """
         if n_batches > 1:
-            raise NotImplementedError("traj_n_batches can only be used for single-protein datasets for now")
+            raise NotImplementedError("mol_num_batches can only be used for single-protein datasets for now")
 
         coord_files = sorted(glob(os.path.join(base_dir, f"coords_nowater/opep_{name}/*.npy")))
         if len(coord_files) == 0:

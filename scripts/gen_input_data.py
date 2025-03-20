@@ -36,7 +36,7 @@ def process_raw_dataset(
     force_stride: int = 100,
     filter_cis: Optional[bool] = False,
     batch_size: Optional[int] = None,
-    traj_n_batches: Optional[int] = 1
+    mol_num_batches: Optional[int] = 1
 ):
     """
     Applies coarse-grained mapping to coordinates and forces using input sample
@@ -78,11 +78,11 @@ def process_raw_dataset(
     batch_size : int
         Optional size in which performing batches of AA mapping to CG, to avoid
         memory overhead in large AA dataset
-    traj_n_batches : int
+    mol_num_batches : int
         If greater than 1, will save each molecule data into the specified number of batches 
         that will be treated as different samples
     """
-    dataset = RawDataset(dataset_name, names, tag, n_batches=traj_n_batches)
+    dataset = RawDataset(dataset_name, names, tag, n_batches=mol_num_batches)
     for samples in tqdm(dataset, f"Processing CG data for {dataset_name} dataset..."):
         samples.input_traj, samples.top_dataframe = sample_loader.get_traj_top(
             samples.mol_name, pdb_template_fn
@@ -141,7 +141,7 @@ def build_neighborlists(
     force_stride: int = 100,
     filter_cis: bool = False,
     batch_size: Optional[int] = None,
-    traj_n_batches: Optional[int] = 1
+    mol_num_batches: Optional[int] = 1
 ):
     """
     Generates neighbour lists for all samples in dataset using prior term information
@@ -185,7 +185,7 @@ def build_neighborlists(
     batch_size : bool 
         unused in this function
         present to allow the use of the same .yaml config for process_raw_dataset and build_neighborlists
-    traj_n_batches : int
+    mol_num_batches : int
         unused in this function
         present to allow the use of the same .yaml config for process_raw_dataset and build_neighborlists
     """

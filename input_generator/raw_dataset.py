@@ -710,14 +710,14 @@ class SampleCollection:
         self, 
         training_data_dir: str, 
         force_tag: str = "", 
-        traj_n_batches: int = 1,
+        mol_num_batches: int = 1,
         stride: int = 1
     ):
         mol_save_templ = os.path.join(training_data_dir, get_output_tag([self.tag, self.name], placement="before"))
         cg_embeds = np.load(f"{mol_save_templ}cg_embeds.npy")
         cg_coords = []
         cg_forces = []
-        for b in range(traj_n_batches):
+        for b in range(mol_num_batches):
             save_templ = os.path.join(training_data_dir, get_output_tag([self.tag, self.name, f"batch_{b}"], placement="before"))
             save_templ_forces = os.path.join(training_data_dir, get_output_tag([self.tag, self.name, f"batch_{b}", force_tag], placement="before"))
 
