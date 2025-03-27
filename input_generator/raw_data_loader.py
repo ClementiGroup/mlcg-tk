@@ -153,6 +153,7 @@ class CATH_loader(DatasetLoader):
         aa_forces = np.concatenate(aa_force_list)[::stride]
         return aa_coords, aa_forces
 
+
 class CATH_ext_loader(DatasetLoader):
     """
     Loader object for extended dataset of CATH domain proteins
@@ -230,6 +231,7 @@ class CATH_ext_loader(DatasetLoader):
         full_forces = np.concatenate(all_forces)
         return full_coords, full_forces
 
+
 class DIMER_loader(DatasetLoader):
     """
     Loader object for original dataset of mono- and dipeptide pairwise umbrella sampling simulations
@@ -295,6 +297,7 @@ class DIMER_loader(DatasetLoader):
         force = force / 41.84
 
         return coord, force
+
 
 class DIMER_ext_loader(DatasetLoader):
     """
@@ -614,6 +617,7 @@ class BBA_loader(DatasetLoader):
         aa_forces = np.concatenate(aa_force_list)
         return aa_coords, aa_forces
 
+
 class ProteinG_loader(DatasetLoader):
     """
     Loader object for CHARMM22* Protein G simulation dataset
@@ -639,12 +643,12 @@ class ProteinG_loader(DatasetLoader):
         return aa_traj, top_dataframe
 
     def load_coords_forces(
-        self, 
-        base_dir: str, 
-        name: str,  
-        stride: int = 1, 
-        batch: Optional[int] = None, 
-        n_batches: Optional[int] = 1
+        self,
+        base_dir: str,
+        name: str,
+        stride: int = 1,
+        batch: Optional[int] = None,
+        n_batches: Optional[int] = 1,
     ) -> Tuple[np.ndarray, np.ndarray]:
         """
         For a given name, returns np.ndarray's of its coordinates and forces at
@@ -666,13 +670,16 @@ class ProteinG_loader(DatasetLoader):
         """
         coords_fns = natsorted(
             glob(
-                os.path.join(base_dir, f"coords_3_nowater/proteing_coor_folding-proteing-*.npy")
+                os.path.join(
+                    base_dir, f"coords_3_nowater/proteing_coor_folding-proteing-*.npy"
+                )
             )
         )
 
         forces_fns = [
             fn.replace(
-                "coords_3_nowater/proteing_coor_folding", "forces_3_nowater/proteing_force_folding"
+                "coords_3_nowater/proteing_coor_folding",
+                "forces_3_nowater/proteing_force_folding",
             )
             for fn in coords_fns
         ]
@@ -682,7 +689,9 @@ class ProteinG_loader(DatasetLoader):
 
         if n_batches > 1:
             assert batch is not None, "batch id must be set if more than 1 batch"
-            chunk_ids = chunker([i for i in range(len(coords_fns))], n_batches=n_batches)
+            chunk_ids = chunker(
+                [i for i in range(len(coords_fns))], n_batches=n_batches
+            )
             coords_fns = coords_fns[np.array(chunk_ids[batch])]
             forces_fns = forces_fns[np.array(chunk_ids[batch])]
 
@@ -699,6 +708,7 @@ class ProteinG_loader(DatasetLoader):
         aa_coords = np.concatenate(aa_coord_list)
         aa_forces = np.concatenate(aa_force_list)
         return aa_coords, aa_forces
+
 
 class A3D_loader(DatasetLoader):
     """
@@ -725,12 +735,12 @@ class A3D_loader(DatasetLoader):
         return aa_traj, top_dataframe
 
     def load_coords_forces(
-        self, 
-        base_dir: str, 
-        name: str,  
-        stride: int = 1, 
-        batch: Optional[int] = None, 
-        n_batches: Optional[int] = 1
+        self,
+        base_dir: str,
+        name: str,
+        stride: int = 1,
+        batch: Optional[int] = None,
+        n_batches: Optional[int] = 1,
     ) -> Tuple[np.ndarray, np.ndarray]:
         """
         For a given name, returns np.ndarray's of its coordinates and forces at
@@ -751,33 +761,35 @@ class A3D_loader(DatasetLoader):
             if greater than 1, divide the total trajectories to load into n_batches chunks
         """
         coords_fns = natsorted(
-            glob(
-                os.path.join(base_dir, f"coords_*_nowater/a3D_coor_folding-a3d-*.npy")
-            )
+            glob(os.path.join(base_dir, f"coords_*_nowater/a3D_coor_folding-a3d-*.npy"))
         )
         forces_fns = []
         for coord_fn in coords_fns:
             if "coords_1_nowater" in coord_fn:
                 forces_fns.append(
                     coord_fn.replace(
-                        "coords_1_nowater/a3D_coor_folding", "forces_1_nowater/a3D_force_folding"
+                        "coords_1_nowater/a3D_coor_folding",
+                        "forces_1_nowater/a3D_force_folding",
                     )
                 )
             elif "coords_2_nowater" in coord_fn:
                 forces_fns.append(
                     coord_fn.replace(
-                        "coords_2_nowater/a3D_coor_folding", "forces_2_nowater/a3D_force_folding"
+                        "coords_2_nowater/a3D_coor_folding",
+                        "forces_2_nowater/a3D_force_folding",
                     )
                 )
             else:
                 raise RuntimeError("wrong path in A3D loader")
-        
+
         coords_fns = np.array(coords_fns)
         forces_fns = np.array(forces_fns)
 
         if n_batches > 1:
             assert batch is not None, "batch id must be set if more than 1 batch"
-            chunk_ids = chunker([i for i in range(len(coords_fns))], n_batches=n_batches)
+            chunk_ids = chunker(
+                [i for i in range(len(coords_fns))], n_batches=n_batches
+            )
             coords_fns = coords_fns[np.array(chunk_ids[batch])]
             forces_fns = forces_fns[np.array(chunk_ids[batch])]
 
@@ -794,6 +806,7 @@ class A3D_loader(DatasetLoader):
         aa_coords = np.concatenate(aa_coord_list)
         aa_forces = np.concatenate(aa_force_list)
         return aa_coords, aa_forces
+
 
 class Villin_loader(DatasetLoader):
     def get_traj_top(self, name: str, pdb_fn: str):
