@@ -617,6 +617,7 @@ class BBA_loader(DatasetLoader):
         aa_forces = np.concatenate(aa_force_list)
         return aa_coords, aa_forces
 
+
 class Villin_loader(DatasetLoader):
     def get_traj_top(self, name: str, pdb_fn: str):
         pdb = md.load(pdb_fn.format(name))
@@ -688,6 +689,7 @@ class NTL9_loader(DatasetLoader):
     r"""
     Loader object for CHARMM22* NTL9 simulation dataset
     """
+
     def get_traj_top(self, name: str, pdb_fn: str):
         r"""
         For a given name, returns a loaded MDTraj object at the input resolution
@@ -714,7 +716,7 @@ class NTL9_loader(DatasetLoader):
         stride: int = 1,
         batch: Optional[int] = None,
         n_batches: Optional[int] = 1,
-        chop: int=5
+        chop: int = 5,
     ) -> Tuple[np.ndarray, np.ndarray]:
         r"""
         For a given name, returns np.ndarray's of its coordinates and forces at
@@ -755,7 +757,6 @@ class NTL9_loader(DatasetLoader):
             )
             coords_fns = coords_fns[np.array(chunk_ids[batch])]
             forces_fns = forces_fns[np.array(chunk_ids[batch])]
-
 
         aa_coord_list = []
         aa_force_list = []
@@ -962,7 +963,6 @@ class A3D_loader(DatasetLoader):
         return aa_coords, aa_forces
 
 
-
 class OPEP_loader(DatasetLoader):
     """
     Loader for octapeptides dataset
@@ -1044,15 +1044,17 @@ class OPEP_loader(DatasetLoader):
         aa_forces = np.concatenate(aa_force_list)
         return aa_coords, aa_forces
 
+
 class HDF5_loader(DatasetLoader):
     r"""
-    Base class for loading data stored in an HDF5 data format. 
-    
+    Base class for loading data stored in an HDF5 data format.
+
     The file can have any structure as long as all the
-    independent trajectories are represented by groups 
-    that have keys "coords" and "Fs" with arrays of 
+    independent trajectories are represented by groups
+    that have keys "coords" and "Fs" with arrays of
     shape (n_frames,n_atoms,3)
     """
+
     @staticmethod
     def _get_all_traj_groups(h5file: h5py.File) -> List[str]:
         r"""
@@ -1072,7 +1074,7 @@ class HDF5_loader(DatasetLoader):
         h5file.visititems(visit_func)
 
         return traj_group_arr
-    
+
     @staticmethod
     def get_traj_groups(h5file: h5py.File) -> List[str]:
         r"""
@@ -1082,7 +1084,6 @@ class HDF5_loader(DatasetLoader):
         sublcasses can filter certain trajectories that are undesirable
         """
         return HDF5_loader._get_all_traj_groups(h5file)
-
 
     def get_traj_top(self, name: str, pdb_fn: str):
         """
@@ -1111,12 +1112,11 @@ class HDF5_loader(DatasetLoader):
         batch: Optional[int] = None,
         n_batches: Optional[int] = 1,
     ) -> Tuple[np.ndarray, np.ndarray]:
-
         aa_coord_list = []
         aa_force_list = []
 
         with h5py.File(os.path.join(base_dir), "r") as dataset:
-            traj_group_arr = self.get_traj_groups(dataset)    
+            traj_group_arr = self.get_traj_groups(dataset)
             traj_group_arr = np.array(traj_group_arr)
             if n_batches > 1:
                 assert batch is not None, "batch id must be set if more than 1 batch"
@@ -1124,10 +1124,10 @@ class HDF5_loader(DatasetLoader):
                     [i for i in range(len(traj_group_arr))], n_batches=n_batches
                 )
                 traj_group_arr = traj_group_arr[np.array(chunk_ids[batch])]
-                
-            if len(traj_group_arr)==0:
+
+            if len(traj_group_arr) == 0:
                 raise ValueError(f"No trajectories found in supplied h5")
-            for traj_path in tqdm(traj_group_arr,total=len(traj_group_arr)):
+            for traj_path in tqdm(traj_group_arr, total=len(traj_group_arr)):
                 traj = dataset.get(traj_path)
                 if traj is None:
                     raise ValueError(f"Failed to find trajectory in group {traj_path}")
@@ -1139,7 +1139,7 @@ class HDF5_loader(DatasetLoader):
 
         aa_coords = np.concatenate(aa_coord_list)
         aa_forces = np.concatenate(aa_force_list)
-        
+
         return aa_coords, aa_forces
 
 
