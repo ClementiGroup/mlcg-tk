@@ -12,6 +12,8 @@ from .raw_data_loader import (
     ProteinG_loader,
     A3D_loader,
     OPEP_loader,
+    NTL9_loader,
+    HDF5_loader,
 )
 
 

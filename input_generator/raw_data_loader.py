@@ -3,7 +3,7 @@ import os
 from natsort import natsorted
 from glob import glob
 import h5py
-from typing import Tuple, Optional
+from typing import Tuple, Optional, List
 import mdtraj as md
 import warnings
 from pathlib import Path
@@ -617,6 +617,160 @@ class BBA_loader(DatasetLoader):
         aa_forces = np.concatenate(aa_force_list)
         return aa_coords, aa_forces
 
+class Villin_loader(DatasetLoader):
+    def get_traj_top(self, name: str, pdb_fn: str):
+        pdb = md.load(pdb_fn.format(name))
+        aa_traj = pdb.atom_slice(
+            [a.index for a in pdb.topology.atoms if a.residue.is_protein]
+        )
+        top_dataframe = aa_traj.topology.to_dataframe()[0]
+        return aa_traj, top_dataframe
+
+    def load_coords_forces(
+        self,
+        base_dir: str,
+        name: str,
+        stride: int = 1,
+        batch: Optional[int] = None,
+        n_batches: Optional[int] = 1,
+    ) -> Tuple[np.ndarray, np.ndarray]:
+        """
+        For a given name, returns np.ndarray's of its coordinates and forces at
+        the input resolution (generally atomistic)
+
+        Parameters
+        ----------
+        base_dir:
+            Path to coordinate and force files
+        name:
+            Name of input sample
+        stride : int
+            Interval by which to stride loaded data
+        batch: int or None
+            if trajectories are loaded by batch, indicates the batch index to load
+            must be set if n_batches > 1
+        n_batches: int
+            if greater than 1, divide the total trajectories to load into n_batches chunks
+        """
+        coords_fns = sorted(
+            glob(os.path.join(base_dir, f"{name}/*_coords.npy"))
+        )  # combining all trajectories from single starting structure
+
+        forces_fns = sorted(glob(os.path.join(base_dir, f"{name}/*_forces.npy")))
+
+        coords_fns = np.array(coords_fns)
+        forces_fns = np.array(forces_fns)
+
+        if n_batches > 1:
+            assert batch is not None, "batch id must be set if more than 1 batch"
+            chunk_ids = chunker(
+                [i for i in range(len(coords_fns))], n_batches=n_batches
+            )
+            coords_fns = coords_fns[np.array(chunk_ids[batch])]
+            forces_fns = forces_fns[np.array(chunk_ids[batch])]
+
+        aa_coord_list = []
+        aa_force_list = []
+        for c, f in tqdm(zip(coords_fns, forces_fns), total=len(coords_fns)):
+            coords = np.load(c)
+            forces = np.load(f)
+            assert coords.shape == forces.shape
+
+            aa_coord_list.append(coords[::stride])
+            aa_force_list.append(forces[::stride])
+
+        aa_coords = np.concatenate(aa_coord_list)
+        aa_forces = np.concatenate(aa_force_list)
+        return aa_coords, aa_forces
+
+
+class NTL9_loader(DatasetLoader):
+    r"""
+    Loader object for CHARMM22* NTL9 simulation dataset
+    """
+    def get_traj_top(self, name: str, pdb_fn: str):
+        r"""
+        For a given name, returns a loaded MDTraj object at the input resolution
+        (generally atomistic) as well as the dataframe associated with its topology.
+
+        Parameters
+        ----------
+        name:
+            Name of input sample
+        pdb_fn:
+            Path to pdb structure file
+        """
+        pdb = md.load(pdb_fn.format(name))
+        aa_traj = pdb.atom_slice(
+            [a.index for a in pdb.topology.atoms if a.residue.is_protein]
+        )
+        top_dataframe = aa_traj.topology.to_dataframe()[0]
+        return aa_traj, top_dataframe
+
+    def load_coords_forces(
+        self,
+        base_dir: str,
+        name: str,
+        stride: int = 1,
+        batch: Optional[int] = None,
+        n_batches: Optional[int] = 1,
+        chop: int=5
+    ) -> Tuple[np.ndarray, np.ndarray]:
+        r"""
+        For a given name, returns np.ndarray's of its coordinates and forces at
+        the input resolution (generally atomistic)
+
+        Parameters
+        ----------
+        base_dir:
+            Path to coordinate and force files
+        name:
+            Name of input sample
+        stride : int
+            Interval by which to stride loaded data
+        batch: int or None
+            if trajectories are loaded by batch, indicates the batch index to load
+            must be set if n_batches > 1
+        n_batches: int
+            if greater than 1, divide the total trajectories to load into n_batches chunks
+        chop: int
+            initial frames to discard from every simulation. Necessary due to some problem frames.
+        """
+        traj_name_pat = "ntl9_coor_"
+        coord_pattern = Path(base_dir) / "coords_nowater" / f"{traj_name_pat}*.npy"
+        coords_fns = natsorted(glob(str(coord_pattern)))
+
+        forces_fns = [
+            fn.replace("coords_nowater", "forces_nowater").replace("coor", "force")
+            for fn in coords_fns
+        ]
+
+        coords_fns = np.array(coords_fns)
+        forces_fns = np.array(forces_fns)
+
+        if n_batches > 1:
+            assert batch is not None, "batch id must be set if more than 1 batch"
+            chunk_ids = chunker(
+                [i for i in range(len(coords_fns))], n_batches=n_batches
+            )
+            coords_fns = coords_fns[np.array(chunk_ids[batch])]
+            forces_fns = forces_fns[np.array(chunk_ids[batch])]
+
+
+        aa_coord_list = []
+        aa_force_list = []
+        # load the files, checking against the mol dictionary
+        for cfn, ffn in tqdm(zip(coords_fns, forces_fns), total=len(coords_fns)):
+            force = np.load(ffn)[chop::stride]  # in AA
+            coord = np.load(cfn)[chop::stride]  # in kcal/mol/AA
+
+            assert coord.shape == force.shape
+            aa_coord_list.append(coord)
+            aa_force_list.append(force)
+        aa_coords = np.concatenate(aa_coord_list)
+        aa_forces = np.concatenate(aa_force_list)
+        return aa_coords, aa_forces
+
 
 class ProteinG_loader(DatasetLoader):
     """
@@ -808,72 +962,6 @@ class A3D_loader(DatasetLoader):
         return aa_coords, aa_forces
 
 
-class Villin_loader(DatasetLoader):
-    def get_traj_top(self, name: str, pdb_fn: str):
-        pdb = md.load(pdb_fn.format(name))
-        aa_traj = pdb.atom_slice(
-            [a.index for a in pdb.topology.atoms if a.residue.is_protein]
-        )
-        top_dataframe = aa_traj.topology.to_dataframe()[0]
-        return aa_traj, top_dataframe
-
-    def load_coords_forces(
-        self,
-        base_dir: str,
-        name: str,
-        stride: int = 1,
-        batch: Optional[int] = None,
-        n_batches: Optional[int] = 1,
-    ) -> Tuple[np.ndarray, np.ndarray]:
-        """
-        For a given name, returns np.ndarray's of its coordinates and forces at
-        the input resolution (generally atomistic)
-
-        Parameters
-        ----------
-        base_dir:
-            Path to coordinate and force files
-        name:
-            Name of input sample
-        stride : int
-            Interval by which to stride loaded data
-        batch: int or None
-            if trajectories are loaded by batch, indicates the batch index to load
-            must be set if n_batches > 1
-        n_batches: int
-            if greater than 1, divide the total trajectories to load into n_batches chunks
-        """
-        coords_fns = sorted(
-            glob(os.path.join(base_dir, f"{name}/*_coords.npy"))
-        )  # combining all trajectories from single starting structure
-
-        forces_fns = sorted(glob(os.path.join(base_dir, f"{name}/*_forces.npy")))
-
-        coords_fns = np.array(coords_fns)
-        forces_fns = np.array(forces_fns)
-
-        if n_batches > 1:
-            assert batch is not None, "batch id must be set if more than 1 batch"
-            chunk_ids = chunker(
-                [i for i in range(len(coords_fns))], n_batches=n_batches
-            )
-            coords_fns = coords_fns[np.array(chunk_ids[batch])]
-            forces_fns = forces_fns[np.array(chunk_ids[batch])]
-
-        aa_coord_list = []
-        aa_force_list = []
-        for c, f in tqdm(zip(coords_fns, forces_fns), total=len(coords_fns)):
-            coords = np.load(c)
-            forces = np.load(f)
-            assert coords.shape == forces.shape
-
-            aa_coord_list.append(coords[::stride])
-            aa_force_list.append(forces[::stride])
-
-        aa_coords = np.concatenate(aa_coord_list)
-        aa_forces = np.concatenate(aa_force_list)
-        return aa_coords, aa_forces
-
 
 class OPEP_loader(DatasetLoader):
     """
@@ -954,6 +1042,104 @@ class OPEP_loader(DatasetLoader):
             aa_force_list.append(forces[::stride])
         aa_coords = np.concatenate(aa_coord_list)
         aa_forces = np.concatenate(aa_force_list)
+        return aa_coords, aa_forces
+
+class HDF5_loader(DatasetLoader):
+    r"""
+    Base class for loading data stored in an HDF5 data format. 
+    
+    The file can have any structure as long as all the
+    independent trajectories are represented by groups 
+    that have keys "coords" and "Fs" with arrays of 
+    shape (n_frames,n_atoms,3)
+    """
+    @staticmethod
+    def _get_all_traj_groups(h5file: h5py.File) -> List[str]:
+        r"""
+        Base unction to get all the possible trajectory groups.
+        """
+        traj_group_arr = []
+
+        def visit_func(name, node):
+            r"""
+            Helper function to collect names of internal groups.
+            """
+            if isinstance(node, h5py.Group):
+                node_keys = node.keys()
+                if "coords" in node_keys and "Fs" in node_keys:
+                    traj_group_arr.append(name)
+
+        h5file.visititems(visit_func)
+
+        return traj_group_arr
+    
+    @staticmethod
+    def get_traj_groups(h5file: h5py.File) -> List[str]:
+        r"""
+        Function to get the  trajectory groups of this dataset.
+
+        This is a wrapper over `_get_all_traj_groups` so that
+        sublcasses can filter certain trajectories that are undesirable
+        """
+        return HDF5_loader._get_all_traj_groups(h5file)
+
+
+    def get_traj_top(self, name: str, pdb_fn: str):
+        """
+        For a given name, returns a loaded MDTraj object at the input resolution
+        (generally atomistic) as well as the dataframe associated with its topology.
+
+        Parameters
+        ----------
+        name:
+            Name of input sample
+        pdb_fn:
+            Path to pdb structure file
+        """
+        pdb = md.load(pdb_fn.format(name)).remove_solvent()
+        aa_traj = pdb.atom_slice(
+            [a.index for a in pdb.topology.atoms if a.residue.is_protein]
+        )
+        top_dataframe = aa_traj.topology.to_dataframe()[0]
+        return aa_traj, top_dataframe
+
+    def load_coords_forces(
+        self,
+        base_dir: str,
+        name: str,
+        stride: int = 1,
+        batch: Optional[int] = None,
+        n_batches: Optional[int] = 1,
+    ) -> Tuple[np.ndarray, np.ndarray]:
+
+        aa_coord_list = []
+        aa_force_list = []
+
+        with h5py.File(os.path.join(base_dir), "r") as dataset:
+            traj_group_arr = self.get_traj_groups(dataset)    
+            traj_group_arr = np.array(traj_group_arr)
+            if n_batches > 1:
+                assert batch is not None, "batch id must be set if more than 1 batch"
+                chunk_ids = chunker(
+                    [i for i in range(len(traj_group_arr))], n_batches=n_batches
+                )
+                traj_group_arr = traj_group_arr[np.array(chunk_ids[batch])]
+                
+            if len(traj_group_arr)==0:
+                raise ValueError(f"No trajectories found in supplied h5")
+            for traj_path in tqdm(traj_group_arr,total=len(traj_group_arr)):
+                traj = dataset.get(traj_path)
+                if traj is None:
+                    raise ValueError(f"Failed to find trajectory in group {traj_path}")
+                coord = traj["coords"][:]
+                force = traj["Fs"][:]
+
+                aa_coord_list.append(coord[::stride])
+                aa_force_list.append(force[::stride])
+
+        aa_coords = np.concatenate(aa_coord_list)
+        aa_forces = np.concatenate(aa_force_list)
+        
         return aa_coords, aa_forces
 
 
