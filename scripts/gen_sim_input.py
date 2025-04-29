@@ -94,7 +94,7 @@ def process_sim_input(
 
         cg_trajs = samples.input_traj.atom_slice(samples.cg_atom_indices)
         cg_masses = (
-            np.array([int(atom.element.mass) for atom in cg_trajs[0].topology.atoms])
+            np.array([atom.element.mass for atom in cg_trajs[0].topology.atoms])
             / mass_scale
         )
         prior_nls = samples.get_prior_nls(

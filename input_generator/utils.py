@@ -3,6 +3,7 @@ from typing import List, Optional, Union, Tuple, Dict
 import numpy as np
 import mdtraj as md
 import warnings
+from scipy.sparse import sparray, csr_array
 from functools import wraps
 
 from aggforce import (
@@ -16,6 +17,38 @@ from aggforce import (
 
 from .prior_gen import PriorBuilder
 
+def cg_matmul(map_arr: Union[np.ndarray,sparray],timeseries_arr: np.ndarray) -> np.ndarray:
+    r"""Function to perform array multiplication for both numpy and scipy sparse arrays
+    
+    Parameters
+    ----------
+
+    map_arr : Union[np.ndarray,sparray]
+        array of shape (n_beads,n_atoms) representing a linear CG mapping
+
+    timeseries_arr : np.ndarray
+        array of shape (n_frames,n_atoms,3) holding coordinate or force information 
+    
+
+
+    Returns
+    -------
+
+    np.ndarry of shape (n_frames,n_beads,3) after applying the CG map to every entry of timeseries_arr
+
+    """
+    assert len(timeseries_arr.shape) == 3, "Time series doesn't have shape (n_frames,n_atoms,3)"
+    assert len(map_arr.shape) == 2, "Map doesn't have shape (n_beads,n_atoms)"
+    assert map_arr.shape[1] == timeseries_arr.shape[1], "`n_atoms` doesn't concide in the map and "
+    if issubclass(type(map_arr),sparray):
+        # scipy sparse arrays dont support the same broadcasting than numpy
+        # we need to explicitly slice every frame and then stack them all
+        return np.stack([map_arr @ timeseries_arr[i,:,:]  for i in range(timeseries_arr.shape[0])])
+    elif isinstance(map_arr,np.ndarray):
+        # when using numpy non-sparse arrays, broadcasting over the frame dimension is supported
+        return map_arr @ timeseries_arr
+    else:
+        raise ValueError(f"Map of type {type(map_arr)} is not supported")
 
 def with_attrs(**func_attrs):
     """Set attributes in the decorated function, at definition time.
@@ -133,7 +166,7 @@ def batch_matmul(map_matrix, X, batch_size):
     Perform matrix multiplication in chunks.
 
     Parameters:
-      map_matrix: np.ndarray of shape (N_CG_ats, N_FG_ats)
+      map_matrix: Union[np.ndarray,sparray] of shape (N_CG_ats, N_FG_ats)
       X: np.ndarray of shape (M_frames, N_FG_ats, 3)
       batch_size: int, the number of rows (from the M dimension) to process at a time.
 
@@ -148,7 +181,7 @@ def batch_matmul(map_matrix, X, batch_size):
         # Perform matrix multiplication:
         # map_matrix (CG, FG) multiplied by each X_batch (FG, 3) gives (GC, 3) for each sample.
         # The broadcasting ensures the result is (batch, CG, 3)
-        result_batch = map_matrix @ X_batch
+        result_batch = cg_matmul(map_matrix,X_batch)
         results.append(result_batch)
     # Concatenate all chunks along the first axis (M dimension)
     return np.concatenate(results, axis=0)
@@ -270,14 +303,19 @@ def slice_coord_forces(
             f"Force mapping {mapping} is neither a string nor a numpy array."
         )
 
-    if batch_size != None:
+    # convert to sparse arrays for better performance:
+
+    config_map_matrix = csr_array(config_map_matrix)
+    force_map_matrix = csr_array(force_map_matrix)
+
+    if batch_size is not None:
         cg_coords = batch_matmul(config_map_matrix, coords, batch_size=batch_size)
         cg_forces = batch_matmul(force_map_matrix, forces, batch_size=batch_size)
     else:
-        cg_coords = config_map_matrix @ coords
-        cg_forces = force_map_matrix @ forces
+        cg_coords = cg_matmul(config_map_matrix,coords)
+        cg_forces = cg_matmul(force_map_matrix,forces)
 
-    return cg_coords, cg_forces, force_map_matrix
+    return cg_coords, cg_forces, config_map_matrix, force_map_matrix
 
 
 def filter_cis_frames(

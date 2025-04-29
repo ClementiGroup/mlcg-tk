@@ -104,7 +104,7 @@ def process_raw_dataset(
         )
 
         if samples.n_batches > 1 and samples.batch > 1:
-            # this ensures that we are using the same force map accross batches
+            # this ensures that we are using the same force map across batches
             mapping = samples.load_cg_force_map(save_dir)
         else:
             mapping = cg_mapping_strategy
@@ -123,6 +123,8 @@ def process_raw_dataset(
         # the sample object will retain the output so it makes sense to delete them
         del samples.cg_coords
         del samples.cg_forces
+        del samples.cg_map
+        del samples.force_map
 
 
 def build_neighborlists(

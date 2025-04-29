@@ -8,7 +8,6 @@ import mdtraj as md
 import torch
 import warnings
 import os
-from importlib import import_module
 
 from torch_geometric.data.collate import collate
 
@@ -341,9 +340,11 @@ class SampleCollection:
                     if force_stride == 1:
                         break
 
-                cg_coords, cg_forces, force_map = slice_coord_forces(
+                cg_coords, cg_forces, cg_map, force_map = slice_coord_forces(
                     coords, forces, self.cg_map, mapping, force_stride, batch_size
                 )
+                # update the entries with the sparse version
+                self.cg_map = cg_map
                 self.force_map = force_map
             else:  # all frames were removed by cis-filtering
                 cg_coords = None
@@ -431,12 +432,12 @@ class SampleCollection:
             if not hasattr(self, "cg_map"):
                 warnings.warn("No cg coordinate map found. Skipping save.")
             else:
-                np.save(f"{mol_save_templ}cg_coord_map.npy", self.cg_map)
+                np.save(f"{mol_save_templ}cg_coord_map.npy", self.cg_map.toarray())
 
             if not hasattr(self, "force_map"):
                 warnings.warn("No cg force map found. Skipping save.")
             else:
-                np.save(f"{mol_save_templ}cg_force_map.npy", self.force_map)
+                np.save(f"{mol_save_templ}cg_force_map.npy", self.force_map.toarray())
 
     def load_cg_force_map(self, save_dir: str) -> np.ndarray:
         """
