@@ -37,50 +37,55 @@ def process_raw_dataset(
     filter_cis: Optional[bool] = False,
     batch_size: Optional[int] = None,
     mol_num_batches: Optional[int] = 1,
+    atoms_batch_size: Optional[int] = None,
 ):
     """
-    Applies coarse-grained mapping to coordinates and forces using input sample
-    topology and specified mapping strategies
+    Processes a raw dataset by applying coarse-grained (CG) mapping to atomic coordinates and forces,
+    using the provided topology and mapping strategies.
 
     Parameters
     ----------
     dataset_name : str
-        Name given to specific dataset
+        Identifier for the dataset.
     names : List[str]
-        List of sample names
+        List of molecule or sample names to process.
     sample_loader : DatasetLoader
-        Loader object defined for specific dataset
+        Loader object for retrieving trajectories and data.
     raw_data_dir : str
-        Path to coordinate and force files
+        Directory containing raw coordinate and force files.
     tag : str
-        Label given to all output files produced from dataset
+        Label to append to all output files generated from this dataset.
     pdb_template_fn : str
-        Template file location of atomistic structure to be used for topology
+        Path to the template PDB file for atomistic topology.
     save_dir : str
-        Path to directory in which output will be saved
+        Directory where processed outputs will be saved.
     cg_atoms : List[str]
-        List of atom names to preserve in coarse-grained resolution
+        Atom names to retain in the coarse-grained representation.
     embedding_map : CGEmbeddingMap
-        Mapping object
+        Object defining the mapping from atomistic to CG representations.
     embedding_func : Callable
-        Function which will be used to apply CG mapping
+        Function to apply the CG mapping.
     skip_residues : List[str]
-        List of residues to skip, can be None
+        Residues to exclude from processing (can be empty).
     cg_mapping_strategy : str
-        Strategy to use for coordinate and force mappings;
-        currently only "slice_aggregate" and "slice_optimize" are implemented
-    stride : int
-        Interval by which to stride loaded data
-    force_stride : int
-        stride for inferring the force maps in aggforce
-    filter_cis : bool
-        if True, frames with cis-configurations will be filtered out from the dataset
-    batch_size : int
-        Optional size in which performing batches of AA mapping to CG, to avoid
-        memory overhead in large AA dataset
-    mol_num_batches : int
-        If greater than 1, will save each molecule data into the specified number of batches
-        that will be treated as different samples
+        Strategy for mapping coordinates and forces (e.g., "slice_aggregate", "slice_optimize").
+    stride : int, optional
+        Interval for subsampling loaded data (default: 1).
+    force_stride : int, optional
+        Interval for subsampling forces during mapping (default: 100).
+    filter_cis : Optional[bool], optional
+        If True, filters out frames with cis-configurations (default: False).
+    batch_size : Optional[int], optional
+        Number of frames to process in each batch to reduce memory usage (default: None).
+    mol_num_batches : Optional[int], optional
+        Number of batches to split each molecule's data into (default: 1).
+    atoms_batch_size : Optional[int], optional
+        Batch size for atoms when processing large molecules (default: None).
+
+    Returns
+    -------
+    None
+        Saves processed CG data and mapping files to the specified directory.
     """
     dataset = RawDataset(dataset_name, names, tag, n_batches=mol_num_batches)
     for samples in tqdm(dataset, f"Processing CG data for {dataset_name} dataset..."):
@@ -117,6 +122,7 @@ def process_raw_dataset(
             force_stride=force_stride,
             batch_size=batch_size,
             filter_cis=filter_cis,
+            atoms_batch_size=atoms_batch_size,
         )
 
         samples.save_cg_output(save_dir, save_coord_force=True, save_cg_maps=True)
@@ -147,6 +153,7 @@ def build_neighborlists(
     filter_cis: bool = False,
     batch_size: Optional[int] = None,
     mol_num_batches: Optional[int] = 1,
+    atoms_batch_size: Optional[int] = None,
 ):
     """
     Generates neighbour lists for all samples in dataset using prior term information
@@ -193,6 +200,8 @@ def build_neighborlists(
     mol_num_batches : int
         unused in this function
         present to allow the use of the same .yaml config for process_raw_dataset and build_neighborlists
+    atoms_batch_size : Optional[int], optional
+        Batch size for atoms when processing large molecules (default: None).
     """
     dataset = RawDataset(dataset_name, names, tag)
     for samples in tqdm(dataset, f"Building NL for {dataset_name} dataset..."):

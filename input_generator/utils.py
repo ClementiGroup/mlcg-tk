@@ -242,6 +242,7 @@ def slice_coord_forces(
     mapping: str = "slice_aggregate",
     force_stride: int = 100,
     batch_size: Optional[int] = None,
+    atoms_batch_size: Optional[int] = None,
 ) -> Tuple:
     """
     Parameters
@@ -261,15 +262,54 @@ def slice_coord_forces(
     batch_size:
         Optional length of batch in which divide the AA mapping of coords and forces
         to CG ones
+    atoms_batch_size:
+        Optional length of batch in which divide the atoms in coords to compute the pairwise constraints.
 
     Returns
     -------
     Coarse-grained coordinates and forces
     """
+    # Original hard coded values
+    n_frames = 100 # taking only first 100 frames gives same results in ~1/15th of time
+    threshold = 5e-3  # threshold for pairwise constraints
+
     config_map = LinearMap(cg_map)
     config_map_matrix = config_map.standard_matrix
-    # taking only first 100 frames gives same results in ~1/15th of time
-    constraints = guess_pairwise_constraints(coords[:100], threshold=5e-3)
+    n_sites = coords.shape[1]  # number of atomistic sites
+
+    if atoms_batch_size is None or atoms_batch_size >= n_sites:
+        # No batching: process all atoms at once
+        constraints = guess_pairwise_constraints(coords[:n_frames], threshold=threshold)
+
+    else:
+        # Batching mode
+        batches = [(range(i, min(i + atoms_batch_size, n_sites))) for i in range(0, n_sites, atoms_batch_size)]
+        constraints = set()
+
+        # Within-batch constraints
+        for batch in batches:
+            xyz_batch = coords[:n_frames, batch, :]
+            local_constraints = guess_pairwise_constraints(xyz_batch, threshold=threshold)
+            global_constraints = {frozenset([batch[i] for i in pair]) for pair in local_constraints}
+            constraints.update(global_constraints)
+
+        # Cross-batch constraints
+        # To significantly reduce computational cost, we assume residues are ordered in the structure.
+        # Therefore, we only compute constraints between consecutive batches, rather than all pairs of batches.
+        # For even greater efficiency, one could restrict this to just the first and last (e.g., 30) atoms of each batch,
+        # which scales as O(1) basically, but computing all pairs between consecutive batches is generally still efficient.
+        # This tecnically can be extended to the case with no batches (smaller molecules), assuming again ordered resiues,
+        # treating all molecules at the same way and getting rid of the atoms_batch_size parameters. 
+        for i in range(len(batches) - 1):
+            b1 = batches[i]
+            b2 = batches[i + 1]
+            xyz1 = coords[:n_frames, b1, :]
+            xyz2 = coords[:n_frames, b2, :]
+            local_constraints = guess_pairwise_constraints(xyz1, cross_xyz=xyz2, threshold=threshold)
+            # guess_pairwise_constraints returns ordered pairs (i, j) where i indexes into cross_xyz (b2) and j indexes into xyz (b1)
+            global_constraints = {frozenset([b1[j], b2[i]]) for i, j in local_constraints} 
+            constraints.update(global_constraints)
+
     if isinstance(mapping, str):
         if mapping == "slice_aggregate":
             method = constraint_aware_uni_map
