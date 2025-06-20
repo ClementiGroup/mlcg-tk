@@ -39,7 +39,7 @@ If your program gets killed after the loading of the all-atom data succeeded (tq
 
 ##### Batch processing for large molecules:
 
-If the dataset loads into memory successfully (the tqdm bar completes), but the program fails before saving the CG output, consider setting atoms_batch_size in your trpcage.yaml file. This optional parameter specifies the batch size for processing atoms in large molecules. When set, constraints among atoms for coordinate and force mappings will be computed in batches of this size to reduce memory usage. If atoms_batch_size is larger than the total number of atoms in the molecule, all atoms will be processed at once (the default behavior).
+If the dataset loads into memory successfully (the tqdm bar completes), but the program fails before saving the CG output, consider setting atoms_batch_size in your trpcage.yaml file. This optional parameter specifies the batch size for processing atoms in large molecules. When set, constraints among atoms for coordinate and force mappings will be computed in batches of this size to reduce memory usage. To improve computational efficiency, it is assumed that the molecular structures have ordered residues. If atoms_batch_size is larger than the total number of atoms in the molecule, all atoms will be processed at once (the default behavior).
 
 ##### Batch processing for large datasets:
 
