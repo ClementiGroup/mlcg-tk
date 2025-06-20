@@ -317,6 +317,8 @@ class SampleCollection:
             Striding to use for force projection results
         batch_size:
             Batching the coords and forces projection to CG
+        atoms_batch_size:  
+            Batch size for processing atoms when inferring constrained atoms
 
         Returns
         -------

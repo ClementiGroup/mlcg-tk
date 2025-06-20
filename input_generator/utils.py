@@ -263,7 +263,7 @@ def slice_coord_forces(
         Optional length of batch in which divide the AA mapping of coords and forces
         to CG ones
     atoms_batch_size:
-        Optional length of batch in which divide the atoms in coords to compute the pairwise constraints.
+        Optional batch size for dividing atoms in coordinates to estimate pairwise constraints
 
     Returns
     -------
@@ -295,11 +295,11 @@ def slice_coord_forces(
 
         # Cross-batch constraints
         # To significantly reduce computational cost, we assume residues are ordered in the structure.
-        # Therefore, we only compute constraints between consecutive batches, rather than all pairs of batches.
-        # For even greater efficiency, one could restrict this to just the first and last (e.g., 30) atoms of each batch,
-        # which scales as O(1) basically, but computing all pairs between consecutive batches is generally still efficient.
-        # This tecnically can be extended to the case with no batches (smaller molecules), assuming again ordered resiues,
-        # treating all molecules at the same way and getting rid of the atoms_batch_size parameters. 
+        # Therefore, constraints are computed only between consecutive batches rather than all pairs of batches.
+        # For even greater efficiency, this could be further limited to just the first and last (e.g., 30) atoms of each batch,
+        # which scales approximately as O(1). However, computing all pairs between consecutive batches is generally still efficient.
+        # This approach can also be extended to the case with no batching (for smaller molecules), 
+        # again assuming ordered residues, treating all molecules uniformly and eliminating the need for the atoms_batch_size parameter.
         for i in range(len(batches) - 1):
             b1 = batches[i]
             b2 = batches[i + 1]
