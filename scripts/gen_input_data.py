@@ -37,6 +37,7 @@ def process_raw_dataset(
     filter_cis: Optional[bool] = False,
     batch_size: Optional[int] = None,
     mol_num_batches: Optional[int] = 1,
+    atoms_batch_size: Optional[int] = None,
 ):
     """
     Applies coarse-grained mapping to coordinates and forces using input sample
@@ -81,6 +82,12 @@ def process_raw_dataset(
     mol_num_batches : int
         If greater than 1, will save each molecule data into the specified number of batches
         that will be treated as different samples
+    atoms_batch_size : int, optional
+        Optional batch size for processing atoms in large molecules (default: None). If specified, constraints among atoms for coordinate and
+        force mappings (as defined by `cg_mapping_strategy`) will be computed in batches of this size. To significantly improve
+        computational efficiency, it is assumed that structures have ordered residues. If `atoms_batch_size` exceeds the total number of atoms
+        in the molecule, all atoms will be processed at once (default behavior).
+
     """
     dataset = RawDataset(dataset_name, names, tag, n_batches=mol_num_batches)
     for samples in tqdm(dataset, f"Processing CG data for {dataset_name} dataset..."):
@@ -117,6 +124,7 @@ def process_raw_dataset(
             force_stride=force_stride,
             batch_size=batch_size,
             filter_cis=filter_cis,
+            atoms_batch_size=atoms_batch_size,
         )
 
         samples.save_cg_output(save_dir, save_coord_force=True, save_cg_maps=True)
@@ -147,6 +155,7 @@ def build_neighborlists(
     filter_cis: bool = False,
     batch_size: Optional[int] = None,
     mol_num_batches: Optional[int] = 1,
+    atoms_batch_size: Optional[int] = None,
 ):
     """
     Generates neighbour lists for all samples in dataset using prior term information
@@ -191,6 +200,9 @@ def build_neighborlists(
         unused in this function
         present to allow the use of the same .yaml config for process_raw_dataset and build_neighborlists
     mol_num_batches : int
+        unused in this function
+        present to allow the use of the same .yaml config for process_raw_dataset and build_neighborlists
+    atoms_batch_size : int
         unused in this function
         present to allow the use of the same .yaml config for process_raw_dataset and build_neighborlists
     """

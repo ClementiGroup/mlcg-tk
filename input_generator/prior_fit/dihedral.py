@@ -5,6 +5,7 @@ from scipy.optimize import curve_fit
 import numpy as np
 from .utils import neg_log_likelihood
 
+
 def dihedral(
     theta: torch.Tensor,
     v_0: torch.Tensor,
@@ -53,7 +54,6 @@ def dihedral_wrapper_fit_func(theta: torch.Tensor, *args) -> torch.Tensor:
     k1s = torch.tensor(k1s).view(-1, num_ks)
     k2s = torch.tensor(k2s).view(-1, num_ks)
     return dihedral(theta, v_0, k1s, k2s)
-
 
 
 def _init_parameters(n_degs):

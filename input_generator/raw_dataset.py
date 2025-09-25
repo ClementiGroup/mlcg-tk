@@ -296,6 +296,7 @@ class SampleCollection:
         filter_cis: bool = False,
         force_stride: int = 100,
         batch_size: Optional[int] = None,
+        atoms_batch_size: Optional[int] = None,
     ) -> Tuple[np.ndarray, np.ndarray]:
         """
         Maps coordinates and forces to CG resolution
@@ -316,6 +317,8 @@ class SampleCollection:
             Striding to use for force projection results
         batch_size:
             Batching the coords and forces projection to CG
+        atoms_batch_size:  
+            Batch size for processing atoms when inferring constrained atoms
 
         Returns
         -------
@@ -341,7 +344,7 @@ class SampleCollection:
                         break
 
                 cg_coords, cg_forces, cg_map, force_map = slice_coord_forces(
-                    coords, forces, self.cg_map, mapping, force_stride, batch_size
+                    coords, forces, self.cg_map, mapping, force_stride, batch_size, atoms_batch_size
                 )
                 # update the entries with the sparse version
                 self.cg_map = cg_map

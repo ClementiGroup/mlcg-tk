@@ -1,5 +1,6 @@
 import torch
 
+
 def neg_log_likelihood(y, yhat):
     """
     Convert dG to probability and use KL divergence to get difference between
@@ -7,7 +8,6 @@ def neg_log_likelihood(y, yhat):
     """
     L = torch.sum(torch.exp(-y) * torch.log(torch.exp(-yhat)))
     return -L
-
 
 
 def compute_aic(real_distibution, ref_distribution, free_parameters):

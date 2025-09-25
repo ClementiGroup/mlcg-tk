@@ -5,5 +5,8 @@ from .repulsion import (
     repulsion,
 )
 from .dihedral import fit_dihedral_from_potential_estimates, dihedral
-from .polynomial import fit_polynomial_from_potential_estimates, polynomial_wrapper_fit_func
+from .polynomial import (
+    fit_polynomial_from_potential_estimates,
+    polynomial_wrapper_fit_func,
+)
 from .histogram import HistogramsNL

@@ -17,9 +17,12 @@ from aggforce import (
 
 from .prior_gen import PriorBuilder
 
-def cg_matmul(map_arr: Union[np.ndarray,sparray],timeseries_arr: np.ndarray) -> np.ndarray:
+
+def cg_matmul(
+    map_arr: Union[np.ndarray, sparray], timeseries_arr: np.ndarray
+) -> np.ndarray:
     r"""Function to perform array multiplication for both numpy and scipy sparse arrays
-    
+
     Parameters
     ----------
 
@@ -27,8 +30,8 @@ def cg_matmul(map_arr: Union[np.ndarray,sparray],timeseries_arr: np.ndarray) -> 
         array of shape (n_beads,n_atoms) representing a linear CG mapping
 
     timeseries_arr : np.ndarray
-        array of shape (n_frames,n_atoms,3) holding coordinate or force information 
-    
+        array of shape (n_frames,n_atoms,3) holding coordinate or force information
+
 
 
     Returns
@@ -37,18 +40,25 @@ def cg_matmul(map_arr: Union[np.ndarray,sparray],timeseries_arr: np.ndarray) -> 
     np.ndarry of shape (n_frames,n_beads,3) after applying the CG map to every entry of timeseries_arr
 
     """
-    assert len(timeseries_arr.shape) == 3, "Time series doesn't have shape (n_frames,n_atoms,3)"
+    assert (
+        len(timeseries_arr.shape) == 3
+    ), "Time series doesn't have shape (n_frames,n_atoms,3)"
     assert len(map_arr.shape) == 2, "Map doesn't have shape (n_beads,n_atoms)"
-    assert map_arr.shape[1] == timeseries_arr.shape[1], "`n_atoms` doesn't concide in the map and "
-    if issubclass(type(map_arr),sparray):
+    assert (
+        map_arr.shape[1] == timeseries_arr.shape[1]
+    ), "`n_atoms` doesn't concide in the map and "
+    if issubclass(type(map_arr), sparray):
         # scipy sparse arrays dont support the same broadcasting than numpy
         # we need to explicitly slice every frame and then stack them all
-        return np.stack([map_arr @ timeseries_arr[i,:,:]  for i in range(timeseries_arr.shape[0])])
-    elif isinstance(map_arr,np.ndarray):
+        return np.stack(
+            [map_arr @ timeseries_arr[i, :, :] for i in range(timeseries_arr.shape[0])]
+        )
+    elif isinstance(map_arr, np.ndarray):
         # when using numpy non-sparse arrays, broadcasting over the frame dimension is supported
         return map_arr @ timeseries_arr
     else:
         raise ValueError(f"Map of type {type(map_arr)} is not supported")
+
 
 def with_attrs(**func_attrs):
     """Set attributes in the decorated function, at definition time.
@@ -181,7 +191,7 @@ def batch_matmul(map_matrix, X, batch_size):
         # Perform matrix multiplication:
         # map_matrix (CG, FG) multiplied by each X_batch (FG, 3) gives (GC, 3) for each sample.
         # The broadcasting ensures the result is (batch, CG, 3)
-        result_batch = cg_matmul(map_matrix,X_batch)
+        result_batch = cg_matmul(map_matrix, X_batch)
         results.append(result_batch)
     # Concatenate all chunks along the first axis (M dimension)
     return np.concatenate(results, axis=0)
@@ -242,6 +252,7 @@ def slice_coord_forces(
     mapping: str = "slice_aggregate",
     force_stride: int = 100,
     batch_size: Optional[int] = None,
+    atoms_batch_size: Optional[int] = None,
 ) -> Tuple:
     """
     Parameters
@@ -261,15 +272,54 @@ def slice_coord_forces(
     batch_size:
         Optional length of batch in which divide the AA mapping of coords and forces
         to CG ones
+    atoms_batch_size:
+        Optional batch size for dividing atoms in coordinates to estimate pairwise constraints
 
     Returns
     -------
     Coarse-grained coordinates and forces
     """
+    # Original hard coded values
+    n_frames = 100 # taking only first 100 frames gives same results in ~1/15th of time
+    threshold = 5e-3  # threshold for pairwise constraints
+
     config_map = LinearMap(cg_map)
     config_map_matrix = config_map.standard_matrix
-    # taking only first 100 frames gives same results in ~1/15th of time
-    constraints = guess_pairwise_constraints(coords[:100], threshold=5e-3)
+    n_sites = coords.shape[1]  # number of atomistic sites
+
+    if atoms_batch_size is None or atoms_batch_size >= n_sites:
+        # No batching: process all atoms at once
+        constraints = guess_pairwise_constraints(coords[:n_frames], threshold=threshold)
+
+    else:
+        # Batching mode
+        batches = [(range(i, min(i + atoms_batch_size, n_sites))) for i in range(0, n_sites, atoms_batch_size)]
+        constraints = set()
+
+        # Within-batch constraints
+        for batch in batches:
+            xyz_batch = coords[:n_frames, batch, :]
+            local_constraints = guess_pairwise_constraints(xyz_batch, threshold=threshold)
+            global_constraints = {frozenset([batch[i] for i in pair]) for pair in local_constraints}
+            constraints.update(global_constraints)
+
+        # Cross-batch constraints
+        # To significantly reduce computational cost, we assume residues are ordered in the structure.
+        # Therefore, constraints are computed only between consecutive batches rather than all pairs of batches.
+        # For even greater efficiency, this could be further limited to just the first and last (e.g., 30) atoms of each batch,
+        # which scales approximately as O(1). However, computing all pairs between consecutive batches is generally still efficient.
+        # This approach can also be extended to the case with no batching (for smaller molecules), 
+        # again assuming ordered residues, treating all molecules uniformly and eliminating the need for the atoms_batch_size parameter.
+        for i in range(len(batches) - 1):
+            b1 = batches[i]
+            b2 = batches[i + 1]
+            xyz1 = coords[:n_frames, b1, :]
+            xyz2 = coords[:n_frames, b2, :]
+            local_constraints = guess_pairwise_constraints(xyz1, cross_xyz=xyz2, threshold=threshold)
+            # guess_pairwise_constraints returns ordered pairs (i, j) where i indexes into cross_xyz (b2) and j indexes into xyz (b1)
+            global_constraints = {frozenset([b1[j], b2[i]]) for i, j in local_constraints} 
+            constraints.update(global_constraints)
+
     if isinstance(mapping, str):
         if mapping == "slice_aggregate":
             method = constraint_aware_uni_map
@@ -312,8 +362,8 @@ def slice_coord_forces(
         cg_coords = batch_matmul(config_map_matrix, coords, batch_size=batch_size)
         cg_forces = batch_matmul(force_map_matrix, forces, batch_size=batch_size)
     else:
-        cg_coords = cg_matmul(config_map_matrix,coords)
-        cg_forces = cg_matmul(force_map_matrix,forces)
+        cg_coords = cg_matmul(config_map_matrix, coords)
+        cg_forces = cg_matmul(force_map_matrix, forces)
 
     return cg_coords, cg_forces, config_map_matrix, force_map_matrix
 
