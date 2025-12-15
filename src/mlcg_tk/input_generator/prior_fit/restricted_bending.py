@@ -23,18 +23,6 @@ def restricted_quartic_angle(x, a, b, c, d, k, v_0):
 
     return V
 
-def dx_restricted_quartic_angle(x, a, b, c, d, k):
-    """Derivative of the restricted quartic angle potential"""
-
-    cos = torch.cos(x)
-    sin = torch.sin(x)
-
-    dquart = -4 * a * sin * cos**3 - 3 * b * sin * cos**2 - 2 * c * cos * sin - d * sin
-    drep = -k * (2 * cos) / ( (sin)**3 )
-    dV = dquart + drep
-
-    return dV
-
 def dx_restricted_quartic_angle_numpy(x, a, b, c, d, k):
     """Derivative of the restricted quartic angle potential with respect to x=theta (numpy version for fsolve)"""
 
