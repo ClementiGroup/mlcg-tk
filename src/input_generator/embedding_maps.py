@@ -1,0 +1,1 @@
+from mlcg_tk.input_generator.embedding_maps import *

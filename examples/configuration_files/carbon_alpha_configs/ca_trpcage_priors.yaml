@@ -1,41 +1,41 @@
 prior_tag: ca_priors
 prior_builders:
-  - class_path: input_generator.Bonds
+  - class_path: mlcg_tk.input_generator.Bonds
     init_args:
       name: bonds
       separate_termini: false
-      nl_builder: input_generator.StandardBonds
-      prior_fit_fn: input_generator.fit_harmonic_from_potential_estimates
+      nl_builder: mlcg_tk.input_generator.StandardBonds
+      prior_fit_fn: mlcg_tk.input_generator.fit_harmonic_from_potential_estimates
       n_bins: 100
       bmin: 0
       bmax: 6
-  - class_path: input_generator.Angles
+  - class_path: mlcg_tk.input_generator.Angles
     init_args:
       name: angles
       separate_termini: false
-      nl_builder: input_generator.StandardAngles
-      prior_fit_fn: input_generator.prior_fit.fit_polynomial_from_potential_estimates
+      nl_builder: mlcg_tk.input_generator.StandardAngles
+      prior_fit_fn: mlcg_tk.input_generator.prior_fit.fit_polynomial_from_potential_estimates
       prior_cls: mlcg.nn.prior.QuarticAngles
       n_bins: 100
       bmin: -1.1
       bmax: 1.1
-  - class_path: input_generator.NonBonded
+  - class_path: mlcg_tk.input_generator.NonBonded
     init_args:
       name: non_bonded
       min_pair: 4
       res_exclusion: 1
       separate_termini: false
-      nl_builder: input_generator.Non_Bonded
-      prior_fit_fn: input_generator.fit_repulsion_from_values
+      nl_builder: mlcg_tk.input_generator.Non_Bonded
+      prior_fit_fn: mlcg_tk.input_generator.fit_repulsion_from_values
       n_bins: 101
       bmin: 0
       bmax: 30
       percentile: 0.001
-  - class_path: input_generator.Dihedrals
+  - class_path: mlcg_tk.input_generator.Dihedrals
     init_args:
       name: pseudo_ca_dihedral
-      nl_builder: input_generator.CA_pseudo_dihedral
-      prior_fit_fn: input_generator.fit_dihedral_from_potential_estimates
+      nl_builder: mlcg_tk.input_generator.CA_pseudo_dihedral
+      prior_fit_fn: mlcg_tk.input_generator.fit_dihedral_from_potential_estimates
       n_bins: 100
       bmin: -3.14
       bmax: 3.14

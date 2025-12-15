@@ -1,15 +1,14 @@
 import os.path as osp
 import sys
 
-SCRIPT_DIR = osp.abspath(osp.dirname(__file__))
-sys.path.insert(0, osp.join(SCRIPT_DIR, "../"))
+from mlcg_tk.input_generator.raw_dataset import RawDataset
+from mlcg_tk.input_generator.embedding_maps import CGEmbeddingMap
+from mlcg_tk.input_generator.prior_gen import PriorBuilder
+from mlcg_tk.input_generator.prior_fit import HistogramsNL
+from mlcg_tk.input_generator.prior_fit.fit_potentials import fit_potentials
+from mlcg_tk.input_generator.utils import get_output_tag
+from mlcg_tk.input_generator.prior_fit.utils import compute_nl_unique_keys
 
-from input_generator.raw_dataset import RawDataset
-from input_generator.embedding_maps import CGEmbeddingMap
-from input_generator.prior_gen import PriorBuilder
-from input_generator.prior_fit import HistogramsNL
-from input_generator.prior_fit.fit_potentials import fit_potentials
-from input_generator.utils import get_output_tag
 from tqdm import tqdm
 import torch
 from time import ctime
@@ -91,6 +90,19 @@ def compute_statistics(
             nl_name2prior_builder[nl_name] = prior_builder
 
     dataset = RawDataset(dataset_name, names, tag, n_batches=mol_num_batches)
+    tmp_batch = dataset[0].load_cg_output_into_batches(
+        save_dir, prior_tag, 1, 1, weights_template_fn=weights_template_fn
+    )[0]
+    nl_names = set(tmp_batch.neighbor_list.keys())
+    assert nl_names.issubset(
+        all_nl_names
+    ), f"some of the NL names '{nl_names}' in {dataset_name}:{tmp_batch.name} have not been registered in the nl_builder '{all_nl_names}'"
+    nl_names_key_list = {}
+    atom_types = tmp_batch.atom_types
+    for nl_name in nl_names:
+            mapping = tmp_batch.neighbor_list[nl_name]["index_mapping"]
+            nl_names_key_list[nl_name] = compute_nl_unique_keys(atom_types, mapping)
+
     for samples in tqdm(
         dataset, f"Compute histograms of CG data for {dataset_name} dataset..."
     ):
@@ -112,7 +124,6 @@ def compute_statistics(
             weights_template_fn=weights_template_fn,
         )
         nl_names = set(batch_list[0].neighbor_list.keys())
-
         assert nl_names.issubset(
             all_nl_names
         ), f"some of the NL names '{nl_names}' in {dataset_name}:{samples.name} have not been registered in the nl_builder '{all_nl_names}'"
@@ -136,25 +147,28 @@ def compute_statistics(
                         prior_builder.histograms.data.pop(nl_name)
                     prior_builder.histograms.data[nl_name].clear()
                     sample_nl_name2prior_builder[nl_name] = prior_builder
-
             for batch in tqdm(
                 batch_list, f"molecule name: {samples.name}", leave=False
             ):
                 batch = batch.to(device)
                 for nl_name in nl_names:
                     prior_builder = sample_nl_name2prior_builder[nl_name]
-                    prior_builder.accumulate_statistics(nl_name, batch)
+                    prior_builder.accumulate_statistics(
+                        nl_name, batch, nl_names_key_list[nl_name]
+                    )
 
             with open(sample_fnout, "wb") as f:
                 pck.dump(sample_prior_builders, f)
 
             continue  # does not save accumulated statistics if sample statistics saved
-
+        
         for batch in tqdm(batch_list, f"molecule name: {samples.name}", leave=False):
             batch = batch.to(device)
             for nl_name in nl_names:
-                prior_builder = nl_name2prior_builder[nl_name]
-                prior_builder.accumulate_statistics(nl_name, batch)
+                    prior_builder = nl_name2prior_builder[nl_name]
+                    prior_builder.accumulate_statistics(
+                        nl_name, batch, nl_names_key_list[nl_name]
+                    )
 
     key_map = {v: k for k, v in embedding_map.items()}
     if save_figs:
@@ -211,7 +225,9 @@ def fit_priors(
             nl_names.append(nl_name)
             nl_name2prior_builder[nl_name] = prior_builder
     prior_models = {}
-    for nl_name in nl_names:
+    pbar = tqdm(nl_names)
+    for nl_name in pbar:
+        pbar.set_description(f"Fiting prior {nl_name}")
         prior_builder = nl_name2prior_builder[nl_name]
         prior_model = fit_potentials(
             nl_name=nl_name,
@@ -225,10 +241,11 @@ def fit_priors(
     full_prior_model = SumOut(modules, targets=["energy", "forces"])
     torch.save(full_prior_model, fnout)
 
+def main():
+    print("Start fit_priors.py: {}".format(ctime()))
+    CLI([compute_statistics, fit_priors])
+    print("Finish fit_priors.py: {}".format(ctime()))
+
 
 if __name__ == "__main__":
-    print("Start fit_priors.py: {}".format(ctime()))
-
-    CLI([compute_statistics, fit_priors])
-
-    print("Finish fit_priors.py: {}".format(ctime()))
+    main()

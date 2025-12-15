@@ -1,0 +1,66 @@
+[build-system]
+requires = ["setuptools >= 77.0.3"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mlcg_tk"
+version = "0.0.1"
+description = "A collection of tools for processing raw simulation data for use in training machine-learned, coarse-grained (CG) force fields using the MLCG library"
+readme = { file = "README.md", content-type = "text/markdown" }
+requires-python = ">=3.12"
+authors = [
+  {name = "Andrea Guljas"},
+  {name = "Aldo S. Pasos-Trejo"},
+  {name = "Klara Bonneau"},
+  {name = "Luca Sagresti"},
+  {name = "Edoardo Rolando"},
+  {name = "Jacopo Venturin"},
+  {name = "Felix Musil"},
+]
+license = "MIT"
+license-files = ["LICENSE"]
+dependencies = [
+    "aggforce @ git+https://github.com/noegroup/aggforce.git",
+    "h5py>=3.15.1",
+    "jsonargparse>=4.42.0",
+    "matplotlib>=3.10.7",
+    "mdtraj>=1.11.0",
+    "mlcg",
+    "natsort>=8.4.0",
+    "networkx>=3.3",
+    "numpy>=1.26.4",
+    "pandas>=2.3.3",
+    "pyyaml>=6.0.3",
+    "scikit-learn>=1.7.2",
+    "scipy>=1.16.2",
+    "torch>=2.6.0",
+    "torch-geometric>=2.6.1",
+    "torchist>=1.0.1",
+    "tqdm>=4.67.1",
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python :: 3.12",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["mlcg_tk*", "input_generator*"]
+
+[project.urls]
+Homepage = "https://github.com/ClementiGroup/mlcg-tk"
+Issues = "https://github.com/ClementiGroup/mlcg-tk/issues"
+
+[project.scripts]
+
+mlcg-tk-gen_input_data = "mlcg_tk.scripts.gen_input_data:main"
+mlcg-tk-fit_priors = "mlcg_tk.scripts.fit_priors:main"
+mlcg-tk-merge_statistics = "mlcg_tk.scripts.merge_statistics:main"
+mlcg-tk-package_training_data = "mlcg_tk.scripts.package_training_data:main"
+mlcg-tk-produce_delta_forces = "mlcg_tk.scripts.produce_delta_forces:main"
+mlcg-tk-add_decoys = "mlcg_tk.scripts.add_decoys:main"
+mlcg-tk-gen_sim_input = "mlcg_tk.scripts.gen_sim_input:main"
+
+
+
+

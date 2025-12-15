@@ -6,5 +6,5 @@ stride: 20
 batch_size: 5000
 device: cpu
 save_figs: true
-embedding_map: input_generator.CGEmbeddingMapCA
+embedding_map: mlcg_tk.input_generator.CGEmbeddingMapCA
 

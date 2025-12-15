@@ -1,5 +1,6 @@
 import mdtraj as md
 import pickle
+import pandas as pd
 
 from typing import List, Dict, Tuple, Optional, Union
 from copy import deepcopy
@@ -49,12 +50,6 @@ class CGDataBatch:
 
     Attributes
     ----------
-    batch_size:
-        Number of frames to use in each batch
-    stride:
-        Integer by which to stride frames
-    concat_forces:
-        Boolean indicating whether forces should be added to batch
     cg_coords:
         Coarse grained coordinates
     cg_forces:
@@ -63,6 +58,12 @@ class CGDataBatch:
         Atom embeddings
     cg_prior_nls:
         Dictionary of prior neighbour list
+    batch_size:
+        Number of frames to use in each batch
+    stride:
+        Integer by which to stride frames
+    concat_forces:
+        Boolean indicating whether forces should be added to batch
     """
 
     def __init__(
@@ -103,7 +104,32 @@ class CGDataBatch:
             self.batch_size = self.n_structure
 
         self.strides = get_strides(self.n_structure, self.batch_size)
+        # print(self.strides)
         self.n_elem = self.strides.shape[0]
+
+        ## pre-building collated data object
+        # st, nd = self.strides[0]
+        # data_list = []
+        # for ii in range(st, nd):
+        #    dd = dict(
+        #        pos=self.cg_coords[ii],
+        #        atom_types=self.cg_embeds,
+        #        masses=None,
+        #        neighborlist=self.cg_prior_nls,
+        #    )
+        #    if self.concat_forces:
+        #        dd["forces"] = self.cg_forces[ii]
+        #    data = AtomicData.from_points(**dd)
+        #    if isinstance(self.weights, torch.Tensor):
+        #        data.weights = self.weights[ii]
+        #    data_list.append(data)
+        # coll_data, slices, _ = collate(
+        #    data_list[0].__class__,
+        #    data_list=data_list,
+        #    increment=True,
+        #    add_batch=True,
+        # )
+        # self.pre_collated_data = coll_data
 
     def __len__(self):
         return self.n_elem
@@ -113,28 +139,34 @@ class CGDataBatch:
         Returns list of AtomicData objects for indexed batch
         """
         st, nd = self.strides[idx]
-        data_list = []
-        # TODO: build the collated AtomicData by hand to avoid copy/concat ops
-        for ii in range(st, nd):
-            dd = dict(
-                pos=self.cg_coords[ii],
-                atom_types=self.cg_embeds,
-                masses=None,
-                neighborlist=self.cg_prior_nls,
-            )
-            if self.concat_forces:
-                dd["forces"] = self.cg_forces[ii]
+        if True or idx == self.__len__:
+            data_list = []
+            # TODO: build the collated AtomicData by hand to avoid copy/concat ops
+            for ii in range(st, nd):
+                dd = dict(
+                    pos=self.cg_coords[ii],
+                    atom_types=self.cg_embeds,
+                    masses=None,
+                    neighborlist=self.cg_prior_nls,
+                )
+                if self.concat_forces:
+                    dd["forces"] = self.cg_forces[ii]
 
-            data = AtomicData.from_points(**dd)
-            if isinstance(self.weights, torch.Tensor):
-                data.weights = self.weights[ii]
-            data_list.append(data)
-        datas, slices, _ = collate(
-            data_list[0].__class__,
-            data_list=data_list,
-            increment=True,
-            add_batch=True,
-        )
+                data = AtomicData.from_points(**dd)
+                if isinstance(self.weights, torch.Tensor):
+                    data.weights = self.weights[ii]
+                data_list.append(data)
+            datas, slices, _ = collate(
+                data_list[0].__class__,
+                data_list=data_list,
+                increment=True,
+                add_batch=True,
+            )
+        else:
+            st, nd = self.strides[idx]
+            # use preexisting collated data
+            datas = self.pre_collated_data
+            datas.pos = self.cg_coords[slice(st, nd), :, :].reshape(-1, 3)
         return datas
 
 
@@ -317,7 +349,7 @@ class SampleCollection:
             Striding to use for force projection results
         batch_size:
             Batching the coords and forces projection to CG
-        atoms_batch_size:  
+        atoms_batch_size:
             Batch size for processing atoms when inferring constrained atoms
 
         Returns
@@ -344,7 +376,13 @@ class SampleCollection:
                         break
 
                 cg_coords, cg_forces, cg_map, force_map = slice_coord_forces(
-                    coords, forces, self.cg_map, mapping, force_stride, batch_size, atoms_batch_size
+                    coords,
+                    forces,
+                    self.cg_map,
+                    mapping,
+                    force_stride,
+                    batch_size,
+                    atoms_batch_size,
                 )
                 # update the entries with the sparse version
                 self.cg_map = cg_map
@@ -352,6 +390,8 @@ class SampleCollection:
             else:  # all frames were removed by cis-filtering
                 cg_coords = None
                 cg_forces = None
+                self.cg_map = None
+                self.force_map = None
 
             self.cg_coords = cg_coords
             self.cg_forces = cg_forces
@@ -394,6 +434,10 @@ class SampleCollection:
             save_dir, get_output_tag([self.tag, self.name], placement="before")
         )
         cg_xyz = self.input_traj.atom_slice(self.cg_atom_indices).xyz
+
+        with pd.option_context('future.no_silent_downcasting', True):# Clean pd dataframe from <NA entries> before saving
+            self.cg_dataframe.formal_charge = self.cg_dataframe.formal_charge.fillna(0) 
+
         cg_traj = md.Trajectory(cg_xyz, md.Topology.from_dataframe(self.cg_dataframe))
         cg_traj.save_pdb(f"{mol_save_templ}cg_structure.pdb")
 
@@ -432,15 +476,15 @@ class SampleCollection:
                 np.save(f"{save_templ}cg_forces.npy", cg_forces)
 
         if save_cg_maps:
-            if not hasattr(self, "cg_map"):
-                warnings.warn("No cg coordinate map found. Skipping save.")
-            else:
+            if hasattr(self, "cg_map") and self.cg_map is not None:
                 np.save(f"{mol_save_templ}cg_coord_map.npy", self.cg_map.toarray())
-
-            if not hasattr(self, "force_map"):
-                warnings.warn("No cg force map found. Skipping save.")
             else:
+                warnings.warn("No cg coordinate map found. Skipping save.")
+
+            if hasattr(self, "force_map") and self.force_map is not None:
                 np.save(f"{mol_save_templ}cg_force_map.npy", self.force_map.toarray())
+            else:
+                warnings.warn("No cg force map found. Skipping save.")
 
     def load_cg_force_map(self, save_dir: str) -> np.ndarray:
         """

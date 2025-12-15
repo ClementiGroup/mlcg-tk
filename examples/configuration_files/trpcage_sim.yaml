@@ -10,8 +10,8 @@ cg_atoms:
 - CB
 - C
 - O
-embedding_map: input_generator.CGEmbeddingMapFiveBead
-embedding_func: input_generator.embedding_fivebead
+embedding_map: mlcg_tk.input_generator.CGEmbeddingMapFiveBead
+embedding_func: mlcg_tk.input_generator.embedding_fivebead
 skip_residues:
 - ACE
 - NME

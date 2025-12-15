@@ -1,11 +1,9 @@
 import os.path as osp
 import sys
 
-SCRIPT_DIR = osp.abspath(osp.dirname(__file__))
-sys.path.insert(0, osp.join(SCRIPT_DIR, "../"))
+from mlcg_tk.input_generator.raw_dataset import RawDataset
+from mlcg_tk.input_generator.utils import get_output_tag
 
-from input_generator.raw_dataset import RawDataset
-from input_generator.utils import get_output_tag
 from tqdm import tqdm
 from time import ctime
 import numpy as np
@@ -30,9 +28,9 @@ def package_training_data(
     single_protein: Optional[bool] = False,
     batch_size: int = 256,
     stride: int = 1,
-    train_size: Optional[Union[float, int, None]] = 0.8,
-    train_mols: Optional[List] = None,
-    val_mols: Optional[List] = None,
+    train_size: Union[float, int, None] = 0.8,
+    train_mols: Optional[List[str]] = None,
+    val_mols: Optional[List[str]] = None,
     random_state: Optional[str] = None,
     mol_num_batches: Optional[int] = 1,
     keep_batches: Optional[bool] = False,
@@ -302,9 +300,13 @@ def combine_datasets(
             yaml.dump(partition_opts, ofile)
 
 
-if __name__ == "__main__":
+def main():
     print("Start package_training_data.py: {}".format(ctime()))
 
-    CLI([package_training_data, combine_datasets])
+    CLI([package_training_data, combine_datasets], as_positional=False)
 
     print("Finish package_training_data.py: {}".format(ctime()))
+
+
+if __name__ == "__main__":
+    main()

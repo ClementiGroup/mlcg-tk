@@ -2,13 +2,10 @@ import os.path as osp
 import warnings
 import sys
 
-SCRIPT_DIR = osp.abspath(osp.dirname(__file__))
-sys.path.insert(0, osp.join(SCRIPT_DIR, "../"))
-
 import pickle as pkl
 
-from input_generator.prior_gen import PriorBuilder
-from input_generator.utils import get_output_tag
+from mlcg_tk.input_generator.prior_gen import PriorBuilder
+from mlcg_tk.input_generator.utils import get_output_tag
 
 from jsonargparse import CLI
 from typing import List, Optional
@@ -78,5 +75,9 @@ def merge_statistics(
         pkl.dump(prior_builders, ofile)
 
 
-if __name__ == "__main__":
+def main():
     CLI([merge_statistics], as_positional=False)
+
+
+if __name__ == "__main__":
+    main()

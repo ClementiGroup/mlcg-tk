@@ -14,7 +14,7 @@ def repulsion(x, sigma):
 def fit_repulsion_from_potential_estimates(
     bin_centers_nz: torch.Tensor, **kwargs
 ) -> Dict:
-    """Method for fitting interaction parameters from data
+    r"""Method for fitting interaction parameters from data
 
     Parameters
     ----------

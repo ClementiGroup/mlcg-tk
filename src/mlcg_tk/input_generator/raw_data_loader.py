@@ -653,12 +653,17 @@ class Villin_loader(DatasetLoader):
         n_batches: int
             if greater than 1, divide the total trajectories to load into n_batches chunks
         """
+
+        pdb_top = md.load_pdb(os.path.join(base_dir, f"topology.pdb"))
         coords_fns = sorted(
-            glob(os.path.join(base_dir, f"{name}/*_coords.npy"))
+            glob(os.path.join(base_dir, f"coords_nowater/villin*_coor*.xtc"))
         )  # combining all trajectories from single starting structure
-
-        forces_fns = sorted(glob(os.path.join(base_dir, f"{name}/*_forces.npy")))
-
+        forces_fns = [
+            fn.replace(
+                "coords_nowater/villin_coor", "forces_nowater/villin_force"
+            ).replace(".xtc",".dcd")
+            for fn in coords_fns
+        ]
         coords_fns = np.array(coords_fns)
         forces_fns = np.array(forces_fns)
 
@@ -673,12 +678,13 @@ class Villin_loader(DatasetLoader):
         aa_coord_list = []
         aa_force_list = []
         for c, f in tqdm(zip(coords_fns, forces_fns), total=len(coords_fns)):
-            coords = np.load(c)
-            forces = np.load(f)
-            assert coords.shape == forces.shape
-
-            aa_coord_list.append(coords[::stride])
-            aa_force_list.append(forces[::stride])
+            coords = md.load_xtc(c,top=pdb_top).xyz*10
+            forces = md.load_dcd(f,top=pdb_top).xyz*10
+            if coords.shape == forces.shape:
+                aa_coord_list.append(coords[::stride])
+                aa_force_list.append(forces[::stride])
+            else:
+                warnings.warn(f"file {c} and \n file {f} \n have different shapes. Skipping")
 
         aa_coords = np.concatenate(aa_coord_list)
         aa_forces = np.concatenate(aa_force_list)
@@ -1096,12 +1102,17 @@ class WWdomain_loader(DatasetLoader):
             if greater than 1, divide the total trajectories to load into n_batches chunks
         """
         coords_fns = natsorted(
-            glob(os.path.join(base_dir, f"coords_nowater/wwdomain_coor_folding-WWdomain_*.npy"))
+            glob(
+                os.path.join(
+                    base_dir, f"coords_nowater/wwdomain_coor_folding-WWdomain_*.npy"
+                )
+            )
         )
 
         forces_fns = [
             fn.replace(
-                "coords_nowater/wwdomain_coor_folding", "forces_nowater/wwdomain_force_folding"
+                "coords_nowater/wwdomain_coor_folding",
+                "forces_nowater/wwdomain_force_folding",
             )
             for fn in coords_fns
         ]
@@ -1130,6 +1141,7 @@ class WWdomain_loader(DatasetLoader):
         aa_coords = np.concatenate(aa_coord_list)
         aa_forces = np.concatenate(aa_force_list)
         return aa_coords, aa_forces
+
 
 class HDF5_loader(DatasetLoader):
     r"""
@@ -1255,19 +1267,19 @@ class SimInput_loader(DatasetLoader):
 
 
 class MHC_loader(DatasetLoader):
-    """Loader for the MHC protein dataset."""    
+    """Loader for the MHC protein dataset."""
+
     def get_traj_top(self, name: str, pdb_fn: str):
         pdb_files = glob(pdb_fn.format(name))
         if not pdb_files:
-            raise FileNotFoundError(f"No PDB file found for {name}")        
+            raise FileNotFoundError(f"No PDB file found for {name}")
         pdb = md.load(pdb_files[0])
-        aa_traj = pdb.atom_slice([
-            a.index for a in pdb.topology.atoms if a.residue.is_protein
-        ])
+        aa_traj = pdb.atom_slice(
+            [a.index for a in pdb.topology.atoms if a.residue.is_protein]
+        )
         top_dataframe = aa_traj.topology.to_dataframe()[0]
-        return aa_traj, top_dataframe    
-    
-    
+        return aa_traj, top_dataframe
+
     def load_coords_forces(
         self,
         base_dir: str,
@@ -1275,34 +1287,32 @@ class MHC_loader(DatasetLoader):
         stride: int = 1,
         batch: Optional[int] = None,
         n_batches: Optional[int] = 1,
-    ) -> Tuple[np.ndarray, np.ndarray]:        
+    ) -> Tuple[np.ndarray, np.ndarray]:
         traj_dirs = glob(os.path.join(base_dir, f"group_*/{name}_*/"))
-        coords_all, forces_all = [], []        
+        coords_all, forces_all = [], []
         for traj_dir in tqdm(traj_dirs, desc=f"Loading {name}"):
             traj_coords, traj_forces = [], []
             files = sorted(
                 glob(os.path.join(traj_dir, "prod_0_full_output/*.npz")),
-                key=lambda f: int(f.split("_")[-2]) if "_" in f else 0
+                key=lambda f: int(f.split("_")[-2]) if "_" in f else 0,
             )
             files = np.array(files)
             if n_batches > 1:
                 assert batch is not None, "batch id must be set if more than 1 batch"
-                chunk_ids = chunker(
-                    [i for i in range(len(files))], n_batches=n_batches
-                )
+                chunk_ids = chunker([i for i in range(len(files))], n_batches=n_batches)
                 files = files[np.array(chunk_ids[batch])]
-                
+
                 for fn in tqdm(files):
                     data = np.load(fn, allow_pickle=True)
                     traj_coords.append(data["coords"])
                     traj_forces.append(data["Fs"])
-                
+
                 if traj_coords:
                     coords_all.append(np.concatenate(traj_coords)[::stride])
                     forces_all.append(np.concatenate(traj_forces)[::stride])
-                
+
         if not coords_all:
-            raise RuntimeError(f"No trajectory data for {name}")       
+            raise RuntimeError(f"No trajectory data for {name}")
         coords_all = np.concatenate(coords_all)
-        forces_all = np.concatenate(forces_all)        
+        forces_all = np.concatenate(forces_all)
         return coords_all, forces_all

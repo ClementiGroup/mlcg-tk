@@ -1,6 +1,6 @@
 dataset_name: 1L2Y
 names: [1L2Y]
-sample_loader: input_generator.Trpcage_loader
+sample_loader: mlcg_tk.input_generator.Trpcage_loader
 tag: ""
 raw_data_dir: ./demo_raw_data/
 save_dir:  ./demo_processed_data/
@@ -11,8 +11,8 @@ cg_atoms:
 - CB
 - C
 - O
-embedding_map: input_generator.CGEmbeddingMapFiveBead
-embedding_func: input_generator.embedding_fivebead
+embedding_map: mlcg_tk.input_generator.CGEmbeddingMapFiveBead
+embedding_func: mlcg_tk.input_generator.embedding_fivebead
 skip_residues:
 - ACE
 - NME

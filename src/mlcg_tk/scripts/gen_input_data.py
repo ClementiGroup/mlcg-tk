@@ -1,15 +1,12 @@
 import os.path as osp
 import sys
 
-SCRIPT_DIR = osp.abspath(osp.dirname(__file__))
-sys.path.insert(0, osp.join(SCRIPT_DIR, "../"))
-
-from input_generator.raw_dataset import SampleCollection, RawDataset
-from input_generator.embedding_maps import (
+from mlcg_tk.input_generator.raw_dataset import SampleCollection, RawDataset
+from mlcg_tk.input_generator.embedding_maps import (
     CGEmbeddingMap,
 )
-from input_generator.raw_data_loader import DatasetLoader
-from input_generator.prior_gen import Bonds, PriorBuilder
+from mlcg_tk.input_generator.raw_data_loader import DatasetLoader
+from mlcg_tk.input_generator.prior_gen import Bonds, PriorBuilder
 from tqdm import tqdm
 
 from time import ctime
@@ -223,10 +220,11 @@ def build_neighborlists(
             prior_builders, save_nls=True, save_dir=save_dir, prior_tag=prior_tag
         )
 
+def main():
+    print("Start gen_input_data.py: {}".format(ctime()))
+    CLI([process_raw_dataset, build_neighborlists])
+    print("Finish gen_input_data.py: {}".format(ctime()))
+
 
 if __name__ == "__main__":
-    print("Start gen_input_data.py: {}".format(ctime()))
-
-    CLI([process_raw_dataset, build_neighborlists])
-
-    print("Finish gen_input_data.py: {}".format(ctime()))
+    main()

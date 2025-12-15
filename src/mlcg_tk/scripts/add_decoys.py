@@ -323,9 +323,11 @@ def update_partition_file(
     dump_yaml(partition_name, partition)
 
 
-if __name__ == "__main__":
+def main():
     print("Start add_decoys.py: {}".format(ctime()))
-
     CLI([add_decoy, update_partition_file])
-
     print("Finish add_decoys.py: {}".format(ctime()))
+
+
+if __name__ == "__main__":
+    main()

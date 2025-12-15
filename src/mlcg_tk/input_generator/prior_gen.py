@@ -66,7 +66,9 @@ class PriorBuilder:
         """
         return self.nl_builder(topology=topology)
 
-    def accumulate_statistics(self, nl_name: str, data: AtomicData) -> None:
+    def accumulate_statistics(
+        self, nl_name: str, data: AtomicData, key_dict: dict
+    ) -> None:
         """
         Computes atom-type specific features and calculates statistics from a collated
         AtomicData stucture
@@ -78,16 +80,13 @@ class PriorBuilder:
         data:
             Collated list of individual AtomicData structures.
         """
-        atom_types = data.atom_types
         mapping = data.neighbor_list[nl_name]["index_mapping"]
         values = self.prior_cls.compute_features(data.pos, mapping)
         if hasattr(data, "weights"):
             weights = data.weights
         else:
             weights = None
-        self.histograms.accumulate_statistics(
-            nl_name, values, atom_types, mapping, weights
-        )
+        self.histograms.accumulate_statistics(nl_name, values, key_dict, weights)
 
 
 class Bonds(PriorBuilder):

@@ -1,5 +1,5 @@
 save_dir: ./demo_processed_data/
 prior_tag: prior_tag
-embedding_map: input_generator.CGEmbeddingMapFiveBead
+embedding_map: mlcg_tk.input_generator.CGEmbeddingMapFiveBead
 temperature: 350
 

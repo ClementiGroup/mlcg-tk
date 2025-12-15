@@ -9,7 +9,7 @@ from .utils import compute_aic
 
 
 def polynomial(x: torch.Tensor, ks: torch.Tensor, V0: torch.Tensor):
-    """Harmonic interaction in the form of a series. The shape of the tensors
+    r"""Harmonic interaction in the form of a series. The shape of the tensors
         should match between each other.
 
     .. math:
@@ -40,7 +40,7 @@ def _init_parameters(n_degs, bin_centers_nz=None, dG_nz=None):
 
 
 def _init_parameter_dict(n_degs):
-    """Helper method for initializing the parameter dictionary"""
+    r"""Helper method for initializing the parameter dictionary"""
     stat = {"ks": {}, "v_0": 0.0}
     k_names = ["k_" + str(ii) for ii in range(1, n_degs + 1)]
     for ii in range(n_degs):
@@ -50,7 +50,7 @@ def _init_parameter_dict(n_degs):
 
 
 def _make_parameter_dict(stat, popt, n_degs):
-    """Helper method for constructing a fitted parameter dictionary"""
+    r"""Helper method for constructing a fitted parameter dictionary"""
     stat["v_0"] = popt[0]
     k_names = sorted(list(stat["ks"].keys()))
     for ii in range(n_degs):
@@ -61,7 +61,7 @@ def _make_parameter_dict(stat, popt, n_degs):
 
 
 def _linear_regression(xs: torch.Tensor, ys: torch.Tensor, n_degs: int):
-    """Vanilla linear regression"""
+    r"""Vanilla linear regression"""
     features = [torch.ones_like(xs)]
     for n in range(n_degs):
         features.append(torch.pow(xs, n + 1))
@@ -72,7 +72,7 @@ def _linear_regression(xs: torch.Tensor, ys: torch.Tensor, n_degs: int):
 
 
 def _numpy_fit(xs: torch.Tensor, ys: torch.Tensor, n_degs: int):
-    """Regression through numpy"""
+    r"""Regression through numpy"""
     sol = np.polynomial.Polynomial.fit(xs.numpy(), ys.numpy(), deg=n_degs)
     return sol
 
@@ -80,7 +80,7 @@ def _numpy_fit(xs: torch.Tensor, ys: torch.Tensor, n_degs: int):
 def _scipy_fit(
     xs: torch.Tensor, ys: torch.Tensor, n_degs: int, bounds: Optional = None
 ):
-    """Regression through scipy
+    r"""Regression through scipy
 
     The `bounds` argument is passed to `scipy.optimize.curve_fit` to ensure bounds in the polynomial
     """
@@ -129,7 +129,7 @@ def _polynomial_fit(
             f"regression method {regression_method} is not in {_valid_regression_methods} "
         )
     if popt[-1] <= 0:
-        print()
+        print("Warning: leading coefficient is negative, this might create problems")
     return popt
 
 
@@ -141,7 +141,7 @@ def fit_polynomial_from_potential_estimates(
     regression_method: str = "scipy",
     **kwargs,
 ):
-    """
+    r"""
     Loop over n_degs basins and use either the AIC criterion
     or a prechosen degree to select best fit. Parameter fitting
     occurs over unmaksed regions of the free energy only.

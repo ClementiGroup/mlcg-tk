@@ -1,16 +1,13 @@
 import os.path as osp
 import sys
 
-SCRIPT_DIR = osp.abspath(osp.dirname(__file__))
-sys.path.insert(0, osp.join(SCRIPT_DIR, "../"))
-
-from input_generator.raw_dataset import SampleCollection, RawDataset, SimInput
-from input_generator.embedding_maps import (
+from mlcg_tk.input_generator.raw_dataset import SampleCollection, RawDataset, SimInput
+from mlcg_tk.input_generator.embedding_maps import (
     CGEmbeddingMap,
 )
-from input_generator.raw_data_loader import DatasetLoader, SimInput_loader
-from input_generator.prior_gen import Bonds, PriorBuilder
-from input_generator.utils import get_output_tag
+from mlcg_tk.input_generator.raw_data_loader import DatasetLoader, SimInput_loader
+from mlcg_tk.input_generator.prior_gen import Bonds, PriorBuilder
+from mlcg_tk.input_generator.utils import get_output_tag
 from tqdm import tqdm
 
 from time import ctime
@@ -130,10 +127,12 @@ def process_sim_input(
         f"{save_dir}{get_output_tag([dataset_name, tag], placement='before')}configurations.pt",
     )
 
+def main():
+    print("Start gen_sim_input.py: {}".format(ctime()))
+    CLI([process_sim_input])
+    print("Finish gen_sim_input.py: {}".format(ctime()))
+
+
 
 if __name__ == "__main__":
-    print("Start gen_sim_input.py: {}".format(ctime()))
-
-    CLI([process_sim_input])
-
-    print("Finish gen_sim_input.py: {}".format(ctime()))
+    main()

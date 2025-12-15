@@ -2,8 +2,8 @@ import torch
 from typing import Dict, Callable, Optional
 import numpy as np
 from scipy.integrate import trapezoid
-from input_generator.prior_gen import PriorBuilder
-from input_generator.embedding_maps import CGEmbeddingMap
+from ..prior_gen import PriorBuilder
+from ..embedding_maps import CGEmbeddingMap
 from copy import deepcopy
 
 
