@@ -1,6 +1,6 @@
 import torch
 import numpy as np
-from typing import Dict
+from typing import Dict, Tuple, List
 from scipy.optimize import curve_fit, fsolve
 from scipy.integrate import trapezoid
 
@@ -24,74 +24,108 @@ def restricted_quartic_angle(x, a, b, c, d, k, v_0):
 
     return V
 
+
 def dx_restricted_quartic_angle_numpy(x, a, b, c, d, k):
     """Derivative of the restricted quartic angle potential with respect to x=theta (numpy version for fsolve)"""
 
     cos = np.cos(x)
     sin = np.sin(x)
 
-    dquart = -4 * a * sin * cos**3 - 3 * b * sin * cos**2 - 2 * c * cos * sin - d * sin
+    dquart = -4 * a * sin * cos**3 - 3 * b * sin * cos**2 - 2 * c * sin * cos - d * sin
     drep = -k * (2 * cos) / (sin**3)
     dV = dquart + drep
 
     return dV
 
-def find_minmax(params, left_region, right_region):
+
+def ddx2_restricted_quartic_angle_numpy(x, a, b, c, d, k):
+    """Second derivative of the restricted quartic angle potential with respect to x=theta (numpy version for fsolve)"""
+
+    cos = np.cos(x)
+    sin = np.sin(x)
+
+    ddquart = (
+        - 4 * a * (cos**4 - 3 * sin**2 * cos**2)
+        - 3 * b * (cos**3 - 2 * sin**2 * cos)
+        - 2 * c * (cos**2 - sin**2)
+        - d * cos
+    )
+    ddrep = 2 * k * (1 / sin**2 + 3 * cos**2 / sin**4)
+    ddV = ddquart + ddrep
+
+    return ddV
+
+
+def find_extrema_in_range(
+    a, b, c, d, k, x_range: Tuple[float, float]
+) -> Tuple[List[float], List[float]]:
+    """Find minima and maxima in a specified range.
+
+    Args:
+        a, b, c, d, k: potential parameters
+        x_range: tuple (x_min, x_max) for search region
+
+    Returns:
+        tuple: (minima, maxima) - lists of x values where extrema occur
+    """
+    minima = []
+    maxima = []
+    search_min = max(x_range[0], 0.01)
+    search_max = min(x_range[1], 3.13)
+
+    if search_max <= search_min:
+        return minima, maxima
+
+    for x0 in np.linspace(search_min, search_max, 20):
+        try:
+            root = fsolve(
+                dx_restricted_quartic_angle_numpy,
+                x0,
+                args=(a, b, c, d, k),
+                full_output=True,
+            )
+            x_root = root[0][0]
+            info = root[1]
+
+            # Check if fsolve converged and root is in valid range
+            if info["fvec"][0] ** 2 < 1e-6 and x_range[0] <= x_root <= x_range[1]:
+                d2V = ddx2_restricted_quartic_angle_numpy(x_root, a, b, c, d, k)
+
+                if d2V == 0:
+                    continue
+                elif d2V > 0:
+                    if not any(abs(x_root - m) < 1e-4 for m in minima):
+                        minima.append(x_root)
+                elif d2V < 0:
+                    if not any(abs(x_root - m) < 1e-4 for m in maxima):
+                        maxima.append(x_root)
+        except RuntimeError:
+            print(f"Error finding extrema at x0={x0:.6f}")
+            continue
+
+    return sorted(minima), sorted(maxima)
+
+
+def find_minmax(
+    params, left_region: Tuple[float, float], right_region: Tuple[float, float]
+) -> Tuple[List[float], List[float], List[float], List[float]]:
     """Find minima and maxima of the potential in specified regions.
 
     Args:
         params: (a, b, c, d, k, v_0) parameters
-        left_region: tuple (x_min, x_max) for left tail region (e.g., (0.0, min_angle))
-        right_region: tuple (x_min, x_max) for right tail region (e.g., (max_angle, pi))
+        left_region: tuple (x_min, x_max) for left tail region
+        right_region: tuple (x_min, x_max) for right tail region
 
     Returns:
         tuple: (left_minima, left_maxima, right_minima, right_maxima)
     """
     a, b, c, d, k, _ = params
 
-    def find_in_range(x_range):
-        minima = []
-        maxima = []
-        search_min = max(x_range[0], 0.01)
-        search_max = min(x_range[1], 3.13)
-
-        if search_max <= search_min:
-            return minima, maxima
-
-        for x0 in np.linspace(search_min, search_max, 20):
-            try:
-                root = fsolve(
-                    dx_restricted_quartic_angle_numpy,
-                    x0,
-                    args=(a, b, c, d, k),
-                    full_output=True,
-                )
-                x_root = root[0][0]
-                info = root[1]
-
-                # Check if fsolve converged and root is in valid range
-                if info["fvec"][0] ** 2 < 1e-6 and x_range[0] <= x_root <= x_range[1]:
-                    eps = 1e-6
-                    d2V = (
-                        dx_restricted_quartic_angle_numpy(x_root + eps, a, b, c, d, k)
-                        - dx_restricted_quartic_angle_numpy(x_root - eps, a, b, c, d, k)
-                    ) / (2 * eps)
-
-                    if d2V > 0:
-                        if not any(abs(x_root - m) < 1e-4 for m in minima):
-                            minima.append(x_root)
-                    elif d2V < 0:
-                        if not any(abs(x_root - m) < 1e-4 for m in maxima):
-                            maxima.append(x_root)
-            except:
-                continue
-
-        return sorted(minima), sorted(maxima)
-
-    left_minima, left_maxima = find_in_range(left_region)
-    right_minima, right_maxima = find_in_range(right_region)
+    left_minima, left_maxima = find_extrema_in_range(a, b, c, d, k, left_region)
+    right_minima, right_maxima = find_extrema_in_range(a, b, c, d, k, right_region)
 
     return left_minima, left_maxima, right_minima, right_maxima
+
 
 def fit_rb_from_potential_estimates(
     bin_centers_nz: torch.Tensor, dG_nz: torch.Tensor, **kwargs
@@ -160,7 +194,7 @@ def fit_rb_from_potential_estimates(
                 restricted_quartic_angle_constrained,
                 bin_centers_nz[mask],
                 dG_nz[mask],
-                p0=[0, 0, 1e-4, torch.argmin(dG_nz[mask])],
+                p0=[0, 0, 1e-3, torch.argmin(dG_nz[mask])],
                 bounds=(
                     (-np.inf, -np.inf, 1e-5, -np.inf),
                     (np.inf, np.inf, np.inf, np.inf),
