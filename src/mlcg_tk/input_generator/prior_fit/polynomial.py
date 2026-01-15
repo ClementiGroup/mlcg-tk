@@ -113,13 +113,13 @@ def _polynomial_fit(
     elif regression_method == "scipy":
         low_bounds = [-np.inf for _ in range(n_degs + 1)]
         # enforce that the coefficient of the leading degree is positive
-        low_bounds[-1] = 0
+        low_bounds[-1] = 1
         high_bounds = [np.inf for _ in range(n_degs + 1)]
         popt = _scipy_fit(xs, ys, n_degs, bounds=(low_bounds, high_bounds))
         dev = [idx * popt[idx] for idx in range(1, n_degs + 1)]
         dev_val_at_min_1 = polynomial_wrapper_fit_func(torch.tensor(-1), dev)
         dev_val_at_plus_1 = polynomial_wrapper_fit_func(torch.tensor(1), dev)
-        if dev_val_at_min_1 * dev_val_at_plus_1 > 0:
+        if dev_val_at_min_1 * dev_val_at_plus_1 < 0:
             # relaunch the fit making sure that the second largest degree has no coefficient
             low_bounds[-2] = -1e-2
             high_bounds[-2] = 1e-2
