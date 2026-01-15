@@ -41,6 +41,10 @@ def process_sim_input(
     collection_cls: Type[SampleCollection] = SampleCollection,
     smpl_loader: Type[DatasetLoader] = SimInput_loader,
     cg_virtual_atoms: Optional[List[Dict]] = None,
+    pbc: Optional[List[bool]] = None,
+    cell1: Optional[Union[List[float], np.ndarray]] = None,
+    cell2: Optional[Union[List[float], np.ndarray]] = None,
+    cell3: Optional[Union[List[float], np.ndarray]] = None,
 ):
     """
     Generates input AtomicData objects for coarse-grained simulations
@@ -81,16 +85,54 @@ def process_sim_input(
         Dictionary mapping CG bead indices to lists of atomistic atom indices.
         These atomistic atoms will be weighted equally (1/N each) in the CG mapping.
         Format: cg_bead_index: [atom1_index, atom2_index, ...]
+    pbc: Optional[List[bool]]
+        Periodic boundary conditions (3 booleans for x, y, z directions)
+    cell1: Optional[Union[List[float], np.ndarray]]
+        First cell vector (3 floats)
+    cell2: Optional[Union[List[float], np.ndarray]]
+        Second cell vector (3 floats)
+    cell3: Optional[Union[List[float], np.ndarray]]
+        Third cell vector (3 floats)
     """
     cg_coord_list = []
     cg_type_list = []
     cg_mass_list = []
     cg_nls_list = []
+    cg_pbc_list = []
+    cg_cell_list = []
 
+    use_pbc = pbc is not None
+    use_cell = all(cell is not None for cell in [cell1, cell2, cell3])
+    
+    if use_pbc:
+        if len(pbc) != 3:
+            raise ValueError("pbc must be a list/array of 3 booleans")
+    
+    if use_cell:
+        if len(cell1) != 3:
+            raise ValueError("cell1 must be a list/array of 3 floats corresponding to v1")
+        if len(cell2) != 3:
+            raise ValueError("cell2 must be a list/array of 3 floats corresponding to v2")
+        if len(cell3) != 3:
+            raise ValueError("cell3 must be a list/array of 3 floats corresponding to v3")
+    
+    # Consistency between PBC and cell
+    if use_pbc and not use_cell:
+        raise ValueError("cell vectors must be provided if pbc is specified")
+    if use_cell and not use_pbc:
+        raise ValueError("pbc must be provided if cell vectors are specified")
+    
+    if use_cell:
+        cell = np.stack((cell1, cell2, cell3), axis=1, dtype=np.float32)
+        print(f"Using cell: {cell}")
+    else:
+        cell = None
+        print("No cell information provided - using non-periodic system")
+    
     dataset = SimInput(dataset_name, tag, pdb_fns, collection_cls=collection_cls)
     for samples in tqdm(dataset, f"Processing CG data for {dataset_name} dataset..."):
         sample_loader = smpl_loader()
-        samples.input_traj, samples.top_dataframe = sample_loader.get_traj_top(
+        samples.input_traj, samples.top_dataframe = sample_loader.get_input_top(
             name=samples.name, raw_data_dir=raw_data_dir
         )
 
@@ -129,17 +171,33 @@ def process_sim_input(
                 cg_nls_list.append(prior_nls)
 
     data_list = []
-    for coords, types, masses, nls in zip(
-        cg_coord_list, cg_type_list, cg_mass_list, cg_nls_list
-    ):
-        data = AtomicData.from_points(
-            pos=torch.tensor(coords[0]),
-            atom_types=torch.tensor(types),
-            masses=torch.tensor(masses),
-        )
-        data.neighbor_list = deepcopy(nls)
-        data_list.append(data)
-
+    if not use_pbc:
+        # Non-periodic case
+        for coords, types, masses, nls in zip(
+            cg_coord_list, cg_type_list, cg_mass_list, cg_nls_list,
+        ):
+            data = AtomicData.from_points(
+                pos=torch.tensor(coords[0]),
+                atom_types=torch.tensor(types),
+                masses=torch.tensor(masses),
+            )
+            data.neighbor_list = deepcopy(nls)
+            data_list.append(data)
+    else:
+        # Periodic case
+        for coords, types, masses, nls, pbcs, cells in zip(
+            cg_coord_list, cg_type_list, cg_mass_list, cg_nls_list, cg_pbc_list, cg_cell_list
+        ):
+            data = AtomicData.from_points(
+                pos=torch.tensor(coords[0]),
+                atom_types=torch.tensor(types),
+                masses=torch.tensor(masses),
+                pbc=torch.tensor(pbcs),
+                cell=torch.tensor(cells)
+            )
+            data.neighbor_list = deepcopy(nls)
+            data_list.append(data)
+    
     torch.save(
         data_list,
         f"{save_dir}{get_output_tag([dataset_name, tag], placement='before')}configurations.pt",
