@@ -5,7 +5,7 @@ mlcg-tk
 
 |Docs badge| |License| |Circleci|
 
-.. |Docs badge| image:: https://img.shields.io/badge/mlcg-tk-docs-blue.svg
+.. |Docs badge| image:: https://img.shields.io/badge/mlcg--tk-docs-blue.svg
    :target: https://clementigroup.github.io/mlcg-tk/
 
 .. |License| image:: https://img.shields.io/github/license/Naereen/StrapDown.js.svg
