@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en" data-accent-color="teal" data-content_root="../../../">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>mlcg_tk.input_generator.prior_gen - mlcg-tk 0.0.0 documentation</title><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" /><script>
+    function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
+    setColorMode(localStorage._theme||"auto");
+  </script><link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=e1a1ceaf" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/shibuya.css?v=44020203" />
+    <link media="print" rel="stylesheet" type="text/css" href="../../../_static/print.css?v=20ff2c19" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sy-f-text: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+  --sy-f-heading: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+}
+</style>
+    <meta property="og:type" content="website"/><meta property="og:title" content="mlcg_tk.input_generator.prior_gen"/>
+    <meta name="twitter:card" content="summary"/>
+  </head>
+<body><div class="sy-head">
+  <div class="sy-head-blur"></div>
+  <div class="sy-head-inner sy-container mx-auto">
+    <a class="sy-head-brand" href="../../../index.html">
+      
+      
+      <strong>mlcg-tk</strong>
+    </a>
+    <div class="sy-head-nav" id="head-nav">
+      <nav class="sy-head-links"></nav>
+      <div class="sy-head-extra flex items-center print:hidden"><form class="searchbox flex items-center" action="../../../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <kbd>/</kbd>
+</form><div class="sy-head-socials"></div></div>
+    </div>
+    <div class="sy-head-actions flex items-center shrink-0 print:hidden"><button class="js-theme theme-switch flex items-center"
+data-aria-auto="Switch to light color mode"
+data-aria-light="Switch to dark color mode"
+data-aria-dark="Switch to auto color mode">
+<i class="i-lucide theme-icon"></i>
+</button><button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="head-nav" aria-expanded="false">
+        <div class="hamburger">
+          <span class="hamburger_1"></span>
+          <span class="hamburger_2"></span>
+          <span class="hamburger_3"></span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="sy-page sy-container flex mx-auto">
+  <aside id="lside" class="sy-lside md:w-72 md:shrink-0 print:hidden">
+    <div class="sy-lside-inner md:sticky">
+      <div class="sy-scrollbar p-6">
+        <div class="globaltoc" data-expand-depth="1"><p class="caption" role="heading" aria-level="3"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../../../user_guide/index.html">Data pipeline user guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/intro.html">About the Training Data Generation Pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/intro.html#create-a-directory-to-output-all-the-intermediate-files">0) Create a directory to output all the intermediate files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/aa_to_cg.html">1) Loading and processing all-atom simulation data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/stats_priors.html">2) Computing statistics and fitting priors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/delta_forces.html">3) Producing delta forces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/packaging.html">4) Package Training Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/packaging.html#add-decoys-to-training-data">4.1) Add Decoys To Training Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/sim_input.html">5) Generate simulation input</a></li>
+</ul>
+</li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../../../api_docs/index.html">API documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api_docs/core/modules.html">Core API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/input_generator.html">input_generator package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/input_generator/prior_fit.html">prior_fit package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/input_generator/prior_fit/dihedral.html">dihedral module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/input_generator/prior_fit/fit_potentials.html">fit_potentials module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/input_generator/prior_fit/harmonic.html">harmonic module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/input_generator/prior_fit/histogram.html">histogram module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/input_generator/prior_fit/polynomial.html">polynomial module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/input_generator/prior_fit/repulsion.html">repulsion module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/input_generator/prior_fit/restricted_bending.html">restricted_bending module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/input_generator/prior_fit/utils.html">utils module</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/input_generator/embedding_maps.html">embedding_maps module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/input_generator/prior_gen.html">prior_gen module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/input_generator/prior_nls.html">prior_nls module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/input_generator/raw_data_loader.html">raw_data_loader module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/input_generator/raw_dataset.html">raw_dataset module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/input_generator/utils.html">utils module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/prior_tools.html">prior_tools package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/prior_tools/utils.html">utils module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api_docs/scripts/index.html">Scripts</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api_docs/scripts/gen_input_data.html"><code class="docutils literal notranslate"><span class="pre">gen_input_data.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api_docs/scripts/fit_priors.html"><code class="docutils literal notranslate"><span class="pre">fit_priors.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api_docs/scripts/merge_statistics.html"><code class="docutils literal notranslate"><span class="pre">merge_statistics.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api_docs/scripts/produce_delta_forces.html"><code class="docutils literal notranslate"><span class="pre">produce_delta_forces.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api_docs/scripts/package_training_data.html"><code class="docutils literal notranslate"><span class="pre">package_training_data.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api_docs/scripts/add_decoys.html"><code class="docutils literal notranslate"><span class="pre">add_decoys.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api_docs/scripts/gen_sim_input.html"><code class="docutils literal notranslate"><span class="pre">gen_sim_input.py</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="lside-overlay js-menu" role="button" aria-label="Close left sidebar" aria-controls="lside" aria-expanded="false"></div>
+  <aside id="rside" class="sy-rside pb-3 w-64 shrink-0 order-last">
+    <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
+      <i class="i-lucide close"></i>
+    </button>
+    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
+  </aside>
+  <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+<div class="sy-breadcrumbs" role="navigation">
+  <div class="sy-breadcrumbs-inner flex items-center">
+    <div class="md:hidden mr-3">
+      <button class="js-menu" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
+        <i class="i-lucide menu"></i>
+      </button>
+    </div>
+    <ol class="flex-1" itemscope itemtype="https://schema.org/BreadcrumbList"><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../../../index.html"><span itemprop="name">mlcg-tk</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="1" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../../index.html"><span itemprop="name">Module code</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="2" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <strong itemprop="name">mlcg_tk.input_generator.prior_gen</strong>
+        <meta itemprop="position" content="3" />
+      </li></ol>
+    <div class="xl:hidden ml-1">
+      <button class="js-menu" aria-label="Show table of contents" type="button" aria-controls="rside"
+        aria-expanded="false">
+        <i class="i-lucide outdent"></i>
+      </button>
+    </div>
+  </div>
+</div><div class="flex flex-col break-words justify-between">
+      <div class="relative min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
+  <article class="yue" role="main">
+          <h1>Source code for mlcg_tk.input_generator.prior_gen</h1><div class="highlight"><pre>
+<span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Optional</span>
+</span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span>
+</span><span data-line="3"><span class="kn">import</span><span class="w"> </span><span class="nn">mdtraj</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">md</span>
+</span><span data-line="4">
+</span><span data-line="5"><span class="kn">from</span><span class="w"> </span><span class="nn">mlcg.nn.prior</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+</span><span data-line="6">    <span class="n">HarmonicBonds</span><span class="p">,</span>
+</span><span data-line="7">    <span class="n">HarmonicAngles</span><span class="p">,</span>
+</span><span data-line="8">    <span class="n">Dihedral</span><span class="p">,</span>
+</span><span data-line="9">    <span class="n">Repulsion</span><span class="p">,</span>
+</span><span data-line="10">    <span class="n">_Prior</span><span class="p">,</span>
+</span><span data-line="11">    <span class="n">GeneralBonds</span><span class="p">,</span>
+</span><span data-line="12">    <span class="n">GeneralAngles</span><span class="p">,</span>
+</span><span data-line="13"><span class="p">)</span>
+</span><span data-line="14"><span class="kn">from</span><span class="w"> </span><span class="nn">mlcg.nn.gradients</span><span class="w"> </span><span class="kn">import</span> <span class="n">GradientsOut</span>
+</span><span data-line="15">
+</span><span data-line="16"><span class="kn">from</span><span class="w"> </span><span class="nn">mlcg.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">AtomicData</span>
+</span><span data-line="17"><span class="kn">from</span><span class="w"> </span><span class="nn">.prior_fit.histogram</span><span class="w"> </span><span class="kn">import</span> <span class="n">HistogramsNL</span>
+</span><span data-line="18">
+</span><span data-line="19">
+<div class="viewcode-block" id="PriorBuilder">
+<a class="viewcode-back" href="../../../api_docs/core/mlcg_tk/input_generator/prior_gen.html#mlcg_tk.input_generator.prior_gen.PriorBuilder">[docs]</a>
+</span><span data-line="20"><span class="k">class</span><span class="w"> </span><span class="nc">PriorBuilder</span><span class="p">:</span>
+</span><span data-line="21"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="22"><span class="sd">    General prior builder object holding statistics computed for a given prior</span>
+</span><span data-line="23"><span class="sd">    feature and functions that are used to build neighbour lists and fit potentials</span>
+</span><span data-line="24"><span class="sd">    to the computed statistics.</span>
+</span><span data-line="25">
+</span><span data-line="26"><span class="sd">    Attributes</span>
+</span><span data-line="27"><span class="sd">    ----------</span>
+</span><span data-line="28"><span class="sd">    histograms:</span>
+</span><span data-line="29"><span class="sd">        HistogramsNL object for storing binned feature statistics</span>
+</span><span data-line="30"><span class="sd">    nl_builder:</span>
+</span><span data-line="31"><span class="sd">        Neighbour list class to be used in building neighbour list</span>
+</span><span data-line="32"><span class="sd">    prior_fit_fn:</span>
+</span><span data-line="33"><span class="sd">        Function to be used in fitting potential from statistics</span>
+</span><span data-line="34"><span class="sd">    prior_cls:</span>
+</span><span data-line="35"><span class="sd">        Prior class for fitting features</span>
+</span><span data-line="36"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="37">
+</span><span data-line="38">    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+</span><span data-line="39">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="40">        <span class="n">histograms</span><span class="p">:</span> <span class="n">HistogramsNL</span><span class="p">,</span>
+</span><span data-line="41">        <span class="n">nl_builder</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
+</span><span data-line="42">        <span class="n">prior_fit_fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
+</span><span data-line="43">        <span class="n">prior_cls</span><span class="p">:</span> <span class="n">_Prior</span><span class="p">,</span>
+</span><span data-line="44">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="45">        <span class="bp">self</span><span class="o">.</span><span class="n">histograms</span> <span class="o">=</span> <span class="n">histograms</span>
+</span><span data-line="46">        <span class="bp">self</span><span class="o">.</span><span class="n">prior_fit_fn</span> <span class="o">=</span> <span class="n">prior_fit_fn</span>
+</span><span data-line="47">        <span class="bp">self</span><span class="o">.</span><span class="n">nl_builder</span> <span class="o">=</span> <span class="n">nl_builder</span>
+</span><span data-line="48">        <span class="bp">self</span><span class="o">.</span><span class="n">prior_cls</span> <span class="o">=</span> <span class="n">prior_cls</span>
+</span><span data-line="49">
+<div class="viewcode-block" id="PriorBuilder.build_nl">
+<a class="viewcode-back" href="../../../api_docs/core/mlcg_tk/input_generator/prior_gen.html#mlcg_tk.input_generator.prior_gen.PriorBuilder.build_nl">[docs]</a>
+</span><span data-line="50">    <span class="k">def</span><span class="w"> </span><span class="nf">build_nl</span><span class="p">(</span>
+</span><span data-line="51">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="52">        <span class="n">topology</span><span class="p">:</span> <span class="n">md</span><span class="o">.</span><span class="n">Topology</span><span class="p">,</span>
+</span><span data-line="53">        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+</span><span data-line="54">    <span class="p">):</span>
+</span><span data-line="55"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="56"><span class="sd">        Generates tagged and ordered edges using neighbour list builder function</span>
+</span><span data-line="57">
+</span><span data-line="58"><span class="sd">        Parameters</span>
+</span><span data-line="59"><span class="sd">        ----------</span>
+</span><span data-line="60"><span class="sd">        topology:</span>
+</span><span data-line="61"><span class="sd">            MDTraj topology object from which atom groups defining each prior term will be created</span>
+</span><span data-line="62">
+</span><span data-line="63"><span class="sd">        Returns</span>
+</span><span data-line="64"><span class="sd">        -------</span>
+</span><span data-line="65"><span class="sd">        Edges, orders, and tag for given prior term</span>
+</span><span data-line="66"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="67">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">nl_builder</span><span class="p">(</span><span class="n">topology</span><span class="o">=</span><span class="n">topology</span><span class="p">)</span></div>
+
+</span><span data-line="68">
+<div class="viewcode-block" id="PriorBuilder.accumulate_statistics">
+<a class="viewcode-back" href="../../../api_docs/core/mlcg_tk/input_generator/prior_gen.html#mlcg_tk.input_generator.prior_gen.PriorBuilder.accumulate_statistics">[docs]</a>
+</span><span data-line="69">    <span class="k">def</span><span class="w"> </span><span class="nf">accumulate_statistics</span><span class="p">(</span>
+</span><span data-line="70">        <span class="bp">self</span><span class="p">,</span> <span class="n">nl_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">AtomicData</span><span class="p">,</span> <span class="n">key_dict</span><span class="p">:</span> <span class="nb">dict</span>
+</span><span data-line="71">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="72"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="73"><span class="sd">        Computes atom-type specific features and calculates statistics from a collated</span>
+</span><span data-line="74"><span class="sd">        AtomicData stucture</span>
+</span><span data-line="75">
+</span><span data-line="76"><span class="sd">        Parameters</span>
+</span><span data-line="77"><span class="sd">        ----------</span>
+</span><span data-line="78"><span class="sd">        nl_name:</span>
+</span><span data-line="79"><span class="sd">            Neighbour list tag</span>
+</span><span data-line="80"><span class="sd">        data:</span>
+</span><span data-line="81"><span class="sd">            Collated list of individual AtomicData structures.</span>
+</span><span data-line="82"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="83">        <span class="n">mapping</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">neighbor_list</span><span class="p">[</span><span class="n">nl_name</span><span class="p">][</span><span class="s2">&quot;index_mapping&quot;</span><span class="p">]</span>
+</span><span data-line="84">        <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prior_cls</span><span class="o">.</span><span class="n">compute_features</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">pos</span><span class="p">,</span> <span class="n">mapping</span><span class="p">)</span>
+</span><span data-line="85">        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s2">&quot;weights&quot;</span><span class="p">):</span>
+</span><span data-line="86">            <span class="n">weights</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">weights</span>
+</span><span data-line="87">        <span class="k">else</span><span class="p">:</span>
+</span><span data-line="88">            <span class="n">weights</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="89">        <span class="bp">self</span><span class="o">.</span><span class="n">histograms</span><span class="o">.</span><span class="n">accumulate_statistics</span><span class="p">(</span><span class="n">nl_name</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">key_dict</span><span class="p">,</span> <span class="n">weights</span><span class="p">)</span></div>
+</div>
+
+</span><span data-line="90">
+</span><span data-line="91">
+<div class="viewcode-block" id="Bonds">
+<a class="viewcode-back" href="../../../api_docs/core/mlcg_tk/input_generator/prior_gen.html#mlcg_tk.input_generator.prior_gen.Bonds">[docs]</a>
+</span><span data-line="92"><span class="k">class</span><span class="w"> </span><span class="nc">Bonds</span><span class="p">(</span><span class="n">PriorBuilder</span><span class="p">):</span>
+</span><span data-line="93"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="94"><span class="sd">    Builder for order-2 groups of bond priors.</span>
+</span><span data-line="95">
+</span><span data-line="96"><span class="sd">    Attributes</span>
+</span><span data-line="97"><span class="sd">    ----------</span>
+</span><span data-line="98"><span class="sd">    name:</span>
+</span><span data-line="99"><span class="sd">        Name of specific prior (to match neighbour list name)</span>
+</span><span data-line="100"><span class="sd">    nl_builder:</span>
+</span><span data-line="101"><span class="sd">        Neighbour list class to be used in building neighbour list</span>
+</span><span data-line="102"><span class="sd">    separate_termini:</span>
+</span><span data-line="103"><span class="sd">        Whether statistics should be computed separately for terminal atoms</span>
+</span><span data-line="104"><span class="sd">    nbins:</span>
+</span><span data-line="105"><span class="sd">        The number of bins over which 1-D feature histograms are constructed</span>
+</span><span data-line="106"><span class="sd">        in order to estimate distributions</span>
+</span><span data-line="107"><span class="sd">    bmin:</span>
+</span><span data-line="108"><span class="sd">        Lower bound of bin edges</span>
+</span><span data-line="109"><span class="sd">    bmax:</span>
+</span><span data-line="110"><span class="sd">        Upper bound of bin edges</span>
+</span><span data-line="111"><span class="sd">    prior_fit_fn:</span>
+</span><span data-line="112"><span class="sd">        Function to be used in fitting potential from statistics</span>
+</span><span data-line="113"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="114">
+</span><span data-line="115">    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+</span><span data-line="116">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="117">        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="118">        <span class="n">nl_builder</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
+</span><span data-line="119">        <span class="n">separate_termini</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+</span><span data-line="120">        <span class="n">n_bins</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+</span><span data-line="121">        <span class="n">bmin</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+</span><span data-line="122">        <span class="n">bmax</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+</span><span data-line="123">        <span class="n">prior_fit_fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
+</span><span data-line="124">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="125">        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+</span><span data-line="126">            <span class="n">histograms</span><span class="o">=</span><span class="n">HistogramsNL</span><span class="p">(</span>
+</span><span data-line="127">                <span class="n">n_bins</span><span class="o">=</span><span class="n">n_bins</span><span class="p">,</span>
+</span><span data-line="128">                <span class="n">bmin</span><span class="o">=</span><span class="n">bmin</span><span class="p">,</span>
+</span><span data-line="129">                <span class="n">bmax</span><span class="o">=</span><span class="n">bmax</span><span class="p">,</span>
+</span><span data-line="130">            <span class="p">),</span>
+</span><span data-line="131">            <span class="n">nl_builder</span><span class="o">=</span><span class="n">nl_builder</span><span class="p">,</span>
+</span><span data-line="132">            <span class="n">prior_fit_fn</span><span class="o">=</span><span class="n">prior_fit_fn</span><span class="p">,</span>
+</span><span data-line="133">            <span class="n">prior_cls</span><span class="o">=</span><span class="n">GeneralBonds</span><span class="p">,</span>
+</span><span data-line="134">        <span class="p">)</span>
+</span><span data-line="135">        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+</span><span data-line="136">        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="s2">&quot;bonds&quot;</span>
+</span><span data-line="137">        <span class="bp">self</span><span class="o">.</span><span class="n">separate_termini</span> <span class="o">=</span> <span class="n">separate_termini</span>
+</span><span data-line="138">        <span class="c1"># if separate_termini == True then these will be set in get_terminal_atoms</span>
+</span><span data-line="139">        <span class="bp">self</span><span class="o">.</span><span class="n">n_term_atoms</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="140">        <span class="bp">self</span><span class="o">.</span><span class="n">c_term_atoms</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="141">        <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="142">        <span class="bp">self</span><span class="o">.</span><span class="n">c_atoms</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="143">
+<div class="viewcode-block" id="Bonds.build_nl">
+<a class="viewcode-back" href="../../../api_docs/core/mlcg_tk/input_generator/prior_gen.html#mlcg_tk.input_generator.prior_gen.Bonds.build_nl">[docs]</a>
+</span><span data-line="144">    <span class="k">def</span><span class="w"> </span><span class="nf">build_nl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">topology</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</span><span data-line="145"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="146"><span class="sd">        Generates edges for order-2 atom groups for bond prior</span>
+</span><span data-line="147">
+</span><span data-line="148"><span class="sd">        Parameters</span>
+</span><span data-line="149"><span class="sd">        ----------</span>
+</span><span data-line="150"><span class="sd">        topology:</span>
+</span><span data-line="151"><span class="sd">            MDTraj topology object from which atom groups defining each prior term will be created</span>
+</span><span data-line="152">
+</span><span data-line="153"><span class="sd">        Returns</span>
+</span><span data-line="154"><span class="sd">        -------</span>
+</span><span data-line="155"><span class="sd">        Edges, orders, and tag for angle prior term</span>
+</span><span data-line="156"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="157">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">nl_builder</span><span class="p">(</span>
+</span><span data-line="158">            <span class="n">topology</span><span class="o">=</span><span class="n">topology</span><span class="p">,</span>
+</span><span data-line="159">            <span class="n">separate_termini</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">separate_termini</span><span class="p">,</span>
+</span><span data-line="160">            <span class="n">n_term_atoms</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_term_atoms</span><span class="p">,</span>
+</span><span data-line="161">            <span class="n">c_term_atoms</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">c_term_atoms</span><span class="p">,</span>
+</span><span data-line="162">            <span class="n">n_atoms</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span>
+</span><span data-line="163">            <span class="n">c_atoms</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">c_atoms</span><span class="p">,</span>
+</span><span data-line="164">        <span class="p">)</span></div>
+
+</span><span data-line="165">
+<div class="viewcode-block" id="Bonds.get_prior_model">
+<a class="viewcode-back" href="../../../api_docs/core/mlcg_tk/input_generator/prior_gen.html#mlcg_tk.input_generator.prior_gen.Bonds.get_prior_model">[docs]</a>
+</span><span data-line="166">    <span class="k">def</span><span class="w"> </span><span class="nf">get_prior_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">statistics</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">targets</span><span class="o">=</span><span class="s2">&quot;forces&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</span><span data-line="167"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="168"><span class="sd">        Parameters</span>
+</span><span data-line="169"><span class="sd">        ----------</span>
+</span><span data-line="170"><span class="sd">        statistics:</span>
+</span><span data-line="171"><span class="sd">            Gathered bond statistics</span>
+</span><span data-line="172"><span class="sd">        name: str</span>
+</span><span data-line="173"><span class="sd">            Name of the prior object (corresponding to nls name)</span>
+</span><span data-line="174"><span class="sd">        targets:</span>
+</span><span data-line="175"><span class="sd">            The gradient targets to produce from a model output. These can be any</span>
+</span><span data-line="176"><span class="sd">            of the gradient properties referenced in `mlcg.data._keys`.</span>
+</span><span data-line="177"><span class="sd">            At the moment only forces are implemented.</span>
+</span><span data-line="178"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="179">        <span class="k">return</span> <span class="n">GradientsOut</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prior_cls</span><span class="p">(</span><span class="n">statistics</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">),</span> <span class="n">targets</span><span class="o">=</span><span class="n">targets</span><span class="p">)</span></div>
+</div>
+
+</span><span data-line="180">
+</span><span data-line="181">
+<div class="viewcode-block" id="Angles">
+<a class="viewcode-back" href="../../../api_docs/core/mlcg_tk/input_generator/prior_gen.html#mlcg_tk.input_generator.prior_gen.Angles">[docs]</a>
+</span><span data-line="182"><span class="k">class</span><span class="w"> </span><span class="nc">Angles</span><span class="p">(</span><span class="n">PriorBuilder</span><span class="p">):</span>
+</span><span data-line="183"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="184"><span class="sd">    Builder for order-3 groups of angle priors.</span>
+</span><span data-line="185">
+</span><span data-line="186"><span class="sd">    Attributes</span>
+</span><span data-line="187"><span class="sd">    ----------</span>
+</span><span data-line="188"><span class="sd">    name:</span>
+</span><span data-line="189"><span class="sd">        Name of specific prior (to match neighbour list name)</span>
+</span><span data-line="190"><span class="sd">    nl_builder:</span>
+</span><span data-line="191"><span class="sd">        Neighbour list class to be used in building neighbour list</span>
+</span><span data-line="192"><span class="sd">    separate_termini:</span>
+</span><span data-line="193"><span class="sd">        Whether statistics should be computed separately for terminal atoms</span>
+</span><span data-line="194"><span class="sd">    nbins:</span>
+</span><span data-line="195"><span class="sd">        The number of bins over which 1-D feature histograms are constructed</span>
+</span><span data-line="196"><span class="sd">        in order to estimate distributions</span>
+</span><span data-line="197"><span class="sd">    bmin:</span>
+</span><span data-line="198"><span class="sd">        Lower bound of bin edges</span>
+</span><span data-line="199"><span class="sd">    bmax:</span>
+</span><span data-line="200"><span class="sd">        Upper bound of bin edges</span>
+</span><span data-line="201"><span class="sd">    prior_fit_fn:</span>
+</span><span data-line="202"><span class="sd">        Function to be used in fitting potential from statistics</span>
+</span><span data-line="203"><span class="sd">    prior_cls:</span>
+</span><span data-line="204"><span class="sd">        Prior class to be used. It must be able to be initialized from the output</span>
+</span><span data-line="205"><span class="sd">        of the `prior_fit_fn`</span>
+</span><span data-line="206"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="207">
+</span><span data-line="208">    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+</span><span data-line="209">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="210">        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="211">        <span class="n">nl_builder</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
+</span><span data-line="212">        <span class="n">separate_termini</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+</span><span data-line="213">        <span class="n">n_bins</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+</span><span data-line="214">        <span class="n">bmin</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+</span><span data-line="215">        <span class="n">bmax</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+</span><span data-line="216">        <span class="n">prior_fit_fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
+</span><span data-line="217">        <span class="n">prior_cls</span><span class="o">=</span><span class="n">GeneralAngles</span><span class="p">,</span>
+</span><span data-line="218">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="219">        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+</span><span data-line="220">            <span class="n">histograms</span><span class="o">=</span><span class="n">HistogramsNL</span><span class="p">(</span>
+</span><span data-line="221">                <span class="n">n_bins</span><span class="o">=</span><span class="n">n_bins</span><span class="p">,</span>
+</span><span data-line="222">                <span class="n">bmin</span><span class="o">=</span><span class="n">bmin</span><span class="p">,</span>
+</span><span data-line="223">                <span class="n">bmax</span><span class="o">=</span><span class="n">bmax</span><span class="p">,</span>
+</span><span data-line="224">            <span class="p">),</span>
+</span><span data-line="225">            <span class="n">nl_builder</span><span class="o">=</span><span class="n">nl_builder</span><span class="p">,</span>
+</span><span data-line="226">            <span class="n">prior_fit_fn</span><span class="o">=</span><span class="n">prior_fit_fn</span><span class="p">,</span>
+</span><span data-line="227">            <span class="n">prior_cls</span><span class="o">=</span><span class="n">prior_cls</span><span class="p">,</span>
+</span><span data-line="228">        <span class="p">)</span>
+</span><span data-line="229">        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+</span><span data-line="230">        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="s2">&quot;angles&quot;</span>
+</span><span data-line="231">        <span class="bp">self</span><span class="o">.</span><span class="n">separate_termini</span> <span class="o">=</span> <span class="n">separate_termini</span>
+</span><span data-line="232">        <span class="c1"># if separate_termini == True then these will be set in get_terminal_atoms</span>
+</span><span data-line="233">        <span class="bp">self</span><span class="o">.</span><span class="n">n_term_atoms</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="234">        <span class="bp">self</span><span class="o">.</span><span class="n">c_term_atoms</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="235">        <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="236">        <span class="bp">self</span><span class="o">.</span><span class="n">c_atoms</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="237">
+<div class="viewcode-block" id="Angles.build_nl">
+<a class="viewcode-back" href="../../../api_docs/core/mlcg_tk/input_generator/prior_gen.html#mlcg_tk.input_generator.prior_gen.Angles.build_nl">[docs]</a>
+</span><span data-line="238">    <span class="k">def</span><span class="w"> </span><span class="nf">build_nl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">topology</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</span><span data-line="239"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="240"><span class="sd">        Generates edges for order-3 atom groups for angle prior</span>
+</span><span data-line="241">
+</span><span data-line="242"><span class="sd">        Parameters</span>
+</span><span data-line="243"><span class="sd">        ----------</span>
+</span><span data-line="244"><span class="sd">        topology:</span>
+</span><span data-line="245"><span class="sd">            MDTraj topology object from which atom groups defining each prior term will be created</span>
+</span><span data-line="246">
+</span><span data-line="247"><span class="sd">        Returns</span>
+</span><span data-line="248"><span class="sd">        -------</span>
+</span><span data-line="249"><span class="sd">        Edges, orders, and tag for angle prior term</span>
+</span><span data-line="250"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="251">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">nl_builder</span><span class="p">(</span>
+</span><span data-line="252">            <span class="n">topology</span><span class="o">=</span><span class="n">topology</span><span class="p">,</span>
+</span><span data-line="253">            <span class="n">separate_termini</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">separate_termini</span><span class="p">,</span>
+</span><span data-line="254">            <span class="n">n_term_atoms</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_term_atoms</span><span class="p">,</span>
+</span><span data-line="255">            <span class="n">c_term_atoms</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">c_term_atoms</span><span class="p">,</span>
+</span><span data-line="256">            <span class="n">n_atoms</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span>
+</span><span data-line="257">            <span class="n">c_atoms</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">c_atoms</span><span class="p">,</span>
+</span><span data-line="258">        <span class="p">)</span></div>
+
+</span><span data-line="259">
+<div class="viewcode-block" id="Angles.get_prior_model">
+<a class="viewcode-back" href="../../../api_docs/core/mlcg_tk/input_generator/prior_gen.html#mlcg_tk.input_generator.prior_gen.Angles.get_prior_model">[docs]</a>
+</span><span data-line="260">    <span class="k">def</span><span class="w"> </span><span class="nf">get_prior_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">statistics</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">targets</span><span class="o">=</span><span class="s2">&quot;forces&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</span><span data-line="261"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="262"><span class="sd">        Parameters</span>
+</span><span data-line="263"><span class="sd">        ----------</span>
+</span><span data-line="264"><span class="sd">        statistics:</span>
+</span><span data-line="265"><span class="sd">             Gathered angle statistics</span>
+</span><span data-line="266"><span class="sd">        name: str</span>
+</span><span data-line="267"><span class="sd">            Name of the prior object (corresponding to nls name)</span>
+</span><span data-line="268"><span class="sd">        targets:</span>
+</span><span data-line="269"><span class="sd">            The gradient targets to produce from a model output. These can be any</span>
+</span><span data-line="270"><span class="sd">            of the gradient properties referenced in `mlcg.data._keys`.</span>
+</span><span data-line="271"><span class="sd">            At the moment only forces are implemented.</span>
+</span><span data-line="272"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="273">        <span class="k">return</span> <span class="n">GradientsOut</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prior_cls</span><span class="p">(</span><span class="n">statistics</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">),</span> <span class="n">targets</span><span class="o">=</span><span class="n">targets</span><span class="p">)</span></div>
+</div>
+
+</span><span data-line="274">
+</span><span data-line="275">
+<div class="viewcode-block" id="NonBonded">
+<a class="viewcode-back" href="../../../api_docs/core/mlcg_tk/input_generator/prior_gen.html#mlcg_tk.input_generator.prior_gen.NonBonded">[docs]</a>
+</span><span data-line="276"><span class="k">class</span><span class="w"> </span><span class="nc">NonBonded</span><span class="p">(</span><span class="n">PriorBuilder</span><span class="p">):</span>
+</span><span data-line="277"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="278"><span class="sd">    Builder for order-2 groups of nonbonded priors.</span>
+</span><span data-line="279">
+</span><span data-line="280"><span class="sd">    Attributes</span>
+</span><span data-line="281"><span class="sd">    ----------</span>
+</span><span data-line="282"><span class="sd">    name:</span>
+</span><span data-line="283"><span class="sd">        Name of specific prior (to match neighbour list name)</span>
+</span><span data-line="284"><span class="sd">    nl_builder:</span>
+</span><span data-line="285"><span class="sd">        Neighbour list class to be used in building neighbour list</span>
+</span><span data-line="286"><span class="sd">    min_pair:</span>
+</span><span data-line="287"><span class="sd">        Minimum number of bond edges between two atoms in order to be considered</span>
+</span><span data-line="288"><span class="sd">        a member of the non-bonded set</span>
+</span><span data-line="289"><span class="sd">    res_exclusion:</span>
+</span><span data-line="290"><span class="sd">        If supplied, pairs within res_exclusion residues of each other are removed</span>
+</span><span data-line="291"><span class="sd">        from the non-bonded set</span>
+</span><span data-line="292"><span class="sd">    separate_termini:</span>
+</span><span data-line="293"><span class="sd">        Whether statistics should be computed separately for terminal atoms</span>
+</span><span data-line="294"><span class="sd">    nbins:</span>
+</span><span data-line="295"><span class="sd">        The number of bins over which 1-D feature histograms are constructed</span>
+</span><span data-line="296"><span class="sd">        in order to estimate distributions</span>
+</span><span data-line="297"><span class="sd">    bmin:</span>
+</span><span data-line="298"><span class="sd">        Lower bound of bin edges</span>
+</span><span data-line="299"><span class="sd">    bmax:</span>
+</span><span data-line="300"><span class="sd">        Upper bound of bin edges</span>
+</span><span data-line="301"><span class="sd">    prior_fit_fn:</span>
+</span><span data-line="302"><span class="sd">        Function to be used in fitting potential from statistics</span>
+</span><span data-line="303"><span class="sd">    percentile:</span>
+</span><span data-line="304"><span class="sd">        If specified, the sigma value is calculated using the specified</span>
+</span><span data-line="305"><span class="sd">        distance percentile (eg, percentile = 1) sets the sigma value</span>
+</span><span data-line="306"><span class="sd">        at the location of the 1th percentile of pairwise distances. This</span>
+</span><span data-line="307"><span class="sd">        option is useful for estimating repulsions for distance distribtions</span>
+</span><span data-line="308"><span class="sd">        with long lower tails or lower distance outliers. Must be a number from</span>
+</span><span data-line="309"><span class="sd">        0 to 1</span>
+</span><span data-line="310"><span class="sd">    cutoff:</span>
+</span><span data-line="311"><span class="sd">        If specified, only those input values below this cutoff will be used in</span>
+</span><span data-line="312"><span class="sd">        evaluating the percentile</span>
+</span><span data-line="313"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="314">
+</span><span data-line="315">    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+</span><span data-line="316">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="317">        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="318">        <span class="n">nl_builder</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
+</span><span data-line="319">        <span class="n">min_pair</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+</span><span data-line="320">        <span class="n">res_exclusion</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+</span><span data-line="321">        <span class="n">separate_termini</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+</span><span data-line="322">        <span class="n">n_bins</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+</span><span data-line="323">        <span class="n">bmin</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+</span><span data-line="324">        <span class="n">bmax</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+</span><span data-line="325">        <span class="n">prior_fit_fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
+</span><span data-line="326">        <span class="n">percentile</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+</span><span data-line="327">        <span class="n">cutoff</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="328">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="329">        <span class="n">prior_fit_fn</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">prior_fit_fn</span><span class="p">,</span> <span class="n">percentile</span><span class="o">=</span><span class="n">percentile</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="n">cutoff</span><span class="p">)</span>
+</span><span data-line="330">        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+</span><span data-line="331">            <span class="n">histograms</span><span class="o">=</span><span class="n">HistogramsNL</span><span class="p">(</span>
+</span><span data-line="332">                <span class="n">n_bins</span><span class="o">=</span><span class="n">n_bins</span><span class="p">,</span>
+</span><span data-line="333">                <span class="n">bmin</span><span class="o">=</span><span class="n">bmin</span><span class="p">,</span>
+</span><span data-line="334">                <span class="n">bmax</span><span class="o">=</span><span class="n">bmax</span><span class="p">,</span>
+</span><span data-line="335">            <span class="p">),</span>
+</span><span data-line="336">            <span class="n">nl_builder</span><span class="o">=</span><span class="n">nl_builder</span><span class="p">,</span>
+</span><span data-line="337">            <span class="n">prior_fit_fn</span><span class="o">=</span><span class="n">prior_fit_fn</span><span class="p">,</span>
+</span><span data-line="338">            <span class="n">prior_cls</span><span class="o">=</span><span class="n">Repulsion</span><span class="p">,</span>
+</span><span data-line="339">        <span class="p">)</span>
+</span><span data-line="340">        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+</span><span data-line="341">        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="s2">&quot;non_bonded&quot;</span>
+</span><span data-line="342">        <span class="bp">self</span><span class="o">.</span><span class="n">min_pair</span> <span class="o">=</span> <span class="n">min_pair</span>
+</span><span data-line="343">        <span class="bp">self</span><span class="o">.</span><span class="n">res_exclusion</span> <span class="o">=</span> <span class="n">res_exclusion</span>
+</span><span data-line="344">        <span class="bp">self</span><span class="o">.</span><span class="n">separate_termini</span> <span class="o">=</span> <span class="n">separate_termini</span>
+</span><span data-line="345">        <span class="c1"># if separate_termini == True then these will be set in get_terminal_atoms</span>
+</span><span data-line="346">        <span class="bp">self</span><span class="o">.</span><span class="n">n_term_atoms</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="347">        <span class="bp">self</span><span class="o">.</span><span class="n">c_term_atoms</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="348">        <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="349">        <span class="bp">self</span><span class="o">.</span><span class="n">c_atoms</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="350">
+<div class="viewcode-block" id="NonBonded.build_nl">
+<a class="viewcode-back" href="../../../api_docs/core/mlcg_tk/input_generator/prior_gen.html#mlcg_tk.input_generator.prior_gen.NonBonded.build_nl">[docs]</a>
+</span><span data-line="351">    <span class="k">def</span><span class="w"> </span><span class="nf">build_nl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">topology</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</span><span data-line="352"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="353"><span class="sd">        Generates edges for order-2 atom groups for nonbond prior</span>
+</span><span data-line="354">
+</span><span data-line="355"><span class="sd">        Parameters</span>
+</span><span data-line="356"><span class="sd">        ----------</span>
+</span><span data-line="357"><span class="sd">        topology:</span>
+</span><span data-line="358"><span class="sd">            MDTraj topology object from which atom groups defining each prior term will be created</span>
+</span><span data-line="359"><span class="sd">        kwargs:</span>
+</span><span data-line="360"><span class="sd">            bond_edges:</span>
+</span><span data-line="361"><span class="sd">                Edges of bonded prior, to be omitted from nonbonded interactions</span>
+</span><span data-line="362"><span class="sd">            angle_edges:</span>
+</span><span data-line="363"><span class="sd">                Edges of angle prior, to be omitted from nonbonded interactions</span>
+</span><span data-line="364">
+</span><span data-line="365"><span class="sd">        Returns</span>
+</span><span data-line="366"><span class="sd">        -------</span>
+</span><span data-line="367"><span class="sd">        Edges, orders, and tag for nonbonded prior term</span>
+</span><span data-line="368"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="369">        <span class="n">bond_edges</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;bond_edges&quot;</span><span class="p">]</span>
+</span><span data-line="370">        <span class="n">angle_edges</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;angle_edges&quot;</span><span class="p">]</span>
+</span><span data-line="371">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">nl_builder</span><span class="p">(</span>
+</span><span data-line="372">            <span class="n">topology</span><span class="o">=</span><span class="n">topology</span><span class="p">,</span>
+</span><span data-line="373">            <span class="n">bond_edges</span><span class="o">=</span><span class="n">bond_edges</span><span class="p">,</span>
+</span><span data-line="374">            <span class="n">angle_edges</span><span class="o">=</span><span class="n">angle_edges</span><span class="p">,</span>
+</span><span data-line="375">            <span class="n">separate_termini</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">separate_termini</span><span class="p">,</span>
+</span><span data-line="376">            <span class="n">min_pair</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">min_pair</span><span class="p">,</span>
+</span><span data-line="377">            <span class="n">res_exclusion</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">res_exclusion</span><span class="p">,</span>
+</span><span data-line="378">            <span class="n">n_term_atoms</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_term_atoms</span><span class="p">,</span>
+</span><span data-line="379">            <span class="n">c_term_atoms</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">c_term_atoms</span><span class="p">,</span>
+</span><span data-line="380">            <span class="n">n_atoms</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span>
+</span><span data-line="381">            <span class="n">c_atoms</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">c_atoms</span><span class="p">,</span>
+</span><span data-line="382">        <span class="p">)</span></div>
+
+</span><span data-line="383">
+<div class="viewcode-block" id="NonBonded.get_prior_model">
+<a class="viewcode-back" href="../../../api_docs/core/mlcg_tk/input_generator/prior_gen.html#mlcg_tk.input_generator.prior_gen.NonBonded.get_prior_model">[docs]</a>
+</span><span data-line="384">    <span class="k">def</span><span class="w"> </span><span class="nf">get_prior_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">statistics</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">targets</span><span class="o">=</span><span class="s2">&quot;forces&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</span><span data-line="385"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="386"><span class="sd">        Parameters</span>
+</span><span data-line="387"><span class="sd">        ----------</span>
+</span><span data-line="388"><span class="sd">        statistics:</span>
+</span><span data-line="389"><span class="sd">             Gathered nonbonded statistics</span>
+</span><span data-line="390"><span class="sd">        name: str</span>
+</span><span data-line="391"><span class="sd">            Name of the prior object (corresponding to nls name)</span>
+</span><span data-line="392"><span class="sd">        targets:</span>
+</span><span data-line="393"><span class="sd">            The gradient targets to produce from a model output. These can be any</span>
+</span><span data-line="394"><span class="sd">            of the gradient properties referenced in `mlcg.data._keys`.</span>
+</span><span data-line="395"><span class="sd">            At the moment only forces are implemented.</span>
+</span><span data-line="396"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="397">        <span class="n">prior</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prior_cls</span><span class="p">(</span><span class="n">statistics</span><span class="p">)</span>
+</span><span data-line="398">        <span class="n">prior</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+</span><span data-line="399">        <span class="k">return</span> <span class="n">GradientsOut</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">targets</span><span class="o">=</span><span class="n">targets</span><span class="p">)</span></div>
+</div>
+
+</span><span data-line="400">
+</span><span data-line="401">
+<div class="viewcode-block" id="Dihedrals">
+<a class="viewcode-back" href="../../../api_docs/core/mlcg_tk/input_generator/prior_gen.html#mlcg_tk.input_generator.prior_gen.Dihedrals">[docs]</a>
+</span><span data-line="402"><span class="k">class</span><span class="w"> </span><span class="nc">Dihedrals</span><span class="p">(</span><span class="n">PriorBuilder</span><span class="p">):</span>
+</span><span data-line="403"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="404"><span class="sd">    Builder for order-4 groups of dihedral priors.</span>
+</span><span data-line="405">
+</span><span data-line="406"><span class="sd">    Attributes</span>
+</span><span data-line="407"><span class="sd">    ----------</span>
+</span><span data-line="408"><span class="sd">    name:</span>
+</span><span data-line="409"><span class="sd">        Name of specific prior (to match neighbour list name)</span>
+</span><span data-line="410"><span class="sd">    nl_builder:</span>
+</span><span data-line="411"><span class="sd">        Neighbour list class to be used in building neighbour list</span>
+</span><span data-line="412"><span class="sd">    nbins:</span>
+</span><span data-line="413"><span class="sd">        The number of bins over which 1-D feature histograms are constructed</span>
+</span><span data-line="414"><span class="sd">        in order to estimate distributions</span>
+</span><span data-line="415"><span class="sd">    bmin:</span>
+</span><span data-line="416"><span class="sd">        Lower bound of bin edges</span>
+</span><span data-line="417"><span class="sd">    bmax:</span>
+</span><span data-line="418"><span class="sd">        Upper bound of bin edges</span>
+</span><span data-line="419"><span class="sd">    prior_fit_fn:</span>
+</span><span data-line="420"><span class="sd">        Function to be used in fitting potential from statistics</span>
+</span><span data-line="421"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="422">
+</span><span data-line="423">    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+</span><span data-line="424">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="425">        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="426">        <span class="n">nl_builder</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
+</span><span data-line="427">        <span class="n">n_bins</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+</span><span data-line="428">        <span class="n">bmin</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+</span><span data-line="429">        <span class="n">bmax</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+</span><span data-line="430">        <span class="n">prior_fit_fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
+</span><span data-line="431">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="432">        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+</span><span data-line="433">            <span class="n">histograms</span><span class="o">=</span><span class="n">HistogramsNL</span><span class="p">(</span>
+</span><span data-line="434">                <span class="n">n_bins</span><span class="o">=</span><span class="n">n_bins</span><span class="p">,</span>
+</span><span data-line="435">                <span class="n">bmin</span><span class="o">=</span><span class="n">bmin</span><span class="p">,</span>
+</span><span data-line="436">                <span class="n">bmax</span><span class="o">=</span><span class="n">bmax</span><span class="p">,</span>
+</span><span data-line="437">            <span class="p">),</span>
+</span><span data-line="438">            <span class="n">nl_builder</span><span class="o">=</span><span class="n">nl_builder</span><span class="p">,</span>
+</span><span data-line="439">            <span class="n">prior_fit_fn</span><span class="o">=</span><span class="n">prior_fit_fn</span><span class="p">,</span>
+</span><span data-line="440">            <span class="n">prior_cls</span><span class="o">=</span><span class="n">Dihedral</span><span class="p">,</span>
+</span><span data-line="441">        <span class="p">)</span>
+</span><span data-line="442">        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+</span><span data-line="443">        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="s2">&quot;dihedrals&quot;</span>
+</span><span data-line="444">
+<div class="viewcode-block" id="Dihedrals.get_prior_model">
+<a class="viewcode-back" href="../../../api_docs/core/mlcg_tk/input_generator/prior_gen.html#mlcg_tk.input_generator.prior_gen.Dihedrals.get_prior_model">[docs]</a>
+</span><span data-line="445">    <span class="k">def</span><span class="w"> </span><span class="nf">get_prior_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">statistics</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">targets</span><span class="o">=</span><span class="s2">&quot;forces&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</span><span data-line="446"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="447"><span class="sd">        Parameters</span>
+</span><span data-line="448"><span class="sd">        ----------</span>
+</span><span data-line="449"><span class="sd">        statistics:</span>
+</span><span data-line="450"><span class="sd">             Gathered dihedral statistics</span>
+</span><span data-line="451"><span class="sd">        name: str</span>
+</span><span data-line="452"><span class="sd">            Name of the prior object (corresponding to nls name)</span>
+</span><span data-line="453"><span class="sd">        targets:</span>
+</span><span data-line="454"><span class="sd">            The gradient targets to produce from a model output. These can be any</span>
+</span><span data-line="455"><span class="sd">            of the gradient properties referenced in `mlcg.data._keys`.</span>
+</span><span data-line="456"><span class="sd">            At the moment only forces are implemented.</span>
+</span><span data-line="457"><span class="sd">        kwargs:</span>
+</span><span data-line="458"><span class="sd">            n_degs:</span>
+</span><span data-line="459"><span class="sd">                The maximum number of degrees to attempt to fit if using the AIC</span>
+</span><span data-line="460"><span class="sd">                criterion for prior model selection</span>
+</span><span data-line="461"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="462">        <span class="n">prior</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prior_cls</span><span class="p">(</span><span class="n">statistics</span><span class="p">,</span> <span class="n">n_degs</span><span class="o">=</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;n_degs&quot;</span><span class="p">])</span>
+</span><span data-line="463">        <span class="n">prior</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+</span><span data-line="464">        <span class="k">return</span> <span class="n">GradientsOut</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">targets</span><span class="o">=</span><span class="n">targets</span><span class="p">)</span></div>
+</div>
+
+</span></pre></div>
+        </article><button class="back-to-top" type="button">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+  </svg>
+  <span>Back to top</span>
+</button><div class="navigation flex print:hidden"></div></div>
+    </div>
+  </main>
+</div>
+<footer class="sy-foot">
+  <div class="sy-foot-inner sy-container mx-auto">
+    <div class="sy-foot-reserved md:flex justify-between items-center">
+      <div class="sy-foot-copyright"><p>2026, Clementi Group</p>
+  
+  <p>
+    Made with
+    
+    <a href="https://www.sphinx-doc.org/">Sphinx</a> and
+    
+    <a href="https://shibuya.lepture.com">Shibuya theme</a>.
+  </p>
+</div>
+      <div class="sy-foot-socials"></div>
+    </div>
+  </div>
+</footer>
+      <script src="../../../_static/documentation_options.js?v=7026087e"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../_static/shibuya.js?v=cac61aee"></script></body>
+</html>

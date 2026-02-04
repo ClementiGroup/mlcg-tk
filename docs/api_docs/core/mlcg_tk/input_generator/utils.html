@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en" data-accent-color="teal" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>utils module - mlcg-tk 0.0.0 documentation</title><link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Search" href="../../../../search.html" /><link rel="next" title="prior_tools package" href="../prior_tools.html" /><link rel="prev" title="raw_dataset module" href="raw_dataset.html" /><script>
+    function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
+    setColorMode(localStorage._theme||"auto");
+  </script><link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=e1a1ceaf" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/shibuya.css?v=44020203" />
+    <link media="print" rel="stylesheet" type="text/css" href="../../../../_static/print.css?v=20ff2c19" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sy-f-text: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+  --sy-f-heading: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+}
+</style>
+    <meta property="og:type" content="website"/><meta property="og:title" content="utils module"/>
+    <meta name="twitter:card" content="summary"/>
+  </head>
+<body><div class="sy-head">
+  <div class="sy-head-blur"></div>
+  <div class="sy-head-inner sy-container mx-auto">
+    <a class="sy-head-brand" href="../../../../index.html">
+      
+      
+      <strong>mlcg-tk</strong>
+    </a>
+    <div class="sy-head-nav" id="head-nav">
+      <nav class="sy-head-links"></nav>
+      <div class="sy-head-extra flex items-center print:hidden"><form class="searchbox flex items-center" action="../../../../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <kbd>/</kbd>
+</form><div class="sy-head-socials"></div></div>
+    </div>
+    <div class="sy-head-actions flex items-center shrink-0 print:hidden"><button class="js-theme theme-switch flex items-center"
+data-aria-auto="Switch to light color mode"
+data-aria-light="Switch to dark color mode"
+data-aria-dark="Switch to auto color mode">
+<i class="i-lucide theme-icon"></i>
+</button><button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="head-nav" aria-expanded="false">
+        <div class="hamburger">
+          <span class="hamburger_1"></span>
+          <span class="hamburger_2"></span>
+          <span class="hamburger_3"></span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="sy-page sy-container flex mx-auto">
+  <aside id="lside" class="sy-lside md:w-72 md:shrink-0 print:hidden">
+    <div class="sy-lside-inner md:sticky">
+      <div class="sy-scrollbar p-6">
+        <div class="globaltoc" data-expand-depth="1"><p class="caption" role="heading" aria-level="3"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 _expand"><a class="reference internal" href="../../../../user_guide/index.html">Data pipeline user guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../user_guide/intro.html">About the Training Data Generation Pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../user_guide/intro.html#create-a-directory-to-output-all-the-intermediate-files">0) Create a directory to output all the intermediate files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../user_guide/aa_to_cg.html">1) Loading and processing all-atom simulation data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../user_guide/stats_priors.html">2) Computing statistics and fitting priors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../user_guide/delta_forces.html">3) Producing delta forces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../user_guide/packaging.html">4) Package Training Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../user_guide/packaging.html#add-decoys-to-training-data">4.1) Add Decoys To Training Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../user_guide/sim_input.html">5) Generate simulation input</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../../index.html">API documentation</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../../modules.html">Core API</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="../input_generator.html">input_generator package</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="prior_fit.html">prior_fit package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="prior_fit/dihedral.html">dihedral module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="prior_fit/fit_potentials.html">fit_potentials module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="prior_fit/harmonic.html">harmonic module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="prior_fit/histogram.html">histogram module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="prior_fit/polynomial.html">polynomial module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="prior_fit/repulsion.html">repulsion module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="prior_fit/restricted_bending.html">restricted_bending module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="prior_fit/utils.html">utils module</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="embedding_maps.html">embedding_maps module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="prior_gen.html">prior_gen module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="prior_nls.html">prior_nls module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="raw_data_loader.html">raw_data_loader module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="raw_dataset.html">raw_dataset module</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">utils module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../prior_tools.html">prior_tools package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../prior_tools/utils.html">utils module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../scripts/index.html">Scripts</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../scripts/gen_input_data.html"><code class="docutils literal notranslate"><span class="pre">gen_input_data.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../scripts/fit_priors.html"><code class="docutils literal notranslate"><span class="pre">fit_priors.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../scripts/merge_statistics.html"><code class="docutils literal notranslate"><span class="pre">merge_statistics.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../scripts/produce_delta_forces.html"><code class="docutils literal notranslate"><span class="pre">produce_delta_forces.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../scripts/package_training_data.html"><code class="docutils literal notranslate"><span class="pre">package_training_data.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../scripts/add_decoys.html"><code class="docutils literal notranslate"><span class="pre">add_decoys.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../scripts/gen_sim_input.html"><code class="docutils literal notranslate"><span class="pre">gen_sim_input.py</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="lside-overlay js-menu" role="button" aria-label="Close left sidebar" aria-controls="lside" aria-expanded="false"></div>
+  <aside id="rside" class="sy-rside pb-3 w-64 shrink-0 order-last">
+    <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
+      <i class="i-lucide close"></i>
+    </button>
+    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div class="localtoc"><h3>On this page</h3><ul>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.utils.batch_matmul"><code class="docutils literal notranslate"><span class="pre">batch_matmul()</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.utils.cg_matmul"><code class="docutils literal notranslate"><span class="pre">cg_matmul()</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.utils.chunker"><code class="docutils literal notranslate"><span class="pre">chunker()</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.utils.filter_cis_frames"><code class="docutils literal notranslate"><span class="pre">filter_cis_frames()</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.utils.get_dihedral_groups"><code class="docutils literal notranslate"><span class="pre">get_dihedral_groups()</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.utils.get_edges_and_orders"><code class="docutils literal notranslate"><span class="pre">get_edges_and_orders()</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.utils.get_output_tag"><code class="docutils literal notranslate"><span class="pre">get_output_tag()</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.utils.get_terminal_atoms"><code class="docutils literal notranslate"><span class="pre">get_terminal_atoms()</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.utils.map_cg_topology"><code class="docutils literal notranslate"><span class="pre">map_cg_topology()</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.utils.slice_coord_forces"><code class="docutils literal notranslate"><span class="pre">slice_coord_forces()</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.utils.split_bulk_termini"><code class="docutils literal notranslate"><span class="pre">split_bulk_termini()</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.utils.with_attrs"><code class="docutils literal notranslate"><span class="pre">with_attrs()</span></code></a></li>
+</ul>
+</div><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
+  </aside>
+  <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+<div class="sy-breadcrumbs" role="navigation">
+  <div class="sy-breadcrumbs-inner flex items-center">
+    <div class="md:hidden mr-3">
+      <button class="js-menu" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
+        <i class="i-lucide menu"></i>
+      </button>
+    </div>
+    <ol class="flex-1" itemscope itemtype="https://schema.org/BreadcrumbList"><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../../../../index.html"><span itemprop="name">mlcg-tk</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="1" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../../../index.html"><span itemprop="name">API documentation</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="2" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../../modules.html"><span itemprop="name">Core API</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="3" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../input_generator.html"><span itemprop="name">input_generator package</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="4" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <strong itemprop="name">utils module</strong>
+        <meta itemprop="position" content="5" />
+      </li></ol>
+    <div class="xl:hidden ml-1">
+      <button class="js-menu" aria-label="Show table of contents" type="button" aria-controls="rside"
+        aria-expanded="false">
+        <i class="i-lucide outdent"></i>
+      </button>
+    </div>
+  </div>
+</div><div class="flex flex-col break-words justify-between">
+      <div class="relative min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
+  <article class="yue" role="main">
+          <section id="module-mlcg_tk.input_generator.utils">
+<span id="utils-module"></span><h1>utils module<a class="headerlink" href="#module-mlcg_tk.input_generator.utils" title="Link to this heading">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.utils.batch_matmul">
+<span class="sig-prename descclassname"><span class="pre">mlcg_tk.input_generator.utils.</span></span><span class="sig-name descname"><span class="pre">batch_matmul</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">map_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/mlcg_tk/input_generator/utils.html#batch_matmul"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.utils.batch_matmul" title="Link to this definition">¶</a></dt>
+<dd><p>Perform matrix multiplication in chunks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>map_matrix</strong> – Union[np.ndarray,sparray] of shape (N_CG_ats, N_FG_ats)</p></li>
+<li><p><strong>X</strong> – np.ndarray of shape (M_frames, N_FG_ats, 3)</p></li>
+<li><p><strong>batch_size</strong> – int, the number of rows (from the M dimension) to process at a time.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>np.ndarray of shape (M_frames, N_CG_ats, 3)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>result</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.utils.cg_matmul">
+<span class="sig-prename descclassname"><span class="pre">mlcg_tk.input_generator.utils.</span></span><span class="sig-name descname"><span class="pre">cg_matmul</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">map_arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeseries_arr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/mlcg_tk/input_generator/utils.html#cg_matmul"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.utils.cg_matmul" title="Link to this definition">¶</a></dt>
+<dd><p>Function to perform array multiplication for both numpy and scipy sparse arrays</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>map_arr</strong> (<em>Union</em><em>[</em><em>np.ndarray</em><em>,</em><em>sparray</em><em>]</em>) – array of shape (n_beads,n_atoms) representing a linear CG mapping</p></li>
+<li><p><strong>timeseries_arr</strong> (<em>np.ndarray</em>) – array of shape (n_frames,n_atoms,3) holding coordinate or force information</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><ul class="simple">
+<li></li>
+<li><p><em>np.ndarry of shape (n_frames,n_beads,3) after applying the CG map to every entry of timeseries_arr</em></p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.utils.chunker">
+<span class="sig-prename descclassname"><span class="pre">mlcg_tk.input_generator.utils.</span></span><span class="sig-name descname"><span class="pre">chunker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_batches</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/mlcg_tk/input_generator/utils.html#chunker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.utils.chunker" title="Link to this definition">¶</a></dt>
+<dd><p>Chunks an input array into a specified number of batches.</p>
+<p>This function divides the input array into approximately equal-sized chunks.
+The last chunk may contain more elements if the array length is not perfectly
+divisible by the number of batches.</p>
+<section id="parameters">
+<h2>Parameters:<a class="headerlink" href="#parameters" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>array<span class="classifier">np.ndarray or List</span></dt><dd><p>The input array to be chunked.</p>
+</dd>
+<dt>n_batches<span class="classifier">int</span></dt><dd><p>The number of batches to divide the array into. Must be a positive
+integer and less than or equal to the length of the array.</p>
+</dd>
+</dl>
+</section>
+<section id="returns">
+<h2>Returns:<a class="headerlink" href="#returns" title="Link to this heading">¶</a></h2>
+<p>:
+batched_array: List</p>
+<blockquote>
+<div><p>A list of lists/arrays, where each inner list/array is a chunk of the original array.</p>
+</div></blockquote>
+<p>Examples:
+&gt;&gt;&gt; chunker([1, 2, 3, 4, 5, 6, 7, 8, 9], 3)
+[[1, 2, 3], [4, 5, 6], [7, 8, 9]]</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="n">chunker</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+</span><span data-line="2"><span class="go">[[1, 2], [3, 4, 5]]</span>
+</span></pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="n">chunker</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="mi">5</span><span class="p">)</span>
+</span><span data-line="2"><span class="go">[[1], [2], [3], [4], [5]]</span>
+</span></pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="n">chunker</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
+</span><span data-line="2"><span class="go">[[1, 2, 3, 4, 5]]</span>
+</span></pre></div>
+</div>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.utils.filter_cis_frames">
+<span class="sig-prename descclassname"><span class="pre">mlcg_tk.input_generator.utils.</span></span><span class="sig-name descname"><span class="pre">filter_cis_frames</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">forces</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">topology</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/mlcg_tk/input_generator/utils.html#filter_cis_frames"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.utils.filter_cis_frames" title="Link to this definition">¶</a></dt>
+<dd><p>filters out frames containing cis-omega angles</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>coords</strong> (<em>[</em><em>n_frames</em><em>, </em><em>n_atoms</em><em>, </em><em>3</em><em>]</em>) – Non-filtered atomistic coordinates</p></li>
+<li><p><strong>forces</strong> (<em>[</em><em>n_frames</em><em>, </em><em>n_atoms</em><em>, </em><em>3</em><em>]</em>) – Non-filtered atomistic forces</p></li>
+<li><p><strong>topology</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Topology</span></code></span>) – mdtraj topology to load the coordinates with</p></li>
+<li><p><strong>verbose</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – If True, will print a warning containing the number of discarded frames for this sample</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple of np.ndarray’s for filtered coarse grained coordinates and forces</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.utils.get_dihedral_groups">
+<span class="sig-prename descclassname"><span class="pre">mlcg_tk.input_generator.utils.</span></span><span class="sig-name descname"><span class="pre">get_dihedral_groups</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">top</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atoms_needed</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tag</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/mlcg_tk/input_generator/utils.html#get_dihedral_groups"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.utils.get_dihedral_groups" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>top</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Topology</span></code></span>) – MDTraj topology object.</p></li>
+<li><p><strong>atoms_needed</strong> (<em>[</em><em>4</em><em>]</em>) – Names of atoms forming dihedrals, should correspond to existing atom name in topology.</p></li>
+<li><p><strong>offset</strong> (<em>[</em><em>4</em><em>]</em>) – Residue offset of each atom in atoms_needed from starting point.</p></li>
+<li><p><strong>tag</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span>) – Dihedral prior tag.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dictionary of atom groups for each residue corresponding to dihedrals.</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<p>To obtain all phi dihedral atom groups for a backbone-preserving resolution:
+&gt;&gt;&gt; dihedral_dict = get_dihedral_groups(
+&gt;&gt;&gt;     topology, atoms_needed=[“C”, “N”, “CA”, “C”], offset=[-1.,0.,0.,0.], tag=”_phi”
+&gt;&gt;&gt; )</p>
+<p>For a one-bead-per-residue mapping with only CA atoms preserved:
+&gt;&gt;&gt; dihedral_dict = get_dihedral_groups(
+&gt;&gt;&gt;     topology, atoms_needed=[“CA”, “CA”, “CA”, “CA”], offset=[-3.,-2.,-1.,0.]
+&gt;&gt;&gt; )</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.utils.get_edges_and_orders">
+<span class="sig-prename descclassname"><span class="pre">mlcg_tk.input_generator.utils.</span></span><span class="sig-name descname"><span class="pre">get_edges_and_orders</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prior_builders</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">topology</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/mlcg_tk/input_generator/utils.html#get_edges_and_orders"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.utils.get_edges_and_orders" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>prior_builders</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="prior_gen.html#mlcg_tk.input_generator.prior_gen.PriorBuilder" title="mlcg_tk.input_generator.prior_gen.PriorBuilder"><code class="xref py py-class docutils literal notranslate"><span class="pre">PriorBuilder</span></code></a>]</span>) – List of PriorBuilder’s to use for defining neighbour lists</p></li>
+<li><p><strong>topology</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Topology</span></code></span>) – MDTraj topology object from which atom groups defining each prior term will be created.</p></li>
+<li><p><strong>cg_dataframe</strong> – Dataframe of CG topology (from MDTraj topology object).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of edges, orders, and tag for each prior term specified in prior_dict.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.utils.get_output_tag">
+<span class="sig-prename descclassname"><span class="pre">mlcg_tk.input_generator.utils.</span></span><span class="sig-name descname"><span class="pre">get_output_tag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tag_label</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">placement</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'before'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/mlcg_tk/input_generator/utils.html#get_output_tag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.utils.get_output_tag" title="Link to this definition">¶</a></dt>
+<dd><p>Helper function for combining output tag labels neatly.
+Fixes issues of connecting/preceding ‘_’ being included in some labels but not others.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tag_label</strong> (<em>List</em><em>, </em><em>str</em>) – Either a list of labels to include (ex: for datasets, delta force computation) or individual label item.</p></li>
+<li><p><strong>placement</strong> (<em>str</em>) – Placement of tag in output name. One of: ‘before’, ‘after’.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.utils.get_terminal_atoms">
+<span class="sig-prename descclassname"><span class="pre">mlcg_tk.input_generator.utils.</span></span><span class="sig-name descname"><span class="pre">get_terminal_atoms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prior_builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cg_dataframe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N_term</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C_term</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/mlcg_tk/input_generator/utils.html#get_terminal_atoms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.utils.get_terminal_atoms" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>prior_builder</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="prior_gen.html#mlcg_tk.input_generator.prior_gen.PriorBuilder" title="mlcg_tk.input_generator.prior_gen.PriorBuilder"><code class="xref py py-class docutils literal notranslate"><span class="pre">PriorBuilder</span></code></a></span>)</p></li>
+<li><p><strong>cg_dataframe</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></span>) – Dataframe of CG topology (from MDTraj topology object).</p></li>
+<li><p><strong>N_term</strong> (<em>(</em><em>Optional</em><em>)</em>) – Atom used in definition of N-terminus embedding.</p></li>
+<li><p><strong>C_term</strong> (<em>(</em><em>Optional</em><em>)</em>) – Atom used in definition of C-terminus embedding.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.utils.map_cg_topology">
+<span class="sig-prename descclassname"><span class="pre">mlcg_tk.input_generator.utils.</span></span><span class="sig-name descname"><span class="pre">map_cg_topology</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atom_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cg_atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embedding_function</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_residues</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/mlcg_tk/input_generator/utils.html#map_cg_topology"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.utils.map_cg_topology" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>atom_df</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></span>) – Pandas DataFrame row from mdTraj topology.</p></li>
+<li><p><strong>cg_atoms</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span>) – List of atoms needed in CG mapping.</p></li>
+<li><p><strong>embedding_function</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Function that slices coodinates, if not provided will fail.</p></li>
+<li><p><strong>special_typing</strong> – Optional dictionary of alternative atom properties to use in assigning types instead of atom names.</p></li>
+<li><p><strong>skip_residues</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]</span>) – Optional list of residues to skip when assigning CG atoms (can be used to skip caps for example);
+As of now, this skips all instances of a given residue.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>New DataFrame columns indicating atom involvement in CG mapping and type assignment.</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<p>First obtain a Pandas DataFrame object using the built-in MDTraj function:
+&gt;&gt;&gt; top_df = aa_traj.topology.to_dataframe()[0]</p>
+<p>For a five-bead resolution mapping without including caps:
+&gt;&gt;&gt; cg_atoms = [“N”, “CA”, “CB”, “C”, “O”]
+&gt;&gt;&gt; embedding_function = embedding_fivebead
+&gt;&gt;&gt; skip_residues = [“ACE”, “NME”]</p>
+<p>Apply row-wise function:
+&gt;&gt;&gt; top_df = top_df.apply(map_cg_topology, axis=1, cg_atoms, embedding_dict, skip_residues)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.utils.slice_coord_forces">
+<span class="sig-prename descclassname"><span class="pre">mlcg_tk.input_generator.utils.</span></span><span class="sig-name descname"><span class="pre">slice_coord_forces</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">forces</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cg_map</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mapping</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'slice_aggregate'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_stride</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atoms_batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/mlcg_tk/input_generator/utils.html#slice_coord_forces"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.utils.slice_coord_forces" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>coords</strong> (<em>[</em><em>n_frames</em><em>, </em><em>n_atoms</em><em>, </em><em>3</em><em>]</em>) – Numpy array of atomistic coordinates</p></li>
+<li><p><strong>forces</strong> (<em>[</em><em>n_frames</em><em>, </em><em>n_atoms</em><em>, </em><em>3</em><em>]</em>) – Numpy array of atomistic forces</p></li>
+<li><p><strong>cg_map</strong> (<em>[</em><em>n_cg_atoms</em><em>, </em><em>n_atomistic_atoms</em><em>]</em>) – Linear map characterizing the atomistic to CG configurational map with shape.</p></li>
+<li><p><strong>mapping</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Mapping scheme to be used,
+Can be either a string, then must be either ‘slice_aggregate’ or ‘slice_optimize’,
+Or can be directly a numpy array to use for projection</p></li>
+<li><p><strong>force_stride</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Striding to use for force projection results</p></li>
+<li><p><strong>batch_size</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]</span>) – Optional length of batch in which divide the AA mapping of coords and forces
+to CG ones</p></li>
+<li><p><strong>atoms_batch_size</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]</span>) – Optional batch size for dividing atoms in coordinates to estimate pairwise constraints</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Coarse-grained coordinates and forces</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.utils.split_bulk_termini">
+<span class="sig-prename descclassname"><span class="pre">mlcg_tk.input_generator.utils.</span></span><span class="sig-name descname"><span class="pre">split_bulk_termini</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">N_term</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C_term</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">all_edges</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/mlcg_tk/input_generator/utils.html#split_bulk_termini"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.utils.split_bulk_termini" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>N_term</strong> – List of atom indices to be split as part of the N-terminal.</p></li>
+<li><p><strong>C_term</strong> – List of atom indices to be split as part of the C-terminal.</p></li>
+<li><p><strong>all_edges</strong> – All atom groups forming part of prior term.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Separated edges for bulk and terminal groups</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.utils.with_attrs">
+<span class="sig-prename descclassname"><span class="pre">mlcg_tk.input_generator.utils.</span></span><span class="sig-name descname"><span class="pre">with_attrs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">func_attrs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/mlcg_tk/input_generator/utils.html#with_attrs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.utils.with_attrs" title="Link to this definition">¶</a></dt>
+<dd><p>Set attributes in the decorated function, at definition time.
+Only accepts keyword arguments.</p>
+</dd></dl>
+
+</section>
+
+        </article><button class="back-to-top" type="button">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+  </svg>
+  <span>Back to top</span>
+</button><div class="navigation flex print:hidden"><div class="navigation-prev">
+    <a href="raw_dataset.html">
+      <i class="i-lucide chevron-left"></i>
+      <div class="page-info">
+        <span>Previous</span><div class="title">raw_dataset module</div></div>
+    </a>
+  </div><div class="navigation-next">
+    <a href="../prior_tools.html">
+      <div class="page-info">
+        <span>Next</span>
+        <div class="title">prior_tools package</div>
+      </div>
+      <i class="i-lucide chevron-right"></i>
+    </a>
+  </div></div></div>
+    </div>
+  </main>
+</div>
+<footer class="sy-foot">
+  <div class="sy-foot-inner sy-container mx-auto">
+    <div class="sy-foot-reserved md:flex justify-between items-center">
+      <div class="sy-foot-copyright"><p>2026, Clementi Group</p>
+  
+  <p>
+    Made with
+    
+    <a href="https://www.sphinx-doc.org/">Sphinx</a> and
+    
+    <a href="https://shibuya.lepture.com">Shibuya theme</a>.
+  </p>
+</div>
+      <div class="sy-foot-socials"></div>
+    </div>
+  </div>
+</footer>
+      <script src="../../../../_static/documentation_options.js?v=7026087e"></script>
+      <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../../_static/shibuya.js?v=cac61aee"></script></body>
+</html>

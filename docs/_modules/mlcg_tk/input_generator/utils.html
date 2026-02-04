@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="en" data-accent-color="teal" data-content_root="../../../">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>mlcg_tk.input_generator.utils - mlcg-tk 0.0.0 documentation</title><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" /><script>
+    function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
+    setColorMode(localStorage._theme||"auto");
+  </script><link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=e1a1ceaf" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/shibuya.css?v=44020203" />
+    <link media="print" rel="stylesheet" type="text/css" href="../../../_static/print.css?v=20ff2c19" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sy-f-text: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+  --sy-f-heading: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+}
+</style>
+    <meta property="og:type" content="website"/><meta property="og:title" content="mlcg_tk.input_generator.utils"/>
+    <meta name="twitter:card" content="summary"/>
+  </head>
+<body><div class="sy-head">
+  <div class="sy-head-blur"></div>
+  <div class="sy-head-inner sy-container mx-auto">
+    <a class="sy-head-brand" href="../../../index.html">
+      
+      
+      <strong>mlcg-tk</strong>
+    </a>
+    <div class="sy-head-nav" id="head-nav">
+      <nav class="sy-head-links"></nav>
+      <div class="sy-head-extra flex items-center print:hidden"><form class="searchbox flex items-center" action="../../../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <kbd>/</kbd>
+</form><div class="sy-head-socials"></div></div>
+    </div>
+    <div class="sy-head-actions flex items-center shrink-0 print:hidden"><button class="js-theme theme-switch flex items-center"
+data-aria-auto="Switch to light color mode"
+data-aria-light="Switch to dark color mode"
+data-aria-dark="Switch to auto color mode">
+<i class="i-lucide theme-icon"></i>
+</button><button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="head-nav" aria-expanded="false">
+        <div class="hamburger">
+          <span class="hamburger_1"></span>
+          <span class="hamburger_2"></span>
+          <span class="hamburger_3"></span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="sy-page sy-container flex mx-auto">
+  <aside id="lside" class="sy-lside md:w-72 md:shrink-0 print:hidden">
+    <div class="sy-lside-inner md:sticky">
+      <div class="sy-scrollbar p-6">
+        <div class="globaltoc" data-expand-depth="1"><p class="caption" role="heading" aria-level="3"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../../../user_guide/index.html">Data pipeline user guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/intro.html">About the Training Data Generation Pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/intro.html#create-a-directory-to-output-all-the-intermediate-files">0) Create a directory to output all the intermediate files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/aa_to_cg.html">1) Loading and processing all-atom simulation data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/stats_priors.html">2) Computing statistics and fitting priors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/delta_forces.html">3) Producing delta forces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/packaging.html">4) Package Training Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/packaging.html#add-decoys-to-training-data">4.1) Add Decoys To Training Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/sim_input.html">5) Generate simulation input</a></li>
+</ul>
+</li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../../../api_docs/index.html">API documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api_docs/core/modules.html">Core API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/input_generator.html">input_generator package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/input_generator/prior_fit.html">prior_fit package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/input_generator/prior_fit/dihedral.html">dihedral module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/input_generator/prior_fit/fit_potentials.html">fit_potentials module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/input_generator/prior_fit/harmonic.html">harmonic module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/input_generator/prior_fit/histogram.html">histogram module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/input_generator/prior_fit/polynomial.html">polynomial module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/input_generator/prior_fit/repulsion.html">repulsion module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/input_generator/prior_fit/restricted_bending.html">restricted_bending module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/input_generator/prior_fit/utils.html">utils module</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/input_generator/embedding_maps.html">embedding_maps module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/input_generator/prior_gen.html">prior_gen module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/input_generator/prior_nls.html">prior_nls module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/input_generator/raw_data_loader.html">raw_data_loader module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/input_generator/raw_dataset.html">raw_dataset module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/input_generator/utils.html">utils module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/prior_tools.html">prior_tools package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/prior_tools/utils.html">utils module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api_docs/scripts/index.html">Scripts</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api_docs/scripts/gen_input_data.html"><code class="docutils literal notranslate"><span class="pre">gen_input_data.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api_docs/scripts/fit_priors.html"><code class="docutils literal notranslate"><span class="pre">fit_priors.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api_docs/scripts/merge_statistics.html"><code class="docutils literal notranslate"><span class="pre">merge_statistics.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api_docs/scripts/produce_delta_forces.html"><code class="docutils literal notranslate"><span class="pre">produce_delta_forces.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api_docs/scripts/package_training_data.html"><code class="docutils literal notranslate"><span class="pre">package_training_data.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api_docs/scripts/add_decoys.html"><code class="docutils literal notranslate"><span class="pre">add_decoys.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api_docs/scripts/gen_sim_input.html"><code class="docutils literal notranslate"><span class="pre">gen_sim_input.py</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="lside-overlay js-menu" role="button" aria-label="Close left sidebar" aria-controls="lside" aria-expanded="false"></div>
+  <aside id="rside" class="sy-rside pb-3 w-64 shrink-0 order-last">
+    <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
+      <i class="i-lucide close"></i>
+    </button>
+    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
+  </aside>
+  <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+<div class="sy-breadcrumbs" role="navigation">
+  <div class="sy-breadcrumbs-inner flex items-center">
+    <div class="md:hidden mr-3">
+      <button class="js-menu" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
+        <i class="i-lucide menu"></i>
+      </button>
+    </div>
+    <ol class="flex-1" itemscope itemtype="https://schema.org/BreadcrumbList"><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../../../index.html"><span itemprop="name">mlcg-tk</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="1" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../../index.html"><span itemprop="name">Module code</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="2" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <strong itemprop="name">mlcg_tk.input_generator.utils</strong>
+        <meta itemprop="position" content="3" />
+      </li></ol>
+    <div class="xl:hidden ml-1">
+      <button class="js-menu" aria-label="Show table of contents" type="button" aria-controls="rside"
+        aria-expanded="false">
+        <i class="i-lucide outdent"></i>
+      </button>
+    </div>
+  </div>
+</div><div class="flex flex-col break-words justify-between">
+      <div class="relative min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
+  <article class="yue" role="main">
+          <h1>Source code for mlcg_tk.input_generator.utils</h1><div class="highlight"><pre>
+<span></span><span data-line="1"><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+</span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Dict</span>
+</span><span data-line="3"><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+</span><span data-line="4"><span class="kn">import</span><span class="w"> </span><span class="nn">mdtraj</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">md</span>
+</span><span data-line="5"><span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+</span><span data-line="6"><span class="kn">from</span><span class="w"> </span><span class="nn">scipy.sparse</span><span class="w"> </span><span class="kn">import</span> <span class="n">sparray</span><span class="p">,</span> <span class="n">csr_array</span>
+</span><span data-line="7"><span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">wraps</span>
+</span><span data-line="8">
+</span><span data-line="9"><span class="kn">from</span><span class="w"> </span><span class="nn">aggforce</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+</span><span data-line="10">    <span class="n">LinearMap</span><span class="p">,</span>
+</span><span data-line="11">    <span class="n">guess_pairwise_constraints</span><span class="p">,</span>
+</span><span data-line="12">    <span class="n">project_forces</span><span class="p">,</span>
+</span><span data-line="13">    <span class="n">constraint_aware_uni_map</span><span class="p">,</span>
+</span><span data-line="14">    <span class="n">qp_linear_map</span><span class="p">,</span>
+</span><span data-line="15"><span class="p">)</span>
+</span><span data-line="16">
+</span><span data-line="17">
+</span><span data-line="18"><span class="kn">from</span><span class="w"> </span><span class="nn">.prior_gen</span><span class="w"> </span><span class="kn">import</span> <span class="n">PriorBuilder</span>
+</span><span data-line="19">
+</span><span data-line="20">
+<div class="viewcode-block" id="cg_matmul">
+<a class="viewcode-back" href="../../../api_docs/core/mlcg_tk/input_generator/utils.html#mlcg_tk.input_generator.utils.cg_matmul">[docs]</a>
+</span><span data-line="21"><span class="k">def</span><span class="w"> </span><span class="nf">cg_matmul</span><span class="p">(</span>
+</span><span data-line="22">    <span class="n">map_arr</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">sparray</span><span class="p">],</span> <span class="n">timeseries_arr</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+</span><span data-line="23"><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+</span><span data-line="24"><span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Function to perform array multiplication for both numpy and scipy sparse arrays</span>
+</span><span data-line="25">
+</span><span data-line="26"><span class="sd">    Parameters</span>
+</span><span data-line="27"><span class="sd">    ----------</span>
+</span><span data-line="28">
+</span><span data-line="29"><span class="sd">    map_arr : Union[np.ndarray,sparray]</span>
+</span><span data-line="30"><span class="sd">        array of shape (n_beads,n_atoms) representing a linear CG mapping</span>
+</span><span data-line="31">
+</span><span data-line="32"><span class="sd">    timeseries_arr : np.ndarray</span>
+</span><span data-line="33"><span class="sd">        array of shape (n_frames,n_atoms,3) holding coordinate or force information</span>
+</span><span data-line="34">
+</span><span data-line="35">
+</span><span data-line="36">
+</span><span data-line="37"><span class="sd">    Returns</span>
+</span><span data-line="38"><span class="sd">    -------</span>
+</span><span data-line="39">
+</span><span data-line="40"><span class="sd">    np.ndarry of shape (n_frames,n_beads,3) after applying the CG map to every entry of timeseries_arr</span>
+</span><span data-line="41">
+</span><span data-line="42"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="43">    <span class="k">assert</span> <span class="p">(</span>
+</span><span data-line="44">        <span class="nb">len</span><span class="p">(</span><span class="n">timeseries_arr</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span>
+</span><span data-line="45">    <span class="p">),</span> <span class="s2">&quot;Time series doesn&#39;t have shape (n_frames,n_atoms,3)&quot;</span>
+</span><span data-line="46">    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">map_arr</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;Map doesn&#39;t have shape (n_beads,n_atoms)&quot;</span>
+</span><span data-line="47">    <span class="k">assert</span> <span class="p">(</span>
+</span><span data-line="48">        <span class="n">map_arr</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">timeseries_arr</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+</span><span data-line="49">    <span class="p">),</span> <span class="s2">&quot;`n_atoms` doesn&#39;t concide in the map and &quot;</span>
+</span><span data-line="50">    <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">map_arr</span><span class="p">),</span> <span class="n">sparray</span><span class="p">):</span>
+</span><span data-line="51">        <span class="c1"># scipy sparse arrays dont support the same broadcasting than numpy</span>
+</span><span data-line="52">        <span class="c1"># we need to explicitly slice every frame and then stack them all</span>
+</span><span data-line="53">        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span>
+</span><span data-line="54">            <span class="p">[</span><span class="n">map_arr</span> <span class="o">@</span> <span class="n">timeseries_arr</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">timeseries_arr</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span>
+</span><span data-line="55">        <span class="p">)</span>
+</span><span data-line="56">    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">map_arr</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+</span><span data-line="57">        <span class="c1"># when using numpy non-sparse arrays, broadcasting over the frame dimension is supported</span>
+</span><span data-line="58">        <span class="k">return</span> <span class="n">map_arr</span> <span class="o">@</span> <span class="n">timeseries_arr</span>
+</span><span data-line="59">    <span class="k">else</span><span class="p">:</span>
+</span><span data-line="60">        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Map of type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">map_arr</span><span class="p">)</span><span class="si">}</span><span class="s2"> is not supported&quot;</span><span class="p">)</span></div>
+
+</span><span data-line="61">
+</span><span data-line="62">
+<div class="viewcode-block" id="with_attrs">
+<a class="viewcode-back" href="../../../api_docs/core/mlcg_tk/input_generator/utils.html#mlcg_tk.input_generator.utils.with_attrs">[docs]</a>
+</span><span data-line="63"><span class="k">def</span><span class="w"> </span><span class="nf">with_attrs</span><span class="p">(</span><span class="o">**</span><span class="n">func_attrs</span><span class="p">):</span>
+</span><span data-line="64"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Set attributes in the decorated function, at definition time.</span>
+</span><span data-line="65"><span class="sd">    Only accepts keyword arguments.</span>
+</span><span data-line="66"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="67">
+</span><span data-line="68">    <span class="k">def</span><span class="w"> </span><span class="nf">attr_decorator</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+</span><span data-line="69">        <span class="nd">@wraps</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
+</span><span data-line="70">        <span class="k">def</span><span class="w"> </span><span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</span><span data-line="71">            <span class="k">return</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span data-line="72">
+</span><span data-line="73">        <span class="k">for</span> <span class="n">attr</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">func_attrs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+</span><span data-line="74">            <span class="nb">setattr</span><span class="p">(</span><span class="n">wrapper</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+</span><span data-line="75">
+</span><span data-line="76">        <span class="k">return</span> <span class="n">wrapper</span>
+</span><span data-line="77">
+</span><span data-line="78">    <span class="k">return</span> <span class="n">attr_decorator</span></div>
+
+</span><span data-line="79">
+</span><span data-line="80">
+<div class="viewcode-block" id="get_output_tag">
+<a class="viewcode-back" href="../../../api_docs/core/mlcg_tk/input_generator/utils.html#mlcg_tk.input_generator.utils.get_output_tag">[docs]</a>
+</span><span data-line="81"><span class="k">def</span><span class="w"> </span><span class="nf">get_output_tag</span><span class="p">(</span><span class="n">tag_label</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">placement</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;before&quot;</span><span class="p">):</span>
+</span><span data-line="82"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="83"><span class="sd">    Helper function for combining output tag labels neatly.</span>
+</span><span data-line="84"><span class="sd">    Fixes issues of connecting/preceding &#39;_&#39; being included in some labels but not others.</span>
+</span><span data-line="85">
+</span><span data-line="86"><span class="sd">    Parameters</span>
+</span><span data-line="87"><span class="sd">    ----------</span>
+</span><span data-line="88"><span class="sd">    tag_label : List, str</span>
+</span><span data-line="89"><span class="sd">        Either a list of labels to include (ex: for datasets, delta force computation) or individual label item.</span>
+</span><span data-line="90"><span class="sd">    placement : str</span>
+</span><span data-line="91"><span class="sd">        Placement of tag in output name. One of: &#39;before&#39;, &#39;after&#39;.</span>
+</span><span data-line="92"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="93">
+</span><span data-line="94">    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tag_label</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+</span><span data-line="95">        <span class="k">if</span> <span class="n">tag_label</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">]:</span>
+</span><span data-line="96">            <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+</span><span data-line="97">        <span class="k">else</span><span class="p">:</span>
+</span><span data-line="98">            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;_</span><span class="si">{</span><span class="n">tag_label</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span data-line="99">    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tag_label</span><span class="p">,</span> <span class="n">List</span><span class="p">):</span>
+</span><span data-line="100">        <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">tag_label</span><span class="p">:</span>
+</span><span data-line="101">            <span class="k">if</span> <span class="n">l</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">]:</span>
+</span><span data-line="102">                <span class="n">tag_label</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+</span><span data-line="103">        <span class="n">joined_label</span> <span class="o">=</span> <span class="s2">&quot;_&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">l</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">tag_label</span><span class="p">])</span>
+</span><span data-line="104">        <span class="k">if</span> <span class="n">placement</span> <span class="o">==</span> <span class="s2">&quot;before&quot;</span><span class="p">:</span>
+</span><span data-line="105">            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">joined_label</span><span class="si">}</span><span class="s2">_&quot;</span>
+</span><span data-line="106">        <span class="k">elif</span> <span class="n">placement</span> <span class="o">==</span> <span class="s2">&quot;after&quot;</span><span class="p">:</span>
+</span><span data-line="107">            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;_</span><span class="si">{</span><span class="n">joined_label</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span data-line="108">        <span class="k">else</span><span class="p">:</span>
+</span><span data-line="109">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Please specify placement from: &#39;before&#39;, &#39;after&#39;.&quot;</span><span class="p">)</span></div>
+
+</span><span data-line="110">
+</span><span data-line="111">
+<div class="viewcode-block" id="map_cg_topology">
+<a class="viewcode-back" href="../../../api_docs/core/mlcg_tk/input_generator/utils.html#mlcg_tk.input_generator.utils.map_cg_topology">[docs]</a>
+</span><span data-line="112"><span class="k">def</span><span class="w"> </span><span class="nf">map_cg_topology</span><span class="p">(</span>
+</span><span data-line="113">    <span class="n">atom_df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+</span><span data-line="114">    <span class="n">cg_atoms</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+</span><span data-line="115">    <span class="n">embedding_function</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="116">    <span class="n">skip_residues</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="117"><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span data-line="118"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="119"><span class="sd">    Parameters</span>
+</span><span data-line="120"><span class="sd">    ----------</span>
+</span><span data-line="121"><span class="sd">    atom_df:</span>
+</span><span data-line="122"><span class="sd">        Pandas DataFrame row from mdTraj topology.</span>
+</span><span data-line="123"><span class="sd">    cg_atoms:</span>
+</span><span data-line="124"><span class="sd">        List of atoms needed in CG mapping.</span>
+</span><span data-line="125"><span class="sd">    embedding_function:</span>
+</span><span data-line="126"><span class="sd">        Function that slices coodinates, if not provided will fail.</span>
+</span><span data-line="127"><span class="sd">    special_typing:</span>
+</span><span data-line="128"><span class="sd">        Optional dictionary of alternative atom properties to use in assigning types instead of atom names.</span>
+</span><span data-line="129"><span class="sd">    skip_residues:</span>
+</span><span data-line="130"><span class="sd">        Optional list of residues to skip when assigning CG atoms (can be used to skip caps for example);</span>
+</span><span data-line="131"><span class="sd">        As of now, this skips all instances of a given residue.</span>
+</span><span data-line="132">
+</span><span data-line="133">
+</span><span data-line="134"><span class="sd">    Returns</span>
+</span><span data-line="135"><span class="sd">    -------</span>
+</span><span data-line="136"><span class="sd">    New DataFrame columns indicating atom involvement in CG mapping and type assignment.</span>
+</span><span data-line="137">
+</span><span data-line="138"><span class="sd">    Example</span>
+</span><span data-line="139"><span class="sd">    -------</span>
+</span><span data-line="140"><span class="sd">    First obtain a Pandas DataFrame object using the built-in MDTraj function:</span>
+</span><span data-line="141"><span class="sd">    &gt;&gt;&gt; top_df = aa_traj.topology.to_dataframe()[0]</span>
+</span><span data-line="142">
+</span><span data-line="143"><span class="sd">    For a five-bead resolution mapping without including caps:</span>
+</span><span data-line="144"><span class="sd">    &gt;&gt;&gt; cg_atoms = [&quot;N&quot;, &quot;CA&quot;, &quot;CB&quot;, &quot;C&quot;, &quot;O&quot;]</span>
+</span><span data-line="145"><span class="sd">    &gt;&gt;&gt; embedding_function = embedding_fivebead</span>
+</span><span data-line="146"><span class="sd">    &gt;&gt;&gt; skip_residues = [&quot;ACE&quot;, &quot;NME&quot;]</span>
+</span><span data-line="147">
+</span><span data-line="148"><span class="sd">    Apply row-wise function:</span>
+</span><span data-line="149"><span class="sd">    &gt;&gt;&gt; top_df = top_df.apply(map_cg_topology, axis=1, cg_atoms, embedding_dict, skip_residues)</span>
+</span><span data-line="150"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="151">    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">embedding_function</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+</span><span data-line="152">        <span class="k">try</span><span class="p">:</span>
+</span><span data-line="153">            <span class="n">embedding_function</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">embedding_function</span><span class="p">)</span>
+</span><span data-line="154">        <span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>
+</span><span data-line="155">            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The specified embedding function has not been defined.&quot;</span><span class="p">)</span>
+</span><span data-line="156">            <span class="n">exit</span>
+</span><span data-line="157">    <span class="n">name</span><span class="p">,</span> <span class="n">res</span> <span class="o">=</span> <span class="n">atom_df</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">],</span> <span class="n">atom_df</span><span class="p">[</span><span class="s2">&quot;resName&quot;</span><span class="p">]</span>
+</span><span data-line="158">    <span class="k">if</span> <span class="n">skip_residues</span> <span class="o">!=</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">skip_residues</span><span class="p">:</span>
+</span><span data-line="159">        <span class="n">atom_df</span><span class="p">[</span><span class="s2">&quot;mapped&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span data-line="160">        <span class="n">atom_df</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;NA&quot;</span>
+</span><span data-line="161">
+</span><span data-line="162">    <span class="k">else</span><span class="p">:</span>
+</span><span data-line="163">        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">cg_atoms</span><span class="p">:</span>
+</span><span data-line="164">            <span class="n">atom_df</span><span class="p">[</span><span class="s2">&quot;mapped&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+</span><span data-line="165">            <span class="n">atom_type</span> <span class="o">=</span> <span class="n">embedding_function</span><span class="p">(</span><span class="n">atom_df</span><span class="p">)</span>
+</span><span data-line="166">            <span class="n">atom_df</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">atom_type</span>
+</span><span data-line="167">        <span class="k">else</span><span class="p">:</span>
+</span><span data-line="168">            <span class="n">atom_df</span><span class="p">[</span><span class="s2">&quot;mapped&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span data-line="169">            <span class="n">atom_df</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;NA&quot;</span>
+</span><span data-line="170">
+</span><span data-line="171">    <span class="k">return</span> <span class="n">atom_df</span></div>
+
+</span><span data-line="172">
+</span><span data-line="173">
+<div class="viewcode-block" id="batch_matmul">
+<a class="viewcode-back" href="../../../api_docs/core/mlcg_tk/input_generator/utils.html#mlcg_tk.input_generator.utils.batch_matmul">[docs]</a>
+</span><span data-line="174"><span class="k">def</span><span class="w"> </span><span class="nf">batch_matmul</span><span class="p">(</span><span class="n">map_matrix</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">):</span>
+</span><span data-line="175"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="176"><span class="sd">    Perform matrix multiplication in chunks.</span>
+</span><span data-line="177">
+</span><span data-line="178"><span class="sd">    Parameters:</span>
+</span><span data-line="179"><span class="sd">      map_matrix: Union[np.ndarray,sparray] of shape (N_CG_ats, N_FG_ats)</span>
+</span><span data-line="180"><span class="sd">      X: np.ndarray of shape (M_frames, N_FG_ats, 3)</span>
+</span><span data-line="181"><span class="sd">      batch_size: int, the number of rows (from the M dimension) to process at a time.</span>
+</span><span data-line="182">
+</span><span data-line="183"><span class="sd">    Returns:</span>
+</span><span data-line="184"><span class="sd">      result: np.ndarray of shape (M_frames, N_CG_ats, 3)</span>
+</span><span data-line="185"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="186">    <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span data-line="187">    <span class="n">M</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span><span data-line="188">    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">):</span>
+</span><span data-line="189">        <span class="c1"># Slice a batch along the M dimension</span>
+</span><span data-line="190">        <span class="n">X_batch</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="n">batch_size</span><span class="p">]</span>  <span class="c1"># shape: (batch, N, 3)</span>
+</span><span data-line="191">        <span class="c1"># Perform matrix multiplication:</span>
+</span><span data-line="192">        <span class="c1"># map_matrix (CG, FG) multiplied by each X_batch (FG, 3) gives (GC, 3) for each sample.</span>
+</span><span data-line="193">        <span class="c1"># The broadcasting ensures the result is (batch, CG, 3)</span>
+</span><span data-line="194">        <span class="n">result_batch</span> <span class="o">=</span> <span class="n">cg_matmul</span><span class="p">(</span><span class="n">map_matrix</span><span class="p">,</span> <span class="n">X_batch</span><span class="p">)</span>
+</span><span data-line="195">        <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result_batch</span><span class="p">)</span>
+</span><span data-line="196">    <span class="c1"># Concatenate all chunks along the first axis (M dimension)</span>
+</span><span data-line="197">    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span></div>
+
+</span><span data-line="198">
+</span><span data-line="199">
+<div class="viewcode-block" id="chunker">
+<a class="viewcode-back" href="../../../api_docs/core/mlcg_tk/input_generator/utils.html#mlcg_tk.input_generator.utils.chunker">[docs]</a>
+</span><span data-line="200"><span class="k">def</span><span class="w"> </span><span class="nf">chunker</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">n_batches</span><span class="p">):</span>
+</span><span data-line="201"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="202"><span class="sd">    Chunks an input array into a specified number of batches.</span>
+</span><span data-line="203">
+</span><span data-line="204"><span class="sd">    This function divides the input array into approximately equal-sized chunks.</span>
+</span><span data-line="205"><span class="sd">    The last chunk may contain more elements if the array length is not perfectly</span>
+</span><span data-line="206"><span class="sd">    divisible by the number of batches.</span>
+</span><span data-line="207">
+</span><span data-line="208"><span class="sd">    Parameters:</span>
+</span><span data-line="209"><span class="sd">    -----------</span>
+</span><span data-line="210"><span class="sd">    array : np.ndarray or List</span>
+</span><span data-line="211"><span class="sd">        The input array to be chunked.</span>
+</span><span data-line="212"><span class="sd">    n_batches : int</span>
+</span><span data-line="213"><span class="sd">        The number of batches to divide the array into. Must be a positive</span>
+</span><span data-line="214"><span class="sd">        integer and less than or equal to the length of the array.</span>
+</span><span data-line="215">
+</span><span data-line="216"><span class="sd">    Returns:</span>
+</span><span data-line="217"><span class="sd">    --------</span>
+</span><span data-line="218"><span class="sd">    batched_array: List</span>
+</span><span data-line="219"><span class="sd">        A list of lists/arrays, where each inner list/array is a chunk of the original array.</span>
+</span><span data-line="220">
+</span><span data-line="221"><span class="sd">    Examples:</span>
+</span><span data-line="222"><span class="sd">    &gt;&gt;&gt; chunker([1, 2, 3, 4, 5, 6, 7, 8, 9], 3)</span>
+</span><span data-line="223"><span class="sd">    [[1, 2, 3], [4, 5, 6], [7, 8, 9]]</span>
+</span><span data-line="224">
+</span><span data-line="225"><span class="sd">    &gt;&gt;&gt; chunker([1, 2, 3, 4, 5], 2)</span>
+</span><span data-line="226"><span class="sd">    [[1, 2], [3, 4, 5]]</span>
+</span><span data-line="227">
+</span><span data-line="228"><span class="sd">    &gt;&gt;&gt; chunker([1, 2, 3, 4, 5], 5)</span>
+</span><span data-line="229"><span class="sd">    [[1], [2], [3], [4], [5]]</span>
+</span><span data-line="230">
+</span><span data-line="231"><span class="sd">    &gt;&gt;&gt; chunker([1, 2, 3, 4, 5], 1)</span>
+</span><span data-line="232"><span class="sd">    [[1, 2, 3, 4, 5]]</span>
+</span><span data-line="233"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="234">    <span class="k">if</span> <span class="n">n_batches</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+</span><span data-line="235">        <span class="k">return</span> <span class="p">[</span><span class="n">array</span><span class="p">]</span>
+</span><span data-line="236">    <span class="k">assert</span> <span class="n">n_batches</span> <span class="o">&lt;=</span> <span class="nb">len</span><span class="p">(</span>
+</span><span data-line="237">        <span class="n">array</span>
+</span><span data-line="238">    <span class="p">),</span> <span class="s2">&quot;n_batches needs to be smaller than the array to chunk&quot;</span>
+</span><span data-line="239">    <span class="n">batched_array</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span data-line="240">    <span class="n">n_elts_per_batch</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">array</span><span class="p">)</span> <span class="o">//</span> <span class="n">n_batches</span>
+</span><span data-line="241">    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_batches</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+</span><span data-line="242">        <span class="n">batched_array</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">array</span><span class="p">[</span><span class="n">i</span> <span class="o">*</span> <span class="n">n_elts_per_batch</span> <span class="p">:</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">n_elts_per_batch</span><span class="p">])</span>
+</span><span data-line="243">    <span class="c1"># last batch might be larger, it contains the rest of the elements in the array</span>
+</span><span data-line="244">    <span class="n">batched_array</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">array</span><span class="p">[(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">n_elts_per_batch</span> <span class="p">:])</span>
+</span><span data-line="245">    <span class="k">return</span> <span class="n">batched_array</span></div>
+
+</span><span data-line="246">
+</span><span data-line="247">
+<div class="viewcode-block" id="slice_coord_forces">
+<a class="viewcode-back" href="../../../api_docs/core/mlcg_tk/input_generator/utils.html#mlcg_tk.input_generator.utils.slice_coord_forces">[docs]</a>
+</span><span data-line="248"><span class="k">def</span><span class="w"> </span><span class="nf">slice_coord_forces</span><span class="p">(</span>
+</span><span data-line="249">    <span class="n">coords</span><span class="p">,</span>
+</span><span data-line="250">    <span class="n">forces</span><span class="p">,</span>
+</span><span data-line="251">    <span class="n">cg_map</span><span class="p">,</span>
+</span><span data-line="252">    <span class="n">mapping</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;slice_aggregate&quot;</span><span class="p">,</span>
+</span><span data-line="253">    <span class="n">force_stride</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+</span><span data-line="254">    <span class="n">batch_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="255">    <span class="n">atoms_batch_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="256"><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">:</span>
+</span><span data-line="257"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="258"><span class="sd">    Parameters</span>
+</span><span data-line="259"><span class="sd">    ----------</span>
+</span><span data-line="260"><span class="sd">    coords: [n_frames, n_atoms, 3]</span>
+</span><span data-line="261"><span class="sd">        Numpy array of atomistic coordinates</span>
+</span><span data-line="262"><span class="sd">    forces: [n_frames, n_atoms, 3]</span>
+</span><span data-line="263"><span class="sd">        Numpy array of atomistic forces</span>
+</span><span data-line="264"><span class="sd">    cg_map: [n_cg_atoms, n_atomistic_atoms]</span>
+</span><span data-line="265"><span class="sd">        Linear map characterizing the atomistic to CG configurational map with shape.</span>
+</span><span data-line="266"><span class="sd">    mapping:</span>
+</span><span data-line="267"><span class="sd">        Mapping scheme to be used,</span>
+</span><span data-line="268"><span class="sd">        Can be either a string, then must be either &#39;slice_aggregate&#39; or &#39;slice_optimize&#39;,</span>
+</span><span data-line="269"><span class="sd">        Or can be directly a numpy array to use for projection</span>
+</span><span data-line="270"><span class="sd">    force_stride:</span>
+</span><span data-line="271"><span class="sd">        Striding to use for force projection results</span>
+</span><span data-line="272"><span class="sd">    batch_size:</span>
+</span><span data-line="273"><span class="sd">        Optional length of batch in which divide the AA mapping of coords and forces</span>
+</span><span data-line="274"><span class="sd">        to CG ones</span>
+</span><span data-line="275"><span class="sd">    atoms_batch_size:</span>
+</span><span data-line="276"><span class="sd">        Optional batch size for dividing atoms in coordinates to estimate pairwise constraints</span>
+</span><span data-line="277">
+</span><span data-line="278"><span class="sd">    Returns</span>
+</span><span data-line="279"><span class="sd">    -------</span>
+</span><span data-line="280"><span class="sd">    Coarse-grained coordinates and forces</span>
+</span><span data-line="281"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="282">    <span class="c1"># Original hard coded values</span>
+</span><span data-line="283">    <span class="n">n_frames</span> <span class="o">=</span> <span class="mi">100</span>  <span class="c1"># taking only first 100 frames gives same results in ~1/15th of time</span>
+</span><span data-line="284">    <span class="n">threshold</span> <span class="o">=</span> <span class="mf">5e-3</span>  <span class="c1"># threshold for pairwise constraints</span>
+</span><span data-line="285">
+</span><span data-line="286">    <span class="n">config_map</span> <span class="o">=</span> <span class="n">LinearMap</span><span class="p">(</span><span class="n">cg_map</span><span class="p">)</span>
+</span><span data-line="287">    <span class="n">config_map_matrix</span> <span class="o">=</span> <span class="n">config_map</span><span class="o">.</span><span class="n">standard_matrix</span>
+</span><span data-line="288">    <span class="n">n_sites</span> <span class="o">=</span> <span class="n">coords</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># number of atomistic sites</span>
+</span><span data-line="289">
+</span><span data-line="290">    <span class="k">if</span> <span class="n">atoms_batch_size</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">atoms_batch_size</span> <span class="o">&gt;=</span> <span class="n">n_sites</span><span class="p">:</span>
+</span><span data-line="291">        <span class="c1"># No batching: process all atoms at once</span>
+</span><span data-line="292">        <span class="n">constraints</span> <span class="o">=</span> <span class="n">guess_pairwise_constraints</span><span class="p">(</span><span class="n">coords</span><span class="p">[:</span><span class="n">n_frames</span><span class="p">],</span> <span class="n">threshold</span><span class="o">=</span><span class="n">threshold</span><span class="p">)</span>
+</span><span data-line="293">
+</span><span data-line="294">    <span class="k">else</span><span class="p">:</span>
+</span><span data-line="295">        <span class="c1"># Batching mode</span>
+</span><span data-line="296">        <span class="n">batches</span> <span class="o">=</span> <span class="p">[</span>
+</span><span data-line="297">            <span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="n">atoms_batch_size</span><span class="p">,</span> <span class="n">n_sites</span><span class="p">)))</span>
+</span><span data-line="298">            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_sites</span><span class="p">,</span> <span class="n">atoms_batch_size</span><span class="p">)</span>
+</span><span data-line="299">        <span class="p">]</span>
+</span><span data-line="300">        <span class="n">constraints</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+</span><span data-line="301">
+</span><span data-line="302">        <span class="c1"># Within-batch constraints</span>
+</span><span data-line="303">        <span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="n">batches</span><span class="p">:</span>
+</span><span data-line="304">            <span class="n">xyz_batch</span> <span class="o">=</span> <span class="n">coords</span><span class="p">[:</span><span class="n">n_frames</span><span class="p">,</span> <span class="n">batch</span><span class="p">,</span> <span class="p">:]</span>
+</span><span data-line="305">            <span class="n">local_constraints</span> <span class="o">=</span> <span class="n">guess_pairwise_constraints</span><span class="p">(</span>
+</span><span data-line="306">                <span class="n">xyz_batch</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="n">threshold</span>
+</span><span data-line="307">            <span class="p">)</span>
+</span><span data-line="308">            <span class="n">global_constraints</span> <span class="o">=</span> <span class="p">{</span>
+</span><span data-line="309">                <span class="nb">frozenset</span><span class="p">([</span><span class="n">batch</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">pair</span><span class="p">])</span> <span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="n">local_constraints</span>
+</span><span data-line="310">            <span class="p">}</span>
+</span><span data-line="311">            <span class="n">constraints</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">global_constraints</span><span class="p">)</span>
+</span><span data-line="312">
+</span><span data-line="313">        <span class="c1"># Cross-batch constraints</span>
+</span><span data-line="314">        <span class="c1"># To significantly reduce computational cost, we assume residues are ordered in the structure.</span>
+</span><span data-line="315">        <span class="c1"># Therefore, constraints are computed only between consecutive batches rather than all pairs of batches.</span>
+</span><span data-line="316">        <span class="c1"># For even greater efficiency, this could be further limited to just the first and last (e.g., 30) atoms of each batch,</span>
+</span><span data-line="317">        <span class="c1"># which scales approximately as O(1). However, computing all pairs between consecutive batches is generally still efficient.</span>
+</span><span data-line="318">        <span class="c1"># This approach can also be extended to the case with no batching (for smaller molecules),</span>
+</span><span data-line="319">        <span class="c1"># again assuming ordered residues, treating all molecules uniformly and eliminating the need for the atoms_batch_size parameter.</span>
+</span><span data-line="320">        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">batches</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+</span><span data-line="321">            <span class="n">b1</span> <span class="o">=</span> <span class="n">batches</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+</span><span data-line="322">            <span class="n">b2</span> <span class="o">=</span> <span class="n">batches</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+</span><span data-line="323">            <span class="n">xyz1</span> <span class="o">=</span> <span class="n">coords</span><span class="p">[:</span><span class="n">n_frames</span><span class="p">,</span> <span class="n">b1</span><span class="p">,</span> <span class="p">:]</span>
+</span><span data-line="324">            <span class="n">xyz2</span> <span class="o">=</span> <span class="n">coords</span><span class="p">[:</span><span class="n">n_frames</span><span class="p">,</span> <span class="n">b2</span><span class="p">,</span> <span class="p">:]</span>
+</span><span data-line="325">            <span class="n">local_constraints</span> <span class="o">=</span> <span class="n">guess_pairwise_constraints</span><span class="p">(</span>
+</span><span data-line="326">                <span class="n">xyz1</span><span class="p">,</span> <span class="n">cross_xyz</span><span class="o">=</span><span class="n">xyz2</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="n">threshold</span>
+</span><span data-line="327">            <span class="p">)</span>
+</span><span data-line="328">            <span class="c1"># guess_pairwise_constraints returns ordered pairs (i, j) where i indexes into cross_xyz (b2) and j indexes into xyz (b1)</span>
+</span><span data-line="329">            <span class="n">global_constraints</span> <span class="o">=</span> <span class="p">{</span>
+</span><span data-line="330">                <span class="nb">frozenset</span><span class="p">([</span><span class="n">b1</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">b2</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">local_constraints</span>
+</span><span data-line="331">            <span class="p">}</span>
+</span><span data-line="332">            <span class="n">constraints</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">global_constraints</span><span class="p">)</span>
+</span><span data-line="333">
+</span><span data-line="334">    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mapping</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+</span><span data-line="335">        <span class="k">if</span> <span class="n">mapping</span> <span class="o">==</span> <span class="s2">&quot;slice_aggregate&quot;</span><span class="p">:</span>
+</span><span data-line="336">            <span class="n">method</span> <span class="o">=</span> <span class="n">constraint_aware_uni_map</span>
+</span><span data-line="337">            <span class="n">force_agg_results</span> <span class="o">=</span> <span class="n">project_forces</span><span class="p">(</span>
+</span><span data-line="338">                <span class="n">coords</span><span class="o">=</span><span class="n">coords</span><span class="p">[::</span><span class="n">force_stride</span><span class="p">],</span>
+</span><span data-line="339">                <span class="n">forces</span><span class="o">=</span><span class="n">forces</span><span class="p">[::</span><span class="n">force_stride</span><span class="p">],</span>
+</span><span data-line="340">                <span class="n">coord_map</span><span class="o">=</span><span class="n">config_map</span><span class="p">,</span>
+</span><span data-line="341">                <span class="n">constrained_inds</span><span class="o">=</span><span class="n">constraints</span><span class="p">,</span>
+</span><span data-line="342">                <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span>
+</span><span data-line="343">            <span class="p">)</span>
+</span><span data-line="344">        <span class="k">elif</span> <span class="n">mapping</span> <span class="o">==</span> <span class="s2">&quot;slice_optimize&quot;</span><span class="p">:</span>
+</span><span data-line="345">            <span class="n">method</span> <span class="o">=</span> <span class="n">qp_linear_map</span>
+</span><span data-line="346">            <span class="n">l2</span> <span class="o">=</span> <span class="mf">1e3</span>
+</span><span data-line="347">            <span class="n">force_agg_results</span> <span class="o">=</span> <span class="n">project_forces</span><span class="p">(</span>
+</span><span data-line="348">                <span class="n">coords</span><span class="o">=</span><span class="n">coords</span><span class="p">[::</span><span class="n">force_stride</span><span class="p">],</span>
+</span><span data-line="349">                <span class="n">forces</span><span class="o">=</span><span class="n">forces</span><span class="p">[::</span><span class="n">force_stride</span><span class="p">],</span>
+</span><span data-line="350">                <span class="n">coord_map</span><span class="o">=</span><span class="n">config_map</span><span class="p">,</span>
+</span><span data-line="351">                <span class="n">constrained_inds</span><span class="o">=</span><span class="n">constraints</span><span class="p">,</span>
+</span><span data-line="352">                <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span>
+</span><span data-line="353">                <span class="n">l2_regularization</span><span class="o">=</span><span class="n">l2</span><span class="p">,</span>
+</span><span data-line="354">            <span class="p">)</span>
+</span><span data-line="355">        <span class="k">else</span><span class="p">:</span>
+</span><span data-line="356">            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+</span><span data-line="357">                <span class="sa">f</span><span class="s2">&quot;Force mapping </span><span class="si">{</span><span class="n">mapping</span><span class="si">}</span><span class="s2"> is neither &#39;slice_aggregate&#39; nor &#39;slice_optimize&#39;.&quot;</span>
+</span><span data-line="358">            <span class="p">)</span>
+</span><span data-line="359">        <span class="n">force_map_matrix</span> <span class="o">=</span> <span class="n">force_agg_results</span><span class="p">[</span><span class="s2">&quot;tmap&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">force_map</span><span class="o">.</span><span class="n">standard_matrix</span>
+</span><span data-line="360">    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mapping</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+</span><span data-line="361">        <span class="n">force_map_matrix</span> <span class="o">=</span> <span class="n">mapping</span>
+</span><span data-line="362">    <span class="k">else</span><span class="p">:</span>
+</span><span data-line="363">        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+</span><span data-line="364">            <span class="sa">f</span><span class="s2">&quot;Force mapping </span><span class="si">{</span><span class="n">mapping</span><span class="si">}</span><span class="s2"> is neither a string nor a numpy array.&quot;</span>
+</span><span data-line="365">        <span class="p">)</span>
+</span><span data-line="366">
+</span><span data-line="367">    <span class="c1"># convert to sparse arrays for better performance:</span>
+</span><span data-line="368">
+</span><span data-line="369">    <span class="n">config_map_matrix</span> <span class="o">=</span> <span class="n">csr_array</span><span class="p">(</span><span class="n">config_map_matrix</span><span class="p">)</span>
+</span><span data-line="370">    <span class="n">force_map_matrix</span> <span class="o">=</span> <span class="n">csr_array</span><span class="p">(</span><span class="n">force_map_matrix</span><span class="p">)</span>
+</span><span data-line="371">
+</span><span data-line="372">    <span class="k">if</span> <span class="n">batch_size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="373">        <span class="n">cg_coords</span> <span class="o">=</span> <span class="n">batch_matmul</span><span class="p">(</span><span class="n">config_map_matrix</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">)</span>
+</span><span data-line="374">        <span class="n">cg_forces</span> <span class="o">=</span> <span class="n">batch_matmul</span><span class="p">(</span><span class="n">force_map_matrix</span><span class="p">,</span> <span class="n">forces</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">)</span>
+</span><span data-line="375">    <span class="k">else</span><span class="p">:</span>
+</span><span data-line="376">        <span class="n">cg_coords</span> <span class="o">=</span> <span class="n">cg_matmul</span><span class="p">(</span><span class="n">config_map_matrix</span><span class="p">,</span> <span class="n">coords</span><span class="p">)</span>
+</span><span data-line="377">        <span class="n">cg_forces</span> <span class="o">=</span> <span class="n">cg_matmul</span><span class="p">(</span><span class="n">force_map_matrix</span><span class="p">,</span> <span class="n">forces</span><span class="p">)</span>
+</span><span data-line="378">
+</span><span data-line="379">    <span class="k">return</span> <span class="n">cg_coords</span><span class="p">,</span> <span class="n">cg_forces</span><span class="p">,</span> <span class="n">config_map_matrix</span><span class="p">,</span> <span class="n">force_map_matrix</span></div>
+
+</span><span data-line="380">
+</span><span data-line="381">
+<div class="viewcode-block" id="filter_cis_frames">
+<a class="viewcode-back" href="../../../api_docs/core/mlcg_tk/input_generator/utils.html#mlcg_tk.input_generator.utils.filter_cis_frames">[docs]</a>
+</span><span data-line="382"><span class="k">def</span><span class="w"> </span><span class="nf">filter_cis_frames</span><span class="p">(</span>
+</span><span data-line="383">    <span class="n">coords</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">forces</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">topology</span><span class="p">:</span> <span class="n">md</span><span class="o">.</span><span class="n">Topology</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+</span><span data-line="384"><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+</span><span data-line="385"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="386"><span class="sd">    filters out frames containing cis-omega angles</span>
+</span><span data-line="387">
+</span><span data-line="388"><span class="sd">    Parameters</span>
+</span><span data-line="389"><span class="sd">    ----------</span>
+</span><span data-line="390"><span class="sd">    coords: [n_frames, n_atoms, 3]</span>
+</span><span data-line="391"><span class="sd">        Non-filtered atomistic coordinates</span>
+</span><span data-line="392"><span class="sd">    forces: [n_frames, n_atoms, 3]</span>
+</span><span data-line="393"><span class="sd">        Non-filtered atomistic forces</span>
+</span><span data-line="394"><span class="sd">    topology:</span>
+</span><span data-line="395"><span class="sd">        mdtraj topology to load the coordinates with</span>
+</span><span data-line="396"><span class="sd">    verbose:</span>
+</span><span data-line="397"><span class="sd">        If True, will print a warning containing the number of discarded frames for this sample</span>
+</span><span data-line="398">
+</span><span data-line="399"><span class="sd">    Returns</span>
+</span><span data-line="400"><span class="sd">    -------</span>
+</span><span data-line="401"><span class="sd">    Tuple of np.ndarray&#39;s for filtered coarse grained coordinates and forces</span>
+</span><span data-line="402"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="403">    <span class="n">min_omega_atoms</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="s2">&quot;N&quot;</span><span class="p">,</span> <span class="s2">&quot;CA&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">])</span>
+</span><span data-line="404">    <span class="n">unique_atom_types</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="n">atom</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">topology</span><span class="o">.</span><span class="n">atoms</span><span class="p">])</span>
+</span><span data-line="405">    <span class="k">if</span> <span class="ow">not</span> <span class="n">min_omega_atoms</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="n">unique_atom_types</span><span class="p">):</span>
+</span><span data-line="406">        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+</span><span data-line="407">            <span class="s2">&quot;Provided pdb file must contain at least N, CA and C atoms for cis-omega filtering&quot;</span>
+</span><span data-line="408">        <span class="p">)</span>
+</span><span data-line="409">
+</span><span data-line="410">    <span class="n">cis_omega_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">coords</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+</span><span data-line="411">    <span class="n">md_traj</span> <span class="o">=</span> <span class="n">md</span><span class="o">.</span><span class="n">Trajectory</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">topology</span><span class="p">)</span>
+</span><span data-line="412">
+</span><span data-line="413">    <span class="n">omega_idx</span><span class="p">,</span> <span class="n">omega_values</span> <span class="o">=</span> <span class="n">md</span><span class="o">.</span><span class="n">compute_omega</span><span class="p">(</span><span class="n">md_traj</span><span class="p">)</span>
+</span><span data-line="414">
+</span><span data-line="415">    <span class="n">cis_omega_threshold</span> <span class="o">=</span> <span class="mf">1.0</span>  <span class="c1"># rad</span>
+</span><span data-line="416">    <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">omega_values</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</span><span data-line="417">    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">mask</span><span class="p">):</span>
+</span><span data-line="418">        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Discarding </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span><span class="si">}</span><span class="s2"> cis frames&quot;</span><span class="p">)</span>
+</span><span data-line="419">    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span><span data-line="420">        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;This amounts to removing all frames for this molecule&quot;</span><span class="p">)</span>
+</span><span data-line="421">
+</span><span data-line="422">    <span class="k">return</span> <span class="n">coords</span><span class="p">[</span><span class="n">mask</span><span class="p">],</span> <span class="n">forces</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span></div>
+
+</span><span data-line="423">
+</span><span data-line="424">
+<div class="viewcode-block" id="get_terminal_atoms">
+<a class="viewcode-back" href="../../../api_docs/core/mlcg_tk/input_generator/utils.html#mlcg_tk.input_generator.utils.get_terminal_atoms">[docs]</a>
+</span><span data-line="425"><span class="k">def</span><span class="w"> </span><span class="nf">get_terminal_atoms</span><span class="p">(</span>
+</span><span data-line="426">    <span class="n">prior_builder</span><span class="p">:</span> <span class="n">PriorBuilder</span><span class="p">,</span>
+</span><span data-line="427">    <span class="n">cg_dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+</span><span data-line="428">    <span class="n">N_term</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="429">    <span class="n">C_term</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="430"><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+</span><span data-line="431"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="432"><span class="sd">    Parameters</span>
+</span><span data-line="433"><span class="sd">    ----------</span>
+</span><span data-line="434"><span class="sd">    prior_builder:</span>
+</span><span data-line="435">
+</span><span data-line="436"><span class="sd">    cg_dataframe:</span>
+</span><span data-line="437"><span class="sd">        Dataframe of CG topology (from MDTraj topology object).</span>
+</span><span data-line="438"><span class="sd">    N_term: (Optional)</span>
+</span><span data-line="439"><span class="sd">        Atom used in definition of N-terminus embedding.</span>
+</span><span data-line="440"><span class="sd">    C_term: (Optional)</span>
+</span><span data-line="441"><span class="sd">        Atom used in definition of C-terminus embedding.</span>
+</span><span data-line="442"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="443">    <span class="n">chains</span> <span class="o">=</span> <span class="n">cg_dataframe</span><span class="o">.</span><span class="n">chainID</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+</span><span data-line="444">    <span class="c1"># all atoms belonging to monopeptide chains will be removed from termini list</span>
+</span><span data-line="445">    <span class="n">monopeptide_atoms</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span data-line="446">    <span class="k">for</span> <span class="n">chain</span> <span class="ow">in</span> <span class="n">chains</span><span class="p">:</span>
+</span><span data-line="447">        <span class="n">residues</span> <span class="o">=</span> <span class="n">cg_dataframe</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">cg_dataframe</span><span class="o">.</span><span class="n">chainID</span> <span class="o">==</span> <span class="n">chain</span><span class="p">]</span><span class="o">.</span><span class="n">resSeq</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+</span><span data-line="448">        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">residues</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+</span><span data-line="449">            <span class="n">monopeptide_atoms</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+</span><span data-line="450">                <span class="n">cg_dataframe</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">cg_dataframe</span><span class="o">.</span><span class="n">chainID</span> <span class="o">==</span> <span class="n">chain</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
+</span><span data-line="451">            <span class="p">)</span>
+</span><span data-line="452">
+</span><span data-line="453">    <span class="n">n_term_atoms</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span data-line="454">    <span class="n">c_term_atoms</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span data-line="455">
+</span><span data-line="456">    <span class="k">for</span> <span class="n">chain</span> <span class="ow">in</span> <span class="n">chains</span><span class="p">:</span>
+</span><span data-line="457">        <span class="n">chain_filter</span> <span class="o">=</span> <span class="n">cg_dataframe</span><span class="p">[</span><span class="s2">&quot;chainID&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">chain</span>
+</span><span data-line="458">        <span class="n">first_res_chain</span><span class="p">,</span> <span class="n">last_res_chain</span> <span class="o">=</span> <span class="p">(</span>
+</span><span data-line="459">            <span class="n">cg_dataframe</span><span class="p">[</span><span class="n">chain_filter</span><span class="p">][</span><span class="s2">&quot;resSeq&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span>
+</span><span data-line="460">            <span class="n">cg_dataframe</span><span class="p">[</span><span class="n">chain_filter</span><span class="p">][</span><span class="s2">&quot;resSeq&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span>
+</span><span data-line="461">        <span class="p">)</span>
+</span><span data-line="462">        <span class="n">n_term_atoms</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+</span><span data-line="463">            <span class="n">cg_dataframe</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
+</span><span data-line="464">                <span class="p">(</span><span class="n">cg_dataframe</span><span class="p">[</span><span class="s2">&quot;resSeq&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">first_res_chain</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">chain_filter</span>
+</span><span data-line="465">            <span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
+</span><span data-line="466">        <span class="p">)</span>
+</span><span data-line="467">        <span class="n">c_term_atoms</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+</span><span data-line="468">            <span class="n">cg_dataframe</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
+</span><span data-line="469">                <span class="p">(</span><span class="n">cg_dataframe</span><span class="p">[</span><span class="s2">&quot;resSeq&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">last_res_chain</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">chain_filter</span>
+</span><span data-line="470">            <span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
+</span><span data-line="471">        <span class="p">)</span>
+</span><span data-line="472">
+</span><span data-line="473">    <span class="n">prior_builder</span><span class="o">.</span><span class="n">n_term_atoms</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">n_term_atoms</span> <span class="k">if</span> <span class="n">a</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">monopeptide_atoms</span><span class="p">]</span>
+</span><span data-line="474">    <span class="n">prior_builder</span><span class="o">.</span><span class="n">c_term_atoms</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">c_term_atoms</span> <span class="k">if</span> <span class="n">a</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">monopeptide_atoms</span><span class="p">]</span>
+</span><span data-line="475">
+</span><span data-line="476">    <span class="n">N_term_name</span> <span class="o">=</span> <span class="s2">&quot;N&quot;</span> <span class="k">if</span> <span class="n">N_term</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">N_term</span>
+</span><span data-line="477">    <span class="n">C_term_name</span> <span class="o">=</span> <span class="s2">&quot;C&quot;</span> <span class="k">if</span> <span class="n">C_term</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">C_term</span>
+</span><span data-line="478">
+</span><span data-line="479">    <span class="n">n_term_name_atoms</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span data-line="480">    <span class="n">c_term_name_atoms</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span data-line="481">    <span class="k">for</span> <span class="n">chain</span> <span class="ow">in</span> <span class="n">chains</span><span class="p">:</span>
+</span><span data-line="482">        <span class="n">chain_filter</span> <span class="o">=</span> <span class="n">cg_dataframe</span><span class="p">[</span><span class="s2">&quot;chainID&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">chain</span>
+</span><span data-line="483">        <span class="n">first_res_chain</span><span class="p">,</span> <span class="n">last_res_chain</span> <span class="o">=</span> <span class="p">(</span>
+</span><span data-line="484">            <span class="n">cg_dataframe</span><span class="p">[</span><span class="n">chain_filter</span><span class="p">][</span><span class="s2">&quot;resSeq&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span>
+</span><span data-line="485">            <span class="n">cg_dataframe</span><span class="p">[</span><span class="n">chain_filter</span><span class="p">][</span><span class="s2">&quot;resSeq&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span>
+</span><span data-line="486">        <span class="p">)</span>
+</span><span data-line="487">        <span class="n">n_term_name_atoms</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+</span><span data-line="488">            <span class="n">cg_dataframe</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
+</span><span data-line="489">                <span class="p">(</span><span class="n">cg_dataframe</span><span class="p">[</span><span class="s2">&quot;resSeq&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">first_res_chain</span><span class="p">)</span>
+</span><span data-line="490">                <span class="o">&amp;</span> <span class="p">(</span><span class="n">cg_dataframe</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">N_term_name</span><span class="p">)</span>
+</span><span data-line="491">                <span class="o">&amp;</span> <span class="n">chain_filter</span>
+</span><span data-line="492">            <span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
+</span><span data-line="493">        <span class="p">)</span>
+</span><span data-line="494">
+</span><span data-line="495">        <span class="n">c_term_name_atoms</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+</span><span data-line="496">            <span class="n">cg_dataframe</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
+</span><span data-line="497">                <span class="p">(</span><span class="n">cg_dataframe</span><span class="p">[</span><span class="s2">&quot;resSeq&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">last_res_chain</span><span class="p">)</span>
+</span><span data-line="498">                <span class="o">&amp;</span> <span class="p">(</span><span class="n">cg_dataframe</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">C_term_name</span><span class="p">)</span>
+</span><span data-line="499">                <span class="o">&amp;</span> <span class="n">chain_filter</span>
+</span><span data-line="500">            <span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
+</span><span data-line="501">        <span class="p">)</span>
+</span><span data-line="502">
+</span><span data-line="503">    <span class="n">prior_builder</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">=</span> <span class="n">n_term_name_atoms</span>
+</span><span data-line="504">    <span class="n">prior_builder</span><span class="o">.</span><span class="n">c_atoms</span> <span class="o">=</span> <span class="n">c_term_name_atoms</span>
+</span><span data-line="505">
+</span><span data-line="506">    <span class="k">return</span> <span class="n">prior_builder</span></div>
+
+</span><span data-line="507">
+</span><span data-line="508">
+<div class="viewcode-block" id="get_edges_and_orders">
+<a class="viewcode-back" href="../../../api_docs/core/mlcg_tk/input_generator/utils.html#mlcg_tk.input_generator.utils.get_edges_and_orders">[docs]</a>
+</span><span data-line="509"><span class="k">def</span><span class="w"> </span><span class="nf">get_edges_and_orders</span><span class="p">(</span>
+</span><span data-line="510">    <span class="n">prior_builders</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">PriorBuilder</span><span class="p">],</span>
+</span><span data-line="511">    <span class="n">topology</span><span class="p">:</span> <span class="n">md</span><span class="o">.</span><span class="n">Topology</span><span class="p">,</span>
+</span><span data-line="512"><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
+</span><span data-line="513"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="514"><span class="sd">    Parameters</span>
+</span><span data-line="515"><span class="sd">    ----------</span>
+</span><span data-line="516"><span class="sd">    prior_builders:</span>
+</span><span data-line="517"><span class="sd">        List of PriorBuilder&#39;s to use for defining neighbour lists</span>
+</span><span data-line="518"><span class="sd">    topology:</span>
+</span><span data-line="519"><span class="sd">        MDTraj topology object from which atom groups defining each prior term will be created.</span>
+</span><span data-line="520"><span class="sd">    cg_dataframe:</span>
+</span><span data-line="521"><span class="sd">        Dataframe of CG topology (from MDTraj topology object).</span>
+</span><span data-line="522">
+</span><span data-line="523"><span class="sd">    Returns</span>
+</span><span data-line="524"><span class="sd">    -------</span>
+</span><span data-line="525"><span class="sd">    List of edges, orders, and tag for each prior term specified in prior_dict.</span>
+</span><span data-line="526"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="527">    <span class="n">all_edges_and_orders</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span data-line="528">    <span class="c1"># process bond priors</span>
+</span><span data-line="529">    <span class="n">bond_builders</span> <span class="o">=</span> <span class="p">[</span>
+</span><span data-line="530">        <span class="n">prior_builder</span>
+</span><span data-line="531">        <span class="k">for</span> <span class="n">prior_builder</span> <span class="ow">in</span> <span class="n">prior_builders</span>
+</span><span data-line="532">        <span class="k">if</span> <span class="n">prior_builder</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;bonds&quot;</span>
+</span><span data-line="533">    <span class="p">]</span>
+</span><span data-line="534">    <span class="n">all_bond_edges</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span data-line="535">    <span class="k">for</span> <span class="n">prior_builder</span> <span class="ow">in</span> <span class="n">bond_builders</span><span class="p">:</span>
+</span><span data-line="536">        <span class="n">edges_and_orders</span> <span class="o">=</span> <span class="n">prior_builder</span><span class="o">.</span><span class="n">build_nl</span><span class="p">(</span><span class="n">topology</span><span class="p">)</span>
+</span><span data-line="537">        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">edges_and_orders</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+</span><span data-line="538">            <span class="n">all_edges_and_orders</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">edges_and_orders</span><span class="p">)</span>
+</span><span data-line="539">            <span class="n">all_bond_edges</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">p</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">edges_and_orders</span><span class="p">])</span>
+</span><span data-line="540">        <span class="k">else</span><span class="p">:</span>
+</span><span data-line="541">            <span class="n">all_edges_and_orders</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">edges_and_orders</span><span class="p">)</span>
+</span><span data-line="542">            <span class="n">all_bond_edges</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">edges_and_orders</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+</span><span data-line="543">
+</span><span data-line="544">    <span class="c1"># process angle priors</span>
+</span><span data-line="545">    <span class="n">angle_builders</span> <span class="o">=</span> <span class="p">[</span>
+</span><span data-line="546">        <span class="n">prior_builder</span>
+</span><span data-line="547">        <span class="k">for</span> <span class="n">prior_builder</span> <span class="ow">in</span> <span class="n">prior_builders</span>
+</span><span data-line="548">        <span class="k">if</span> <span class="n">prior_builder</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;angles&quot;</span>
+</span><span data-line="549">    <span class="p">]</span>
+</span><span data-line="550">    <span class="n">all_angle_edges</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span data-line="551">    <span class="k">for</span> <span class="n">prior_builder</span> <span class="ow">in</span> <span class="n">angle_builders</span><span class="p">:</span>
+</span><span data-line="552">        <span class="n">edges_and_orders</span> <span class="o">=</span> <span class="n">prior_builder</span><span class="o">.</span><span class="n">build_nl</span><span class="p">(</span><span class="n">topology</span><span class="p">)</span>
+</span><span data-line="553">        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">edges_and_orders</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+</span><span data-line="554">            <span class="n">all_edges_and_orders</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">edges_and_orders</span><span class="p">)</span>
+</span><span data-line="555">            <span class="n">all_angle_edges</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">p</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">edges_and_orders</span><span class="p">])</span>
+</span><span data-line="556">        <span class="k">else</span><span class="p">:</span>
+</span><span data-line="557">            <span class="n">all_edges_and_orders</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">edges_and_orders</span><span class="p">)</span>
+</span><span data-line="558">            <span class="n">all_angle_edges</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">edges_and_orders</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+</span><span data-line="559">
+</span><span data-line="560">    <span class="c1"># get nonbonded priors using bonded and angle edges</span>
+</span><span data-line="561">    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">all_bond_edges</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+</span><span data-line="562">        <span class="n">all_bond_edges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">all_bond_edges</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</span><span data-line="563">    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">all_angle_edges</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+</span><span data-line="564">        <span class="n">all_angle_edges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">all_angle_edges</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</span><span data-line="565">
+</span><span data-line="566">    <span class="n">nonbonded_builders</span> <span class="o">=</span> <span class="p">[</span>
+</span><span data-line="567">        <span class="n">prior_builder</span>
+</span><span data-line="568">        <span class="k">for</span> <span class="n">prior_builder</span> <span class="ow">in</span> <span class="n">prior_builders</span>
+</span><span data-line="569">        <span class="k">if</span> <span class="n">prior_builder</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;non_bonded&quot;</span>
+</span><span data-line="570">    <span class="p">]</span>
+</span><span data-line="571">    <span class="k">for</span> <span class="n">prior_builder</span> <span class="ow">in</span> <span class="n">nonbonded_builders</span><span class="p">:</span>
+</span><span data-line="572">        <span class="n">edges_and_orders</span> <span class="o">=</span> <span class="n">prior_builder</span><span class="o">.</span><span class="n">build_nl</span><span class="p">(</span>
+</span><span data-line="573">            <span class="n">topology</span><span class="p">,</span> <span class="n">bond_edges</span><span class="o">=</span><span class="n">all_bond_edges</span><span class="p">,</span> <span class="n">angle_edges</span><span class="o">=</span><span class="n">all_angle_edges</span>
+</span><span data-line="574">        <span class="p">)</span>
+</span><span data-line="575">        <span class="c1"># edges_and_orders = prior_dict[nbdict][&quot;prior_function&quot;](topology, all_bond_edges, all_angle_edges, **prior_dict[nbdict])</span>
+</span><span data-line="576">        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">edges_and_orders</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+</span><span data-line="577">            <span class="n">all_edges_and_orders</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">edges_and_orders</span><span class="p">)</span>
+</span><span data-line="578">        <span class="k">else</span><span class="p">:</span>
+</span><span data-line="579">            <span class="n">all_edges_and_orders</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">edges_and_orders</span><span class="p">)</span>
+</span><span data-line="580">    <span class="c1"># process dihedral priors</span>
+</span><span data-line="581">    <span class="n">dihedral_builders</span> <span class="o">=</span> <span class="p">[</span>
+</span><span data-line="582">        <span class="n">prior_builder</span>
+</span><span data-line="583">        <span class="k">for</span> <span class="n">prior_builder</span> <span class="ow">in</span> <span class="n">prior_builders</span>
+</span><span data-line="584">        <span class="k">if</span> <span class="n">prior_builder</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;dihedrals&quot;</span>
+</span><span data-line="585">    <span class="p">]</span>
+</span><span data-line="586">    <span class="k">for</span> <span class="n">prior_builder</span> <span class="ow">in</span> <span class="n">dihedral_builders</span><span class="p">:</span>
+</span><span data-line="587">        <span class="n">edges_and_orders</span> <span class="o">=</span> <span class="n">prior_builder</span><span class="o">.</span><span class="n">build_nl</span><span class="p">(</span><span class="n">topology</span><span class="p">)</span>
+</span><span data-line="588">        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">edges_and_orders</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+</span><span data-line="589">            <span class="n">all_edges_and_orders</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">edges_and_orders</span><span class="p">)</span>
+</span><span data-line="590">        <span class="k">else</span><span class="p">:</span>
+</span><span data-line="591">            <span class="n">all_edges_and_orders</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">edges_and_orders</span><span class="p">)</span>
+</span><span data-line="592">
+</span><span data-line="593">    <span class="k">return</span> <span class="n">all_edges_and_orders</span></div>
+
+</span><span data-line="594">
+</span><span data-line="595">
+<div class="viewcode-block" id="split_bulk_termini">
+<a class="viewcode-back" href="../../../api_docs/core/mlcg_tk/input_generator/utils.html#mlcg_tk.input_generator.utils.split_bulk_termini">[docs]</a>
+</span><span data-line="596"><span class="k">def</span><span class="w"> </span><span class="nf">split_bulk_termini</span><span class="p">(</span><span class="n">N_term</span><span class="p">,</span> <span class="n">C_term</span><span class="p">,</span> <span class="n">all_edges</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">:</span>
+</span><span data-line="597"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="598"><span class="sd">    Parameters</span>
+</span><span data-line="599"><span class="sd">    ----------</span>
+</span><span data-line="600"><span class="sd">    N_term:</span>
+</span><span data-line="601"><span class="sd">        List of atom indices to be split as part of the N-terminal.</span>
+</span><span data-line="602"><span class="sd">    C_term:</span>
+</span><span data-line="603"><span class="sd">        List of atom indices to be split as part of the C-terminal.</span>
+</span><span data-line="604"><span class="sd">    all_edges:</span>
+</span><span data-line="605"><span class="sd">        All atom groups forming part of prior term.</span>
+</span><span data-line="606">
+</span><span data-line="607"><span class="sd">    Returns</span>
+</span><span data-line="608"><span class="sd">    -------</span>
+</span><span data-line="609"><span class="sd">    Separated edges for bulk and terminal groups</span>
+</span><span data-line="610"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="611">    <span class="n">n_term_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">all_edges</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">N_term</span><span class="p">))</span>
+</span><span data-line="612">    <span class="n">n_term_edges</span> <span class="o">=</span> <span class="n">all_edges</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">n_term_idx</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span>
+</span><span data-line="613">
+</span><span data-line="614">    <span class="n">c_term_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">all_edges</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">C_term</span><span class="p">))</span>
+</span><span data-line="615">    <span class="n">c_term_edges</span> <span class="o">=</span> <span class="n">all_edges</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">c_term_idx</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span>
+</span><span data-line="616">
+</span><span data-line="617">    <span class="n">term_edges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">n_term_edges</span><span class="p">,</span> <span class="n">c_term_edges</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</span><span data-line="618">    <span class="n">bulk_edges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+</span><span data-line="619">        <span class="p">[</span><span class="n">e</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">all_edges</span><span class="o">.</span><span class="n">T</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">term_edges</span> <span class="o">==</span> <span class="n">e</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">()]</span>
+</span><span data-line="620">    <span class="p">)</span><span class="o">.</span><span class="n">T</span>
+</span><span data-line="621">
+</span><span data-line="622">    <span class="k">return</span> <span class="n">n_term_edges</span><span class="p">,</span> <span class="n">c_term_edges</span><span class="p">,</span> <span class="n">bulk_edges</span></div>
+
+</span><span data-line="623">
+</span><span data-line="624">
+<div class="viewcode-block" id="get_dihedral_groups">
+<a class="viewcode-back" href="../../../api_docs/core/mlcg_tk/input_generator/utils.html#mlcg_tk.input_generator.utils.get_dihedral_groups">[docs]</a>
+</span><span data-line="625"><span class="k">def</span><span class="w"> </span><span class="nf">get_dihedral_groups</span><span class="p">(</span>
+</span><span data-line="626">    <span class="n">top</span><span class="p">:</span> <span class="n">md</span><span class="o">.</span><span class="n">Topology</span><span class="p">,</span> <span class="n">atoms_needed</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">offset</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">tag</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+</span><span data-line="627"><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+</span><span data-line="628"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="629"><span class="sd">    Parameters</span>
+</span><span data-line="630"><span class="sd">    ----------</span>
+</span><span data-line="631"><span class="sd">    top:</span>
+</span><span data-line="632"><span class="sd">        MDTraj topology object.</span>
+</span><span data-line="633"><span class="sd">    atoms_needed: [4]</span>
+</span><span data-line="634"><span class="sd">        Names of atoms forming dihedrals, should correspond to existing atom name in topology.</span>
+</span><span data-line="635"><span class="sd">    offset: [4]</span>
+</span><span data-line="636"><span class="sd">        Residue offset of each atom in atoms_needed from starting point.</span>
+</span><span data-line="637"><span class="sd">    tag:</span>
+</span><span data-line="638"><span class="sd">        Dihedral prior tag.</span>
+</span><span data-line="639">
+</span><span data-line="640"><span class="sd">    Returns</span>
+</span><span data-line="641"><span class="sd">    -------</span>
+</span><span data-line="642"><span class="sd">    Dictionary of atom groups for each residue corresponding to dihedrals.</span>
+</span><span data-line="643">
+</span><span data-line="644"><span class="sd">    Example</span>
+</span><span data-line="645"><span class="sd">    -------</span>
+</span><span data-line="646"><span class="sd">    To obtain all phi dihedral atom groups for a backbone-preserving resolution:</span>
+</span><span data-line="647"><span class="sd">    &gt;&gt;&gt; dihedral_dict = get_dihedral_groups(</span>
+</span><span data-line="648"><span class="sd">    &gt;&gt;&gt;     topology, atoms_needed=[&quot;C&quot;, &quot;N&quot;, &quot;CA&quot;, &quot;C&quot;], offset=[-1.,0.,0.,0.], tag=&quot;_phi&quot;</span>
+</span><span data-line="649"><span class="sd">    &gt;&gt;&gt; )</span>
+</span><span data-line="650">
+</span><span data-line="651"><span class="sd">    For a one-bead-per-residue mapping with only CA atoms preserved:</span>
+</span><span data-line="652"><span class="sd">    &gt;&gt;&gt; dihedral_dict = get_dihedral_groups(</span>
+</span><span data-line="653"><span class="sd">    &gt;&gt;&gt;     topology, atoms_needed=[&quot;CA&quot;, &quot;CA&quot;, &quot;CA&quot;, &quot;CA&quot;], offset=[-3.,-2.,-1.,0.]</span>
+</span><span data-line="654"><span class="sd">    &gt;&gt;&gt; )</span>
+</span><span data-line="655"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="656">    <span class="n">res_per_chain</span> <span class="o">=</span> <span class="p">[[</span><span class="n">res</span> <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">chain</span><span class="o">.</span><span class="n">residues</span><span class="p">]</span> <span class="k">for</span> <span class="n">chain</span> <span class="ow">in</span> <span class="n">top</span><span class="o">.</span><span class="n">chains</span><span class="p">]</span>
+</span><span data-line="657">    <span class="n">atom_groups</span> <span class="o">=</span> <span class="p">{}</span>
+</span><span data-line="658">    <span class="k">for</span> <span class="n">chain_idx</span><span class="p">,</span> <span class="n">chain</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">res_per_chain</span><span class="p">):</span>
+</span><span data-line="659">        <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">chain</span><span class="p">:</span>
+</span><span data-line="660">            <span class="n">res_idx</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+</span><span data-line="661">            <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">res_idx</span> <span class="o">+</span> <span class="n">ofs</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">res_idx</span> <span class="o">+</span> <span class="n">ofs</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">chain</span><span class="p">)</span> <span class="k">for</span> <span class="n">ofs</span> <span class="ow">in</span> <span class="n">offset</span><span class="p">):</span>
+</span><span data-line="662">                <span class="k">continue</span>
+</span><span data-line="663">            <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">atom</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">res</span><span class="o">.</span><span class="n">atoms</span><span class="p">]</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">atoms_needed</span><span class="p">):</span>
+</span><span data-line="664">                <span class="k">continue</span>
+</span><span data-line="665">            <span class="n">label</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">res</span><span class="o">.</span><span class="n">name</span><span class="si">}{</span><span class="n">tag</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span data-line="666">            <span class="k">if</span> <span class="n">label</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">atom_groups</span><span class="p">:</span>
+</span><span data-line="667">                <span class="n">atom_groups</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span data-line="668">            <span class="n">dihedral</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span data-line="669">            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">atom</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">atoms_needed</span><span class="p">):</span>
+</span><span data-line="670">                <span class="n">atom_idx</span> <span class="o">=</span> <span class="n">top</span><span class="o">.</span><span class="n">select</span><span class="p">(</span>
+</span><span data-line="671">                    <span class="sa">f</span><span class="s2">&quot;(chainid </span><span class="si">{</span><span class="n">chain_idx</span><span class="si">}</span><span class="s2">) and (resid </span><span class="si">{</span><span class="n">res</span><span class="o">.</span><span class="n">index</span><span class="o">+</span><span class="n">offset</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s2">) and (name </span><span class="si">{</span><span class="n">atom</span><span class="si">}</span><span class="s2">)&quot;</span>
+</span><span data-line="672">                <span class="p">)</span>
+</span><span data-line="673">                <span class="n">dihedral</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom_idx</span><span class="p">)</span>
+</span><span data-line="674">            <span class="n">atom_groups</span><span class="p">[</span><span class="n">label</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">dihedral</span><span class="p">))</span>
+</span><span data-line="675">
+</span><span data-line="676">    <span class="k">return</span> <span class="n">atom_groups</span></div>
+
+</span></pre></div>
+        </article><button class="back-to-top" type="button">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+  </svg>
+  <span>Back to top</span>
+</button><div class="navigation flex print:hidden"></div></div>
+    </div>
+  </main>
+</div>
+<footer class="sy-foot">
+  <div class="sy-foot-inner sy-container mx-auto">
+    <div class="sy-foot-reserved md:flex justify-between items-center">
+      <div class="sy-foot-copyright"><p>2026, Clementi Group</p>
+  
+  <p>
+    Made with
+    
+    <a href="https://www.sphinx-doc.org/">Sphinx</a> and
+    
+    <a href="https://shibuya.lepture.com">Shibuya theme</a>.
+  </p>
+</div>
+      <div class="sy-foot-socials"></div>
+    </div>
+  </div>
+</footer>
+      <script src="../../../_static/documentation_options.js?v=7026087e"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../_static/shibuya.js?v=cac61aee"></script></body>
+</html>

@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en" data-accent-color="teal" data-content_root="../../">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>add_decoys.py - mlcg-tk 0.0.0 documentation</title><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><link rel="next" title="gen_sim_input.py" href="gen_sim_input.html" /><link rel="prev" title="package_training_data.py" href="package_training_data.html" /><script>
+    function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
+    setColorMode(localStorage._theme||"auto");
+  </script><link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=e1a1ceaf" />
+    <link rel="stylesheet" type="text/css" href="../../_static/shibuya.css?v=44020203" />
+    <link media="print" rel="stylesheet" type="text/css" href="../../_static/print.css?v=20ff2c19" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sy-f-text: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+  --sy-f-heading: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+}
+</style>
+    <meta property="og:type" content="website"/><meta property="og:title" content="add_decoys.py"/>
+    <meta name="twitter:card" content="summary"/>
+  </head>
+<body><div class="sy-head">
+  <div class="sy-head-blur"></div>
+  <div class="sy-head-inner sy-container mx-auto">
+    <a class="sy-head-brand" href="../../index.html">
+      
+      
+      <strong>mlcg-tk</strong>
+    </a>
+    <div class="sy-head-nav" id="head-nav">
+      <nav class="sy-head-links"></nav>
+      <div class="sy-head-extra flex items-center print:hidden"><form class="searchbox flex items-center" action="../../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <kbd>/</kbd>
+</form><div class="sy-head-socials"></div></div>
+    </div>
+    <div class="sy-head-actions flex items-center shrink-0 print:hidden"><button class="js-theme theme-switch flex items-center"
+data-aria-auto="Switch to light color mode"
+data-aria-light="Switch to dark color mode"
+data-aria-dark="Switch to auto color mode">
+<i class="i-lucide theme-icon"></i>
+</button><button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="head-nav" aria-expanded="false">
+        <div class="hamburger">
+          <span class="hamburger_1"></span>
+          <span class="hamburger_2"></span>
+          <span class="hamburger_3"></span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="sy-page sy-container flex mx-auto">
+  <aside id="lside" class="sy-lside md:w-72 md:shrink-0 print:hidden">
+    <div class="sy-lside-inner md:sticky">
+      <div class="sy-scrollbar p-6">
+        <div class="globaltoc" data-expand-depth="1"><p class="caption" role="heading" aria-level="3"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 _expand"><a class="reference internal" href="../../user_guide/index.html">Data pipeline user guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/intro.html">About the Training Data Generation Pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/intro.html#create-a-directory-to-output-all-the-intermediate-files">0) Create a directory to output all the intermediate files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/aa_to_cg.html">1) Loading and processing all-atom simulation data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/stats_priors.html">2) Computing statistics and fitting priors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/delta_forces.html">3) Producing delta forces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/packaging.html">4) Package Training Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/packaging.html#add-decoys-to-training-data">4.1) Add Decoys To Training Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/sim_input.html">5) Generate simulation input</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../core/modules.html">Core API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../core/mlcg_tk/input_generator.html">input_generator package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../core/mlcg_tk/input_generator/prior_fit.html">prior_fit package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../core/mlcg_tk/input_generator/prior_fit/dihedral.html">dihedral module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../core/mlcg_tk/input_generator/prior_fit/fit_potentials.html">fit_potentials module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../core/mlcg_tk/input_generator/prior_fit/harmonic.html">harmonic module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../core/mlcg_tk/input_generator/prior_fit/histogram.html">histogram module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../core/mlcg_tk/input_generator/prior_fit/polynomial.html">polynomial module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../core/mlcg_tk/input_generator/prior_fit/repulsion.html">repulsion module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../core/mlcg_tk/input_generator/prior_fit/restricted_bending.html">restricted_bending module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../core/mlcg_tk/input_generator/prior_fit/utils.html">utils module</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../core/mlcg_tk/input_generator/embedding_maps.html">embedding_maps module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../core/mlcg_tk/input_generator/prior_gen.html">prior_gen module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../core/mlcg_tk/input_generator/prior_nls.html">prior_nls module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../core/mlcg_tk/input_generator/raw_data_loader.html">raw_data_loader module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../core/mlcg_tk/input_generator/raw_dataset.html">raw_dataset module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../core/mlcg_tk/input_generator/utils.html">utils module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../core/mlcg_tk/prior_tools.html">prior_tools package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../core/mlcg_tk/prior_tools/utils.html">utils module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Scripts</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="gen_input_data.html"><code class="docutils literal notranslate"><span class="pre">gen_input_data.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="fit_priors.html"><code class="docutils literal notranslate"><span class="pre">fit_priors.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="merge_statistics.html"><code class="docutils literal notranslate"><span class="pre">merge_statistics.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="produce_delta_forces.html"><code class="docutils literal notranslate"><span class="pre">produce_delta_forces.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="package_training_data.html"><code class="docutils literal notranslate"><span class="pre">package_training_data.py</span></code></a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">add_decoys.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="gen_sim_input.html"><code class="docutils literal notranslate"><span class="pre">gen_sim_input.py</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="lside-overlay js-menu" role="button" aria-label="Close left sidebar" aria-controls="lside" aria-expanded="false"></div>
+  <aside id="rside" class="sy-rside pb-3 w-64 shrink-0 order-last">
+    <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
+      <i class="i-lucide close"></i>
+    </button>
+    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div class="localtoc"><h3>On this page</h3><ul>
+<li><a class="reference internal" href="#mlcg_tk.scripts.add_decoys.add_decoy"><code class="docutils literal notranslate"><span class="pre">add_decoy()</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.scripts.add_decoys.add_noise_decoy_molecule"><code class="docutils literal notranslate"><span class="pre">add_noise_decoy_molecule()</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.scripts.add_decoys.update_partition_file"><code class="docutils literal notranslate"><span class="pre">update_partition_file()</span></code></a></li>
+</ul>
+</div><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
+  </aside>
+  <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+<div class="sy-breadcrumbs" role="navigation">
+  <div class="sy-breadcrumbs-inner flex items-center">
+    <div class="md:hidden mr-3">
+      <button class="js-menu" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
+        <i class="i-lucide menu"></i>
+      </button>
+    </div>
+    <ol class="flex-1" itemscope itemtype="https://schema.org/BreadcrumbList"><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../../index.html"><span itemprop="name">mlcg-tk</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="1" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../index.html"><span itemprop="name">API documentation</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="2" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="index.html"><span itemprop="name">Scripts</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="3" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <strong itemprop="name"><code class="docutils literal notranslate"><span class="pre">add_decoys.py</span></code></strong>
+        <meta itemprop="position" content="4" />
+      </li></ol>
+    <div class="xl:hidden ml-1">
+      <button class="js-menu" aria-label="Show table of contents" type="button" aria-controls="rside"
+        aria-expanded="false">
+        <i class="i-lucide outdent"></i>
+      </button>
+    </div>
+  </div>
+</div><div class="flex flex-col break-words justify-between">
+      <div class="relative min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
+  <article class="yue" role="main">
+          <section id="module-mlcg_tk.scripts.add_decoys">
+<span id="add-decoys-py"></span><h1><code class="docutils literal notranslate"><span class="pre">add_decoys.py</span></code><a class="headerlink" href="#module-mlcg_tk.scripts.add_decoys" title="Link to this heading">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="mlcg_tk.scripts.add_decoys.add_decoy">
+<span class="sig-prename descclassname"><span class="pre">mlcg_tk.scripts.add_decoys.</span></span><span class="sig-name descname"><span class="pre">add_decoy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">h5_files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datasets</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mol_name_prefix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">append</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mlcg_tk/scripts/add_decoys.html#add_decoy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.scripts.add_decoys.add_decoy" title="Link to this definition">¶</a></dt>
+<dd><p>Adds decoy molecules with Gaussian noise to the specified HDF5 datasets, optionally combines them into a single HDF5 file.</p>
+<p>This function processes multiple HDF5 files, and for each file, it generates decoy molecules by adding Gaussian noise to
+the coordinates of the molecules in the specified dataset. The decoys are stored as separate molecules in the same datasets, with the option
+to append them to the existing h5s or to copy the existing h5s into new ones before appending the decoy molecules.
+The decoy molecules are given a name based on the provided prefix.</p>
+<p>After decoys are added to all specified files, the function can optionally combine the provided h5 files
+into a single combined HDF5 file, using external links to the original files. The name of the combined file can either
+be provided or generated automatically based on the input files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+<section id="arguments">
+<h2>Arguments:<a class="headerlink" href="#arguments" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>h5_files: List[str]</dt><dd><p>A list of paths to the HDF5 files where decoy molecules should be added. Each file should contain one single dataset specified
+in the <cite>datasets</cite> argument.</p>
+</dd>
+<dt>datasets: List[str]</dt><dd><p>A list of dataset names within each corresponding HDF5 file. These datasets should contain molecules where
+decoys will be added.</p>
+</dd>
+<dt>mol_name_prefix: str</dt><dd><p>The prefix to be added to the name of each decoy molecule. Each decoy molecule will be named by appending its
+original molecule name to this prefix.</p>
+</dd>
+<dt>scale: float</dt><dd><p>The standard deviation of the Gaussian noise to be added to the coordinates of the beads.</p>
+</dd>
+<dt>stride: Optional[int], default=50</dt><dd><p>The stride value to be used when selecting frames from the original molecules. For example, a stride of 50 will
+select every 50th frame from the original molecule dataset. If not specified, defaults to 50.</p>
+</dd>
+<dt>append: Optional[bool], default=True</dt><dd><p>If <cite>True</cite>, decoy molecules will be added to the datasets in the existing HDF5 files. If <cite>False</cite>, the HDF5 file
+will be copied before appending the decoy molecules in the new HDF5 file.</p>
+</dd>
+</dl>
+</section>
+<section id="notes">
+<h2>Notes:<a class="headerlink" href="#notes" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>The <cite>scale</cite> value controls the level of noise added to the decoy molecules. A larger value will result in more distorted configurations.</p></li>
+<li><p>The <cite>stride</cite> argument helps reduce the number of frames included in the decoy molecule by selecting a subset based on
+the specified interval. The higher the stride the less decoys are present in the dataset.</p></li>
+</ul>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mlcg_tk.scripts.add_decoys.add_noise_decoy_molecule">
+<span class="sig-prename descclassname"><span class="pre">mlcg_tk.scripts.add_decoys.</span></span><span class="sig-name descname"><span class="pre">add_noise_decoy_molecule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_molecule</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">location</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coords_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cg_coords'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">forces_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cg_delta_forces'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy_metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mlcg_tk/scripts/add_decoys.html#add_noise_decoy_molecule"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.scripts.add_decoys.add_noise_decoy_molecule" title="Link to this definition">¶</a></dt>
+<dd><p>Create a zero-force decoy molecule from a real molecule in an h5.</p>
+<p>Function written by Aleksander Durumeric.</p>
+<p>The molecule is created by extracting coordinats from an existing molecule, adding
+Gaussian noise to them, and then storing them (along with 0-forces) under a new
+molecule entry. Entries are added for attrs if the corresponding metadata option
+is set.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Group</span></code></span></p>
+</dd>
+</dl>
+<section id="id1">
+<h2>Arguments:<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>source_molecule:</dt><dd><p>hdf5.Group that contains coordinate entries under “cg_coords”. These coordinates
+are strided by <cite>stride</cite> and then noised to create the noise molecule coordinates.</p>
+</dd>
+<dt>location:</dt><dd><p>hdf5.Group under which a new group will be created for the added molecule. The
+new molecule is itself a group with name <cite>name</cite>.</p>
+</dd>
+<dt>scale:</dt><dd><p>Standard deviation of the added 0-mean Gaussian noise.</p>
+</dd>
+<dt>name:</dt><dd><p>Name of hdf5.Group added. See <cite>location</cite>.</p>
+</dd>
+<dt>coords_name:</dt><dd><p>Name of dataset that holds the coordinates. Used to query source_molecule and
+to name the corresponding entry in the new molecule.</p>
+</dd>
+<dt>forces_name:</dt><dd><p>Name of dataset that holds the forces. Only used to to name the corresponding
+entry in the new molecule.</p>
+</dd>
+<dt>stride:</dt><dd><p>Amount by which to stride the source data when creating the new molecule. For
+example <cite>50</cite> would create a noise molecule with approximatly 1/50th of the frames.</p>
+</dd>
+<dt>copy_metadata:</dt><dd><p>If true, the attrs under META_CG_EMBEDS_KEY is copied to the created
+molecule and META_CG_NFRAMES_KEY is used to store the number of frames.
+This typically should be set to True.</p>
+</dd>
+</dl>
+</section>
+<section id="id2">
+<h2>Notes:<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h2>
+<p>This method saves coordinates and forces as float32, no matter what precision they
+originate as.</p>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mlcg_tk.scripts.add_decoys.update_partition_file">
+<span class="sig-prename descclassname"><span class="pre">mlcg_tk.scripts.add_decoys.</span></span><span class="sig-name descname"><span class="pre">update_partition_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">partition_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decoy_h5_files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mol_name_prefixes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partition_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mlcg_tk/scripts/add_decoys.html#update_partition_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.scripts.add_decoys.update_partition_file" title="Link to this definition">¶</a></dt>
+<dd><p>Updates a partition file by adding new molecules with specified prefixes to the “molecules” list of existing datasets.</p>
+<p>This function loads a YAML partition file, updates it by appending molecule names with specified prefixes, and then
+saves the updated partition back to a new YAML file. It is typically used in scenarios where new decoy molecules,
+generated with a prefix (such as a decoy identifier), need to be added to the partition file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+<section id="id3">
+<h2>Arguments:<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>partition_file: str</dt><dd><p>Path to the original partition YAML file that contains metadata about the datasets and molecules. The function will
+read this file and modify the “molecules” list within the “metasets” section of the partition.</p>
+</dd>
+<dt>decoy_h5_files: List[str]</dt><dd><p>A list of paths to HDF5 files that contain the decoy molecules. Each file corresponds to a dataset in the partition file.
+The number and ordering of files should match the number and ordering of datasets in the partition file.</p>
+</dd>
+<dt>mol_name_prefixes: List[str]</dt><dd><p>A list of prefixes to be added to the names of existing molecules in the partition file. Each prefix will be prepended
+to the names of the molecules in the partition’s “molecules” list, essentially creating new “decoy” molecules with
+the prefixed names.</p>
+</dd>
+<dt>partition_name: str</dt><dd><p>The path where the updated partition YAML file will be saved. This will overwrite the existing file at that location.</p>
+</dd>
+</dl>
+</section>
+<section id="id4">
+<h2>Notes:<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>The function assumes that the partition YAML file follows a specific structure, where molecule names are listed under
+the “train” section in the “metasets” -&gt; “molecules” key.</p></li>
+<li><p>The function does not add decoy molecules to the validation dataset provided in the partition file</p></li>
+</ul>
+</section>
+<section id="example">
+<h2>Example:<a class="headerlink" href="#example" title="Link to this heading">¶</a></h2>
+<p>If the partition file contains the following:
+<a href="#id5"><span class="problematic" id="id6">``</span></a><a href="#id7"><span class="problematic" id="id8">`</span></a>yaml
+train:</p>
+<blockquote>
+<div><dl class="simple">
+<dt>metasets:</dt><dd><dl class="simple">
+<dt>my_dataset:</dt><dd><dl class="simple">
+<dt>molecules:</dt><dd><ul class="simple">
+<li><p>mol1</p></li>
+<li><p>mol2</p></li>
+</ul>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</div></blockquote>
+<p><a href="#id9"><span class="problematic" id="id10">``</span></a>`
+and mol_name_prefixes = [“DECOY_5”, “DECOY_05”]
+The updated partition file will contain:
+<a href="#id11"><span class="problematic" id="id12">``</span></a><a href="#id13"><span class="problematic" id="id14">`</span></a>yaml
+train:</p>
+<blockquote>
+<div><dl class="simple">
+<dt>metasets:</dt><dd><dl class="simple">
+<dt>my_dataset:</dt><dd><dl class="simple">
+<dt>molecules:</dt><dd><ul class="simple">
+<li><p>mol1</p></li>
+<li><p>mol2</p></li>
+<li><p>DECOY_5_mol1</p></li>
+<li><p>DECOY_5_mol2</p></li>
+<li><p>DECOY_05_mol1</p></li>
+<li><p>DECOY_05_mol2</p></li>
+</ul>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</div></blockquote>
+<p><a href="#id15"><span class="problematic" id="id16">``</span></a><a href="#id17"><span class="problematic" id="id18">`</span></a></p>
+</section>
+</dd></dl>
+
+</section>
+
+        </article><button class="back-to-top" type="button">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+  </svg>
+  <span>Back to top</span>
+</button><div class="navigation flex print:hidden"><div class="navigation-prev">
+    <a href="package_training_data.html">
+      <i class="i-lucide chevron-left"></i>
+      <div class="page-info">
+        <span>Previous</span><div class="title"><code class="docutils literal notranslate"><span class="pre">package_training_data.py</span></code></div></div>
+    </a>
+  </div><div class="navigation-next">
+    <a href="gen_sim_input.html">
+      <div class="page-info">
+        <span>Next</span>
+        <div class="title"><code class="docutils literal notranslate"><span class="pre">gen_sim_input.py</span></code></div>
+      </div>
+      <i class="i-lucide chevron-right"></i>
+    </a>
+  </div></div></div>
+    </div>
+  </main>
+</div>
+<footer class="sy-foot">
+  <div class="sy-foot-inner sy-container mx-auto">
+    <div class="sy-foot-reserved md:flex justify-between items-center">
+      <div class="sy-foot-copyright"><p>2026, Clementi Group</p>
+  
+  <p>
+    Made with
+    
+    <a href="https://www.sphinx-doc.org/">Sphinx</a> and
+    
+    <a href="https://shibuya.lepture.com">Shibuya theme</a>.
+  </p>
+</div>
+      <div class="sy-foot-socials"></div>
+    </div>
+  </div>
+</footer>
+      <script src="../../_static/documentation_options.js?v=7026087e"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/shibuya.js?v=cac61aee"></script></body>
+</html>

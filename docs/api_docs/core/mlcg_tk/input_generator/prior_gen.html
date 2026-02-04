@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en" data-accent-color="teal" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>prior_gen module - mlcg-tk 0.0.0 documentation</title><link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Search" href="../../../../search.html" /><link rel="next" title="prior_nls module" href="prior_nls.html" /><link rel="prev" title="embedding_maps module" href="embedding_maps.html" /><script>
+    function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
+    setColorMode(localStorage._theme||"auto");
+  </script><link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=e1a1ceaf" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/shibuya.css?v=44020203" />
+    <link media="print" rel="stylesheet" type="text/css" href="../../../../_static/print.css?v=20ff2c19" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sy-f-text: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+  --sy-f-heading: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+}
+</style>
+    <meta property="og:type" content="website"/><meta property="og:title" content="prior_gen module"/>
+    <meta name="twitter:card" content="summary"/>
+  </head>
+<body><div class="sy-head">
+  <div class="sy-head-blur"></div>
+  <div class="sy-head-inner sy-container mx-auto">
+    <a class="sy-head-brand" href="../../../../index.html">
+      
+      
+      <strong>mlcg-tk</strong>
+    </a>
+    <div class="sy-head-nav" id="head-nav">
+      <nav class="sy-head-links"></nav>
+      <div class="sy-head-extra flex items-center print:hidden"><form class="searchbox flex items-center" action="../../../../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <kbd>/</kbd>
+</form><div class="sy-head-socials"></div></div>
+    </div>
+    <div class="sy-head-actions flex items-center shrink-0 print:hidden"><button class="js-theme theme-switch flex items-center"
+data-aria-auto="Switch to light color mode"
+data-aria-light="Switch to dark color mode"
+data-aria-dark="Switch to auto color mode">
+<i class="i-lucide theme-icon"></i>
+</button><button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="head-nav" aria-expanded="false">
+        <div class="hamburger">
+          <span class="hamburger_1"></span>
+          <span class="hamburger_2"></span>
+          <span class="hamburger_3"></span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="sy-page sy-container flex mx-auto">
+  <aside id="lside" class="sy-lside md:w-72 md:shrink-0 print:hidden">
+    <div class="sy-lside-inner md:sticky">
+      <div class="sy-scrollbar p-6">
+        <div class="globaltoc" data-expand-depth="1"><p class="caption" role="heading" aria-level="3"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 _expand"><a class="reference internal" href="../../../../user_guide/index.html">Data pipeline user guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../user_guide/intro.html">About the Training Data Generation Pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../user_guide/intro.html#create-a-directory-to-output-all-the-intermediate-files">0) Create a directory to output all the intermediate files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../user_guide/aa_to_cg.html">1) Loading and processing all-atom simulation data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../user_guide/stats_priors.html">2) Computing statistics and fitting priors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../user_guide/delta_forces.html">3) Producing delta forces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../user_guide/packaging.html">4) Package Training Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../user_guide/packaging.html#add-decoys-to-training-data">4.1) Add Decoys To Training Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../user_guide/sim_input.html">5) Generate simulation input</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../../index.html">API documentation</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../../modules.html">Core API</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="../input_generator.html">input_generator package</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="prior_fit.html">prior_fit package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="prior_fit/dihedral.html">dihedral module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="prior_fit/fit_potentials.html">fit_potentials module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="prior_fit/harmonic.html">harmonic module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="prior_fit/histogram.html">histogram module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="prior_fit/polynomial.html">polynomial module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="prior_fit/repulsion.html">repulsion module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="prior_fit/restricted_bending.html">restricted_bending module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="prior_fit/utils.html">utils module</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="embedding_maps.html">embedding_maps module</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">prior_gen module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="prior_nls.html">prior_nls module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="raw_data_loader.html">raw_data_loader module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="raw_dataset.html">raw_dataset module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="utils.html">utils module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../prior_tools.html">prior_tools package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../prior_tools/utils.html">utils module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../scripts/index.html">Scripts</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../scripts/gen_input_data.html"><code class="docutils literal notranslate"><span class="pre">gen_input_data.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../scripts/fit_priors.html"><code class="docutils literal notranslate"><span class="pre">fit_priors.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../scripts/merge_statistics.html"><code class="docutils literal notranslate"><span class="pre">merge_statistics.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../scripts/produce_delta_forces.html"><code class="docutils literal notranslate"><span class="pre">produce_delta_forces.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../scripts/package_training_data.html"><code class="docutils literal notranslate"><span class="pre">package_training_data.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../scripts/add_decoys.html"><code class="docutils literal notranslate"><span class="pre">add_decoys.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../scripts/gen_sim_input.html"><code class="docutils literal notranslate"><span class="pre">gen_sim_input.py</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="lside-overlay js-menu" role="button" aria-label="Close left sidebar" aria-controls="lside" aria-expanded="false"></div>
+  <aside id="rside" class="sy-rside pb-3 w-64 shrink-0 order-last">
+    <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
+      <i class="i-lucide close"></i>
+    </button>
+    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div class="localtoc"><h3>On this page</h3><ul>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_gen.Angles"><code class="docutils literal notranslate"><span class="pre">Angles</span></code></a><ul>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_gen.Angles.name"><code class="docutils literal notranslate">name</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_gen.Angles.nl_builder"><code class="docutils literal notranslate">nl_builder</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_gen.Angles.separate_termini"><code class="docutils literal notranslate">separate_termini</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_gen.Angles.nbins"><code class="docutils literal notranslate">nbins</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_gen.Angles.bmin"><code class="docutils literal notranslate">bmin</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_gen.Angles.bmax"><code class="docutils literal notranslate">bmax</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_gen.Angles.prior_fit_fn"><code class="docutils literal notranslate">prior_fit_fn</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_gen.Angles.prior_cls"><code class="docutils literal notranslate">prior_cls</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_gen.Angles.build_nl"><code class="docutils literal notranslate">build_nl()</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_gen.Angles.get_prior_model"><code class="docutils literal notranslate">get_prior_model()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_gen.Bonds"><code class="docutils literal notranslate"><span class="pre">Bonds</span></code></a><ul>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_gen.Bonds.name"><code class="docutils literal notranslate">name</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_gen.Bonds.nl_builder"><code class="docutils literal notranslate">nl_builder</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_gen.Bonds.separate_termini"><code class="docutils literal notranslate">separate_termini</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_gen.Bonds.nbins"><code class="docutils literal notranslate">nbins</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_gen.Bonds.bmin"><code class="docutils literal notranslate">bmin</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_gen.Bonds.bmax"><code class="docutils literal notranslate">bmax</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_gen.Bonds.prior_fit_fn"><code class="docutils literal notranslate">prior_fit_fn</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_gen.Bonds.build_nl"><code class="docutils literal notranslate">build_nl()</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_gen.Bonds.get_prior_model"><code class="docutils literal notranslate">get_prior_model()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_gen.Dihedrals"><code class="docutils literal notranslate"><span class="pre">Dihedrals</span></code></a><ul>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_gen.Dihedrals.name"><code class="docutils literal notranslate">name</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_gen.Dihedrals.nl_builder"><code class="docutils literal notranslate">nl_builder</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_gen.Dihedrals.nbins"><code class="docutils literal notranslate">nbins</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_gen.Dihedrals.bmin"><code class="docutils literal notranslate">bmin</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_gen.Dihedrals.bmax"><code class="docutils literal notranslate">bmax</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_gen.Dihedrals.prior_fit_fn"><code class="docutils literal notranslate">prior_fit_fn</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_gen.Dihedrals.get_prior_model"><code class="docutils literal notranslate">get_prior_model()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_gen.NonBonded"><code class="docutils literal notranslate"><span class="pre">NonBonded</span></code></a><ul>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_gen.NonBonded.name"><code class="docutils literal notranslate">name</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_gen.NonBonded.nl_builder"><code class="docutils literal notranslate">nl_builder</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_gen.NonBonded.min_pair"><code class="docutils literal notranslate">min_pair</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_gen.NonBonded.res_exclusion"><code class="docutils literal notranslate">res_exclusion</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_gen.NonBonded.separate_termini"><code class="docutils literal notranslate">separate_termini</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_gen.NonBonded.nbins"><code class="docutils literal notranslate">nbins</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_gen.NonBonded.bmin"><code class="docutils literal notranslate">bmin</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_gen.NonBonded.bmax"><code class="docutils literal notranslate">bmax</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_gen.NonBonded.prior_fit_fn"><code class="docutils literal notranslate">prior_fit_fn</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_gen.NonBonded.percentile"><code class="docutils literal notranslate">percentile</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_gen.NonBonded.cutoff"><code class="docutils literal notranslate">cutoff</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_gen.NonBonded.build_nl"><code class="docutils literal notranslate">build_nl()</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_gen.NonBonded.get_prior_model"><code class="docutils literal notranslate">get_prior_model()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_gen.PriorBuilder"><code class="docutils literal notranslate"><span class="pre">PriorBuilder</span></code></a><ul>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_gen.PriorBuilder.histograms"><code class="docutils literal notranslate">histograms</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_gen.PriorBuilder.nl_builder"><code class="docutils literal notranslate">nl_builder</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_gen.PriorBuilder.prior_fit_fn"><code class="docutils literal notranslate">prior_fit_fn</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_gen.PriorBuilder.prior_cls"><code class="docutils literal notranslate">prior_cls</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_gen.PriorBuilder.accumulate_statistics"><code class="docutils literal notranslate">accumulate_statistics()</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_gen.PriorBuilder.build_nl"><code class="docutils literal notranslate">build_nl()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</div><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
+  </aside>
+  <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+<div class="sy-breadcrumbs" role="navigation">
+  <div class="sy-breadcrumbs-inner flex items-center">
+    <div class="md:hidden mr-3">
+      <button class="js-menu" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
+        <i class="i-lucide menu"></i>
+      </button>
+    </div>
+    <ol class="flex-1" itemscope itemtype="https://schema.org/BreadcrumbList"><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../../../../index.html"><span itemprop="name">mlcg-tk</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="1" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../../../index.html"><span itemprop="name">API documentation</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="2" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../../modules.html"><span itemprop="name">Core API</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="3" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../input_generator.html"><span itemprop="name">input_generator package</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="4" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <strong itemprop="name">prior_gen module</strong>
+        <meta itemprop="position" content="5" />
+      </li></ol>
+    <div class="xl:hidden ml-1">
+      <button class="js-menu" aria-label="Show table of contents" type="button" aria-controls="rside"
+        aria-expanded="false">
+        <i class="i-lucide outdent"></i>
+      </button>
+    </div>
+  </div>
+</div><div class="flex flex-col break-words justify-between">
+      <div class="relative min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
+  <article class="yue" role="main">
+          <section id="module-mlcg_tk.input_generator.prior_gen">
+<span id="prior-gen-module"></span><h1>prior_gen module<a class="headerlink" href="#module-mlcg_tk.input_generator.prior_gen" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_gen.Angles">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mlcg_tk.input_generator.prior_gen.</span></span><span class="sig-name descname"><span class="pre">Angles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nl_builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">separate_termini</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_bins</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bmax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prior_fit_fn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prior_cls</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;class</span> <span class="pre">'mlcg.nn.prior.harmonic.GeneralAngles'&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/mlcg_tk/input_generator/prior_gen.html#Angles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.prior_gen.Angles" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mlcg_tk.input_generator.prior_gen.PriorBuilder" title="mlcg_tk.input_generator.prior_gen.PriorBuilder"><code class="xref py py-class docutils literal notranslate"><span class="pre">PriorBuilder</span></code></a></p>
+<p>Builder for order-3 groups of angle priors.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_gen.Angles.name">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#mlcg_tk.input_generator.prior_gen.Angles.name" title="Link to this definition">¶</a></dt>
+<dd><p>Name of specific prior (to match neighbour list name)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_gen.Angles.nl_builder">
+<span class="sig-name descname"><span class="pre">nl_builder</span></span><a class="headerlink" href="#mlcg_tk.input_generator.prior_gen.Angles.nl_builder" title="Link to this definition">¶</a></dt>
+<dd><p>Neighbour list class to be used in building neighbour list</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_gen.Angles.separate_termini">
+<span class="sig-name descname"><span class="pre">separate_termini</span></span><a class="headerlink" href="#mlcg_tk.input_generator.prior_gen.Angles.separate_termini" title="Link to this definition">¶</a></dt>
+<dd><p>Whether statistics should be computed separately for terminal atoms</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_gen.Angles.nbins">
+<span class="sig-name descname"><span class="pre">nbins</span></span><a class="headerlink" href="#mlcg_tk.input_generator.prior_gen.Angles.nbins" title="Link to this definition">¶</a></dt>
+<dd><p>The number of bins over which 1-D feature histograms are constructed
+in order to estimate distributions</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_gen.Angles.bmin">
+<span class="sig-name descname"><span class="pre">bmin</span></span><a class="headerlink" href="#mlcg_tk.input_generator.prior_gen.Angles.bmin" title="Link to this definition">¶</a></dt>
+<dd><p>Lower bound of bin edges</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_gen.Angles.bmax">
+<span class="sig-name descname"><span class="pre">bmax</span></span><a class="headerlink" href="#mlcg_tk.input_generator.prior_gen.Angles.bmax" title="Link to this definition">¶</a></dt>
+<dd><p>Upper bound of bin edges</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_gen.Angles.prior_fit_fn">
+<span class="sig-name descname"><span class="pre">prior_fit_fn</span></span><a class="headerlink" href="#mlcg_tk.input_generator.prior_gen.Angles.prior_fit_fn" title="Link to this definition">¶</a></dt>
+<dd><p>Function to be used in fitting potential from statistics</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_gen.Angles.prior_cls">
+<span class="sig-name descname"><span class="pre">prior_cls</span></span><a class="headerlink" href="#mlcg_tk.input_generator.prior_gen.Angles.prior_cls" title="Link to this definition">¶</a></dt>
+<dd><p>Prior class to be used. It must be able to be initialized from the output
+of the <cite>prior_fit_fn</cite></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_gen.Angles.build_nl">
+<span class="sig-name descname"><span class="pre">build_nl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">topology</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/mlcg_tk/input_generator/prior_gen.html#Angles.build_nl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.prior_gen.Angles.build_nl" title="Link to this definition">¶</a></dt>
+<dd><p>Generates edges for order-3 atom groups for angle prior</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>topology</strong> – MDTraj topology object from which atom groups defining each prior term will be created</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Edges, orders, and tag for angle prior term</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_gen.Angles.get_prior_model">
+<span class="sig-name descname"><span class="pre">get_prior_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">statistics</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">targets</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'forces'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/mlcg_tk/input_generator/prior_gen.html#Angles.get_prior_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.prior_gen.Angles.get_prior_model" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>statistics</strong> – Gathered angle statistics</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – Name of the prior object (corresponding to nls name)</p></li>
+<li><p><strong>targets</strong> – The gradient targets to produce from a model output. These can be any
+of the gradient properties referenced in <cite>mlcg.data._keys</cite>.
+At the moment only forces are implemented.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_gen.Bonds">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mlcg_tk.input_generator.prior_gen.</span></span><span class="sig-name descname"><span class="pre">Bonds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nl_builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">separate_termini</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_bins</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bmax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prior_fit_fn</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/mlcg_tk/input_generator/prior_gen.html#Bonds"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.prior_gen.Bonds" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mlcg_tk.input_generator.prior_gen.PriorBuilder" title="mlcg_tk.input_generator.prior_gen.PriorBuilder"><code class="xref py py-class docutils literal notranslate"><span class="pre">PriorBuilder</span></code></a></p>
+<p>Builder for order-2 groups of bond priors.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_gen.Bonds.name">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#mlcg_tk.input_generator.prior_gen.Bonds.name" title="Link to this definition">¶</a></dt>
+<dd><p>Name of specific prior (to match neighbour list name)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_gen.Bonds.nl_builder">
+<span class="sig-name descname"><span class="pre">nl_builder</span></span><a class="headerlink" href="#mlcg_tk.input_generator.prior_gen.Bonds.nl_builder" title="Link to this definition">¶</a></dt>
+<dd><p>Neighbour list class to be used in building neighbour list</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_gen.Bonds.separate_termini">
+<span class="sig-name descname"><span class="pre">separate_termini</span></span><a class="headerlink" href="#mlcg_tk.input_generator.prior_gen.Bonds.separate_termini" title="Link to this definition">¶</a></dt>
+<dd><p>Whether statistics should be computed separately for terminal atoms</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_gen.Bonds.nbins">
+<span class="sig-name descname"><span class="pre">nbins</span></span><a class="headerlink" href="#mlcg_tk.input_generator.prior_gen.Bonds.nbins" title="Link to this definition">¶</a></dt>
+<dd><p>The number of bins over which 1-D feature histograms are constructed
+in order to estimate distributions</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_gen.Bonds.bmin">
+<span class="sig-name descname"><span class="pre">bmin</span></span><a class="headerlink" href="#mlcg_tk.input_generator.prior_gen.Bonds.bmin" title="Link to this definition">¶</a></dt>
+<dd><p>Lower bound of bin edges</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_gen.Bonds.bmax">
+<span class="sig-name descname"><span class="pre">bmax</span></span><a class="headerlink" href="#mlcg_tk.input_generator.prior_gen.Bonds.bmax" title="Link to this definition">¶</a></dt>
+<dd><p>Upper bound of bin edges</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_gen.Bonds.prior_fit_fn">
+<span class="sig-name descname"><span class="pre">prior_fit_fn</span></span><a class="headerlink" href="#mlcg_tk.input_generator.prior_gen.Bonds.prior_fit_fn" title="Link to this definition">¶</a></dt>
+<dd><p>Function to be used in fitting potential from statistics</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_gen.Bonds.build_nl">
+<span class="sig-name descname"><span class="pre">build_nl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">topology</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/mlcg_tk/input_generator/prior_gen.html#Bonds.build_nl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.prior_gen.Bonds.build_nl" title="Link to this definition">¶</a></dt>
+<dd><p>Generates edges for order-2 atom groups for bond prior</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>topology</strong> – MDTraj topology object from which atom groups defining each prior term will be created</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Edges, orders, and tag for angle prior term</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_gen.Bonds.get_prior_model">
+<span class="sig-name descname"><span class="pre">get_prior_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">statistics</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">targets</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'forces'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/mlcg_tk/input_generator/prior_gen.html#Bonds.get_prior_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.prior_gen.Bonds.get_prior_model" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>statistics</strong> – Gathered bond statistics</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – Name of the prior object (corresponding to nls name)</p></li>
+<li><p><strong>targets</strong> – The gradient targets to produce from a model output. These can be any
+of the gradient properties referenced in <cite>mlcg.data._keys</cite>.
+At the moment only forces are implemented.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_gen.Dihedrals">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mlcg_tk.input_generator.prior_gen.</span></span><span class="sig-name descname"><span class="pre">Dihedrals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nl_builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_bins</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bmax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prior_fit_fn</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/mlcg_tk/input_generator/prior_gen.html#Dihedrals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.prior_gen.Dihedrals" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mlcg_tk.input_generator.prior_gen.PriorBuilder" title="mlcg_tk.input_generator.prior_gen.PriorBuilder"><code class="xref py py-class docutils literal notranslate"><span class="pre">PriorBuilder</span></code></a></p>
+<p>Builder for order-4 groups of dihedral priors.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_gen.Dihedrals.name">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#mlcg_tk.input_generator.prior_gen.Dihedrals.name" title="Link to this definition">¶</a></dt>
+<dd><p>Name of specific prior (to match neighbour list name)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_gen.Dihedrals.nl_builder">
+<span class="sig-name descname"><span class="pre">nl_builder</span></span><a class="headerlink" href="#mlcg_tk.input_generator.prior_gen.Dihedrals.nl_builder" title="Link to this definition">¶</a></dt>
+<dd><p>Neighbour list class to be used in building neighbour list</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_gen.Dihedrals.nbins">
+<span class="sig-name descname"><span class="pre">nbins</span></span><a class="headerlink" href="#mlcg_tk.input_generator.prior_gen.Dihedrals.nbins" title="Link to this definition">¶</a></dt>
+<dd><p>The number of bins over which 1-D feature histograms are constructed
+in order to estimate distributions</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_gen.Dihedrals.bmin">
+<span class="sig-name descname"><span class="pre">bmin</span></span><a class="headerlink" href="#mlcg_tk.input_generator.prior_gen.Dihedrals.bmin" title="Link to this definition">¶</a></dt>
+<dd><p>Lower bound of bin edges</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_gen.Dihedrals.bmax">
+<span class="sig-name descname"><span class="pre">bmax</span></span><a class="headerlink" href="#mlcg_tk.input_generator.prior_gen.Dihedrals.bmax" title="Link to this definition">¶</a></dt>
+<dd><p>Upper bound of bin edges</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_gen.Dihedrals.prior_fit_fn">
+<span class="sig-name descname"><span class="pre">prior_fit_fn</span></span><a class="headerlink" href="#mlcg_tk.input_generator.prior_gen.Dihedrals.prior_fit_fn" title="Link to this definition">¶</a></dt>
+<dd><p>Function to be used in fitting potential from statistics</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_gen.Dihedrals.get_prior_model">
+<span class="sig-name descname"><span class="pre">get_prior_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">statistics</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">targets</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'forces'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/mlcg_tk/input_generator/prior_gen.html#Dihedrals.get_prior_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.prior_gen.Dihedrals.get_prior_model" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>statistics</strong> – Gathered dihedral statistics</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – Name of the prior object (corresponding to nls name)</p></li>
+<li><p><strong>targets</strong> – The gradient targets to produce from a model output. These can be any
+of the gradient properties referenced in <cite>mlcg.data._keys</cite>.
+At the moment only forces are implemented.</p></li>
+<li><p><strong>kwargs</strong> – <dl class="simple">
+<dt>n_degs:</dt><dd><p>The maximum number of degrees to attempt to fit if using the AIC
+criterion for prior model selection</p>
+</dd>
+</dl>
+</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_gen.NonBonded">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mlcg_tk.input_generator.prior_gen.</span></span><span class="sig-name descname"><span class="pre">NonBonded</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nl_builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_pair</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">res_exclusion</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">separate_termini</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_bins</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bmax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prior_fit_fn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percentile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cutoff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/mlcg_tk/input_generator/prior_gen.html#NonBonded"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.prior_gen.NonBonded" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mlcg_tk.input_generator.prior_gen.PriorBuilder" title="mlcg_tk.input_generator.prior_gen.PriorBuilder"><code class="xref py py-class docutils literal notranslate"><span class="pre">PriorBuilder</span></code></a></p>
+<p>Builder for order-2 groups of nonbonded priors.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_gen.NonBonded.name">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#mlcg_tk.input_generator.prior_gen.NonBonded.name" title="Link to this definition">¶</a></dt>
+<dd><p>Name of specific prior (to match neighbour list name)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_gen.NonBonded.nl_builder">
+<span class="sig-name descname"><span class="pre">nl_builder</span></span><a class="headerlink" href="#mlcg_tk.input_generator.prior_gen.NonBonded.nl_builder" title="Link to this definition">¶</a></dt>
+<dd><p>Neighbour list class to be used in building neighbour list</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_gen.NonBonded.min_pair">
+<span class="sig-name descname"><span class="pre">min_pair</span></span><a class="headerlink" href="#mlcg_tk.input_generator.prior_gen.NonBonded.min_pair" title="Link to this definition">¶</a></dt>
+<dd><p>Minimum number of bond edges between two atoms in order to be considered
+a member of the non-bonded set</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_gen.NonBonded.res_exclusion">
+<span class="sig-name descname"><span class="pre">res_exclusion</span></span><a class="headerlink" href="#mlcg_tk.input_generator.prior_gen.NonBonded.res_exclusion" title="Link to this definition">¶</a></dt>
+<dd><p>If supplied, pairs within res_exclusion residues of each other are removed
+from the non-bonded set</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_gen.NonBonded.separate_termini">
+<span class="sig-name descname"><span class="pre">separate_termini</span></span><a class="headerlink" href="#mlcg_tk.input_generator.prior_gen.NonBonded.separate_termini" title="Link to this definition">¶</a></dt>
+<dd><p>Whether statistics should be computed separately for terminal atoms</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_gen.NonBonded.nbins">
+<span class="sig-name descname"><span class="pre">nbins</span></span><a class="headerlink" href="#mlcg_tk.input_generator.prior_gen.NonBonded.nbins" title="Link to this definition">¶</a></dt>
+<dd><p>The number of bins over which 1-D feature histograms are constructed
+in order to estimate distributions</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_gen.NonBonded.bmin">
+<span class="sig-name descname"><span class="pre">bmin</span></span><a class="headerlink" href="#mlcg_tk.input_generator.prior_gen.NonBonded.bmin" title="Link to this definition">¶</a></dt>
+<dd><p>Lower bound of bin edges</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_gen.NonBonded.bmax">
+<span class="sig-name descname"><span class="pre">bmax</span></span><a class="headerlink" href="#mlcg_tk.input_generator.prior_gen.NonBonded.bmax" title="Link to this definition">¶</a></dt>
+<dd><p>Upper bound of bin edges</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_gen.NonBonded.prior_fit_fn">
+<span class="sig-name descname"><span class="pre">prior_fit_fn</span></span><a class="headerlink" href="#mlcg_tk.input_generator.prior_gen.NonBonded.prior_fit_fn" title="Link to this definition">¶</a></dt>
+<dd><p>Function to be used in fitting potential from statistics</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_gen.NonBonded.percentile">
+<span class="sig-name descname"><span class="pre">percentile</span></span><a class="headerlink" href="#mlcg_tk.input_generator.prior_gen.NonBonded.percentile" title="Link to this definition">¶</a></dt>
+<dd><p>If specified, the sigma value is calculated using the specified
+distance percentile (eg, percentile = 1) sets the sigma value
+at the location of the 1th percentile of pairwise distances. This
+option is useful for estimating repulsions for distance distribtions
+with long lower tails or lower distance outliers. Must be a number from
+0 to 1</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_gen.NonBonded.cutoff">
+<span class="sig-name descname"><span class="pre">cutoff</span></span><a class="headerlink" href="#mlcg_tk.input_generator.prior_gen.NonBonded.cutoff" title="Link to this definition">¶</a></dt>
+<dd><p>If specified, only those input values below this cutoff will be used in
+evaluating the percentile</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_gen.NonBonded.build_nl">
+<span class="sig-name descname"><span class="pre">build_nl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">topology</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/mlcg_tk/input_generator/prior_gen.html#NonBonded.build_nl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.prior_gen.NonBonded.build_nl" title="Link to this definition">¶</a></dt>
+<dd><p>Generates edges for order-2 atom groups for nonbond prior</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>topology</strong> – MDTraj topology object from which atom groups defining each prior term will be created</p></li>
+<li><p><strong>kwargs</strong> – <dl class="simple">
+<dt>bond_edges:</dt><dd><p>Edges of bonded prior, to be omitted from nonbonded interactions</p>
+</dd>
+<dt>angle_edges:</dt><dd><p>Edges of angle prior, to be omitted from nonbonded interactions</p>
+</dd>
+</dl>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Edges, orders, and tag for nonbonded prior term</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_gen.NonBonded.get_prior_model">
+<span class="sig-name descname"><span class="pre">get_prior_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">statistics</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">targets</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'forces'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/mlcg_tk/input_generator/prior_gen.html#NonBonded.get_prior_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.prior_gen.NonBonded.get_prior_model" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>statistics</strong> – Gathered nonbonded statistics</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – Name of the prior object (corresponding to nls name)</p></li>
+<li><p><strong>targets</strong> – The gradient targets to produce from a model output. These can be any
+of the gradient properties referenced in <cite>mlcg.data._keys</cite>.
+At the moment only forces are implemented.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_gen.PriorBuilder">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mlcg_tk.input_generator.prior_gen.</span></span><span class="sig-name descname"><span class="pre">PriorBuilder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">histograms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nl_builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prior_fit_fn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prior_cls</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/mlcg_tk/input_generator/prior_gen.html#PriorBuilder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.prior_gen.PriorBuilder" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>General prior builder object holding statistics computed for a given prior
+feature and functions that are used to build neighbour lists and fit potentials
+to the computed statistics.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_gen.PriorBuilder.histograms">
+<span class="sig-name descname"><span class="pre">histograms</span></span><a class="headerlink" href="#mlcg_tk.input_generator.prior_gen.PriorBuilder.histograms" title="Link to this definition">¶</a></dt>
+<dd><p>HistogramsNL object for storing binned feature statistics</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_gen.PriorBuilder.nl_builder">
+<span class="sig-name descname"><span class="pre">nl_builder</span></span><a class="headerlink" href="#mlcg_tk.input_generator.prior_gen.PriorBuilder.nl_builder" title="Link to this definition">¶</a></dt>
+<dd><p>Neighbour list class to be used in building neighbour list</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_gen.PriorBuilder.prior_fit_fn">
+<span class="sig-name descname"><span class="pre">prior_fit_fn</span></span><a class="headerlink" href="#mlcg_tk.input_generator.prior_gen.PriorBuilder.prior_fit_fn" title="Link to this definition">¶</a></dt>
+<dd><p>Function to be used in fitting potential from statistics</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_gen.PriorBuilder.prior_cls">
+<span class="sig-name descname"><span class="pre">prior_cls</span></span><a class="headerlink" href="#mlcg_tk.input_generator.prior_gen.PriorBuilder.prior_cls" title="Link to this definition">¶</a></dt>
+<dd><p>Prior class for fitting features</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_gen.PriorBuilder.accumulate_statistics">
+<span class="sig-name descname"><span class="pre">accumulate_statistics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nl_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/mlcg_tk/input_generator/prior_gen.html#PriorBuilder.accumulate_statistics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.prior_gen.PriorBuilder.accumulate_statistics" title="Link to this definition">¶</a></dt>
+<dd><p>Computes atom-type specific features and calculates statistics from a collated
+AtomicData stucture</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nl_name</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Neighbour list tag</p></li>
+<li><p><strong>data</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomicData</span></code></span>) – Collated list of individual AtomicData structures.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_gen.PriorBuilder.build_nl">
+<span class="sig-name descname"><span class="pre">build_nl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">topology</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/mlcg_tk/input_generator/prior_gen.html#PriorBuilder.build_nl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.prior_gen.PriorBuilder.build_nl" title="Link to this definition">¶</a></dt>
+<dd><p>Generates tagged and ordered edges using neighbour list builder function</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>topology</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Topology</span></code></span>) – MDTraj topology object from which atom groups defining each prior term will be created</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Edges, orders, and tag for given prior term</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+        </article><button class="back-to-top" type="button">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+  </svg>
+  <span>Back to top</span>
+</button><div class="navigation flex print:hidden"><div class="navigation-prev">
+    <a href="embedding_maps.html">
+      <i class="i-lucide chevron-left"></i>
+      <div class="page-info">
+        <span>Previous</span><div class="title">embedding_maps module</div></div>
+    </a>
+  </div><div class="navigation-next">
+    <a href="prior_nls.html">
+      <div class="page-info">
+        <span>Next</span>
+        <div class="title">prior_nls module</div>
+      </div>
+      <i class="i-lucide chevron-right"></i>
+    </a>
+  </div></div></div>
+    </div>
+  </main>
+</div>
+<footer class="sy-foot">
+  <div class="sy-foot-inner sy-container mx-auto">
+    <div class="sy-foot-reserved md:flex justify-between items-center">
+      <div class="sy-foot-copyright"><p>2026, Clementi Group</p>
+  
+  <p>
+    Made with
+    
+    <a href="https://www.sphinx-doc.org/">Sphinx</a> and
+    
+    <a href="https://shibuya.lepture.com">Shibuya theme</a>.
+  </p>
+</div>
+      <div class="sy-foot-socials"></div>
+    </div>
+  </div>
+</footer>
+      <script src="../../../../_static/documentation_options.js?v=7026087e"></script>
+      <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../../_static/shibuya.js?v=cac61aee"></script></body>
+</html>

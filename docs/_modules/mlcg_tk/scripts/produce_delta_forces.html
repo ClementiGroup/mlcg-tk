@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en" data-accent-color="teal" data-content_root="../../../">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>mlcg_tk.scripts.produce_delta_forces - mlcg-tk 0.0.0 documentation</title><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" /><script>
+    function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
+    setColorMode(localStorage._theme||"auto");
+  </script><link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=e1a1ceaf" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/shibuya.css?v=44020203" />
+    <link media="print" rel="stylesheet" type="text/css" href="../../../_static/print.css?v=20ff2c19" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sy-f-text: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+  --sy-f-heading: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+}
+</style>
+    <meta property="og:type" content="website"/><meta property="og:title" content="mlcg_tk.scripts.produce_delta_forces"/>
+    <meta name="twitter:card" content="summary"/>
+  </head>
+<body><div class="sy-head">
+  <div class="sy-head-blur"></div>
+  <div class="sy-head-inner sy-container mx-auto">
+    <a class="sy-head-brand" href="../../../index.html">
+      
+      
+      <strong>mlcg-tk</strong>
+    </a>
+    <div class="sy-head-nav" id="head-nav">
+      <nav class="sy-head-links"></nav>
+      <div class="sy-head-extra flex items-center print:hidden"><form class="searchbox flex items-center" action="../../../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <kbd>/</kbd>
+</form><div class="sy-head-socials"></div></div>
+    </div>
+    <div class="sy-head-actions flex items-center shrink-0 print:hidden"><button class="js-theme theme-switch flex items-center"
+data-aria-auto="Switch to light color mode"
+data-aria-light="Switch to dark color mode"
+data-aria-dark="Switch to auto color mode">
+<i class="i-lucide theme-icon"></i>
+</button><button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="head-nav" aria-expanded="false">
+        <div class="hamburger">
+          <span class="hamburger_1"></span>
+          <span class="hamburger_2"></span>
+          <span class="hamburger_3"></span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="sy-page sy-container flex mx-auto">
+  <aside id="lside" class="sy-lside md:w-72 md:shrink-0 print:hidden">
+    <div class="sy-lside-inner md:sticky">
+      <div class="sy-scrollbar p-6">
+        <div class="globaltoc" data-expand-depth="1"><p class="caption" role="heading" aria-level="3"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../../../user_guide/index.html">Data pipeline user guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/intro.html">About the Training Data Generation Pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/intro.html#create-a-directory-to-output-all-the-intermediate-files">0) Create a directory to output all the intermediate files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/aa_to_cg.html">1) Loading and processing all-atom simulation data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/stats_priors.html">2) Computing statistics and fitting priors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/delta_forces.html">3) Producing delta forces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/packaging.html">4) Package Training Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/packaging.html#add-decoys-to-training-data">4.1) Add Decoys To Training Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/sim_input.html">5) Generate simulation input</a></li>
+</ul>
+</li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../../../api_docs/index.html">API documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api_docs/core/modules.html">Core API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/input_generator.html">input_generator package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/input_generator/prior_fit.html">prior_fit package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/input_generator/prior_fit/dihedral.html">dihedral module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/input_generator/prior_fit/fit_potentials.html">fit_potentials module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/input_generator/prior_fit/harmonic.html">harmonic module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/input_generator/prior_fit/histogram.html">histogram module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/input_generator/prior_fit/polynomial.html">polynomial module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/input_generator/prior_fit/repulsion.html">repulsion module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/input_generator/prior_fit/restricted_bending.html">restricted_bending module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/input_generator/prior_fit/utils.html">utils module</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/input_generator/embedding_maps.html">embedding_maps module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/input_generator/prior_gen.html">prior_gen module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/input_generator/prior_nls.html">prior_nls module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/input_generator/raw_data_loader.html">raw_data_loader module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/input_generator/raw_dataset.html">raw_dataset module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/input_generator/utils.html">utils module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/prior_tools.html">prior_tools package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/prior_tools/utils.html">utils module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api_docs/scripts/index.html">Scripts</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api_docs/scripts/gen_input_data.html"><code class="docutils literal notranslate"><span class="pre">gen_input_data.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api_docs/scripts/fit_priors.html"><code class="docutils literal notranslate"><span class="pre">fit_priors.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api_docs/scripts/merge_statistics.html"><code class="docutils literal notranslate"><span class="pre">merge_statistics.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api_docs/scripts/produce_delta_forces.html"><code class="docutils literal notranslate"><span class="pre">produce_delta_forces.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api_docs/scripts/package_training_data.html"><code class="docutils literal notranslate"><span class="pre">package_training_data.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api_docs/scripts/add_decoys.html"><code class="docutils literal notranslate"><span class="pre">add_decoys.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api_docs/scripts/gen_sim_input.html"><code class="docutils literal notranslate"><span class="pre">gen_sim_input.py</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="lside-overlay js-menu" role="button" aria-label="Close left sidebar" aria-controls="lside" aria-expanded="false"></div>
+  <aside id="rside" class="sy-rside pb-3 w-64 shrink-0 order-last">
+    <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
+      <i class="i-lucide close"></i>
+    </button>
+    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
+  </aside>
+  <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+<div class="sy-breadcrumbs" role="navigation">
+  <div class="sy-breadcrumbs-inner flex items-center">
+    <div class="md:hidden mr-3">
+      <button class="js-menu" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
+        <i class="i-lucide menu"></i>
+      </button>
+    </div>
+    <ol class="flex-1" itemscope itemtype="https://schema.org/BreadcrumbList"><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../../../index.html"><span itemprop="name">mlcg-tk</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="1" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../../index.html"><span itemprop="name">Module code</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="2" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <strong itemprop="name">mlcg_tk.scripts.produce_delta_forces</strong>
+        <meta itemprop="position" content="3" />
+      </li></ol>
+    <div class="xl:hidden ml-1">
+      <button class="js-menu" aria-label="Show table of contents" type="button" aria-controls="rside"
+        aria-expanded="false">
+        <i class="i-lucide outdent"></i>
+      </button>
+    </div>
+  </div>
+</div><div class="flex flex-col break-words justify-between">
+      <div class="relative min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
+  <article class="yue" role="main">
+          <h1>Source code for mlcg_tk.scripts.produce_delta_forces</h1><div class="highlight"><pre>
+<span></span><span data-line="1"><span class="kn">import</span><span class="w"> </span><span class="nn">os.path</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">osp</span>
+</span><span data-line="2"><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+</span><span data-line="3">
+</span><span data-line="4"><span class="kn">import</span><span class="w"> </span><span class="nn">mdtraj</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">md</span>
+</span><span data-line="5"><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+</span><span data-line="6"><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+</span><span data-line="7">
+</span><span data-line="8"><span class="kn">from</span><span class="w"> </span><span class="nn">mlcg.data.atomic_data</span><span class="w"> </span><span class="kn">import</span> <span class="n">AtomicData</span>
+</span><span data-line="9"><span class="kn">from</span><span class="w"> </span><span class="nn">mlcg.data._keys</span><span class="w"> </span><span class="kn">import</span> <span class="n">FORCE_KEY</span>
+</span><span data-line="10"><span class="kn">from</span><span class="w"> </span><span class="nn">mlcg.nn</span><span class="w"> </span><span class="kn">import</span> <span class="n">SumOut</span>
+</span><span data-line="11">
+</span><span data-line="12"><span class="kn">from</span><span class="w"> </span><span class="nn">mlcg_tk.input_generator.raw_dataset</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+</span><span data-line="13"><span class="kn">from</span><span class="w"> </span><span class="nn">mlcg_tk.input_generator.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_output_tag</span>
+</span><span data-line="14">
+</span><span data-line="15"><span class="kn">from</span><span class="w"> </span><span class="nn">tqdm</span><span class="w"> </span><span class="kn">import</span> <span class="n">tqdm</span>
+</span><span data-line="16">
+</span><span data-line="17"><span class="kn">from</span><span class="w"> </span><span class="nn">time</span><span class="w"> </span><span class="kn">import</span> <span class="n">ctime</span>
+</span><span data-line="18">
+</span><span data-line="19"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Optional</span>
+</span><span data-line="20"><span class="kn">from</span><span class="w"> </span><span class="nn">jsonargparse</span><span class="w"> </span><span class="kn">import</span> <span class="n">CLI</span>
+</span><span data-line="21">
+</span><span data-line="22">
+<div class="viewcode-block" id="remove_baseline_forces_collated">
+<a class="viewcode-back" href="../../../api_docs/scripts/produce_delta_forces.html#mlcg_tk.scripts.produce_delta_forces.remove_baseline_forces_collated">[docs]</a>
+</span><span data-line="23"><span class="k">def</span><span class="w"> </span><span class="nf">remove_baseline_forces_collated</span><span class="p">(</span>
+</span><span data-line="24">    <span class="n">collated_data</span><span class="p">:</span> <span class="n">AtomicData</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">SumOut</span>
+</span><span data-line="25"><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AtomicData</span><span class="p">:</span>
+</span><span data-line="26"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute the forces on the input :obj:`collated_data` with the :obj:`models`</span>
+</span><span data-line="27"><span class="sd">    and remove them from the reference forces contained in :obj:`data_list`.</span>
+</span><span data-line="28"><span class="sd">    The computation of the forces is done on the whole :obj:`data_list` at once</span>
+</span><span data-line="29"><span class="sd">    so it should not be too large.</span>
+</span><span data-line="30">
+</span><span data-line="31"><span class="sd">    Parameters</span>
+</span><span data-line="32"><span class="sd">    ----------</span>
+</span><span data-line="33"><span class="sd">    collated_data:</span>
+</span><span data-line="34"><span class="sd">        Collated list of AtomicData instances that contain the full</span>
+</span><span data-line="35"><span class="sd">        reference forces</span>
+</span><span data-line="36"><span class="sd">    models:</span>
+</span><span data-line="37"><span class="sd">        SumOut object containing models that compute prior/baseline</span>
+</span><span data-line="38"><span class="sd">        forces</span>
+</span><span data-line="39">
+</span><span data-line="40"><span class="sd">    Returns</span>
+</span><span data-line="41"><span class="sd">    -------</span>
+</span><span data-line="42"><span class="sd">    List[AtomicData]:</span>
+</span><span data-line="43"><span class="sd">        Uncollated list of AtomicData instances, where the value of the</span>
+</span><span data-line="44"><span class="sd">        &#39;forces&#39; field is now the delta forces (original forces minus</span>
+</span><span data-line="45"><span class="sd">        the baseline/prior forces). An additional field &#39;baseline&#39; forces</span>
+</span><span data-line="46"><span class="sd">        is added, whose value is equal to the baseline/prior forces</span>
+</span><span data-line="47"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="48">
+</span><span data-line="49">    <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+</span><span data-line="50">    <span class="n">collated_data</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">collated_data</span><span class="p">)</span>
+</span><span data-line="51">    <span class="n">baseline_forces</span> <span class="o">=</span> <span class="n">collated_data</span><span class="o">.</span><span class="n">out</span><span class="p">[</span><span class="n">FORCE_KEY</span><span class="p">]</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
+</span><span data-line="52">    <span class="n">collated_data</span><span class="o">.</span><span class="n">forces</span> <span class="o">-=</span> <span class="n">baseline_forces</span>
+</span><span data-line="53">    <span class="n">collated_data</span><span class="o">.</span><span class="n">baseline_forces</span> <span class="o">=</span> <span class="n">baseline_forces</span>
+</span><span data-line="54">    <span class="k">return</span> <span class="n">collated_data</span></div>
+
+</span><span data-line="55">
+</span><span data-line="56">
+<div class="viewcode-block" id="produce_delta_forces">
+<a class="viewcode-back" href="../../../api_docs/scripts/produce_delta_forces.html#mlcg_tk.scripts.produce_delta_forces.produce_delta_forces">[docs]</a>
+</span><span data-line="57"><span class="k">def</span><span class="w"> </span><span class="nf">produce_delta_forces</span><span class="p">(</span>
+</span><span data-line="58">    <span class="n">dataset_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="59">    <span class="n">names</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+</span><span data-line="60">    <span class="n">tag</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="61">    <span class="n">save_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="62">    <span class="n">prior_tag</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="63">    <span class="n">prior_fn</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="64">    <span class="n">device</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="65">    <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+</span><span data-line="66">    <span class="n">force_tag</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="67">    <span class="n">mol_num_batches</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+</span><span data-line="68"><span class="p">):</span>
+</span><span data-line="69"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="70"><span class="sd">    Removes prior energy terms from input forces to produce delta force input</span>
+</span><span data-line="71"><span class="sd">    for training</span>
+</span><span data-line="72">
+</span><span data-line="73"><span class="sd">    Parameters</span>
+</span><span data-line="74"><span class="sd">    ----------</span>
+</span><span data-line="75"><span class="sd">    dataset_name : str</span>
+</span><span data-line="76"><span class="sd">        Name given to specific dataset</span>
+</span><span data-line="77"><span class="sd">    names : List[str]</span>
+</span><span data-line="78"><span class="sd">        List of sample names</span>
+</span><span data-line="79"><span class="sd">    tag : str</span>
+</span><span data-line="80"><span class="sd">        Label given to all output files produced from dataset</span>
+</span><span data-line="81"><span class="sd">    save_dir : str</span>
+</span><span data-line="82"><span class="sd">        Path to directory from which input will be loaded and to which output will be saved</span>
+</span><span data-line="83"><span class="sd">    prior_tag : str</span>
+</span><span data-line="84"><span class="sd">        String identifying the specific combination of prior terms</span>
+</span><span data-line="85"><span class="sd">    prior_fn : str</span>
+</span><span data-line="86"><span class="sd">        Path to filename in which prior model is saved</span>
+</span><span data-line="87"><span class="sd">    device: str</span>
+</span><span data-line="88"><span class="sd">        Device on which to run delta force calculations</span>
+</span><span data-line="89"><span class="sd">    batch_size : int</span>
+</span><span data-line="90"><span class="sd">        Number of frames to take per batch</span>
+</span><span data-line="91"><span class="sd">    force_tag: str</span>
+</span><span data-line="92"><span class="sd">        Optional tag to identify input for a particular run of delta force calculation</span>
+</span><span data-line="93"><span class="sd">    mol_num_batches : int</span>
+</span><span data-line="94"><span class="sd">        If greater than 1, will load each molecule data from the specified number of batches</span>
+</span><span data-line="95"><span class="sd">        that were be treated as different samples</span>
+</span><span data-line="96"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="97">
+</span><span data-line="98">    <span class="c1"># prior_model = torch.load(open(prior_fn, &quot;rb&quot;)).models.to(device)</span>
+</span><span data-line="99">    <span class="n">prior_model</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">prior_fn</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+</span><span data-line="100">    <span class="n">dataset</span> <span class="o">=</span> <span class="n">RawDataset</span><span class="p">(</span><span class="n">dataset_name</span><span class="p">,</span> <span class="n">names</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">n_batches</span><span class="o">=</span><span class="n">mol_num_batches</span><span class="p">)</span>
+</span><span data-line="101">    <span class="k">for</span> <span class="n">samples</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span>
+</span><span data-line="102">        <span class="n">dataset</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Processing delta forces for </span><span class="si">{</span><span class="n">dataset_name</span><span class="si">}</span><span class="s2"> dataset...&quot;</span>
+</span><span data-line="103">    <span class="p">):</span>
+</span><span data-line="104">        <span class="k">if</span> <span class="ow">not</span> <span class="n">samples</span><span class="o">.</span><span class="n">has_saved_cg_output</span><span class="p">(</span><span class="n">save_dir</span><span class="p">,</span> <span class="n">prior_tag</span><span class="p">):</span>
+</span><span data-line="105">            <span class="k">continue</span>
+</span><span data-line="106">        <span class="n">coords</span><span class="p">,</span> <span class="n">forces</span><span class="p">,</span> <span class="n">embeds</span><span class="p">,</span> <span class="n">pdb</span><span class="p">,</span> <span class="n">prior_nls</span> <span class="o">=</span> <span class="n">samples</span><span class="o">.</span><span class="n">load_cg_output</span><span class="p">(</span>
+</span><span data-line="107">            <span class="n">save_dir</span><span class="o">=</span><span class="n">save_dir</span><span class="p">,</span> <span class="n">prior_tag</span><span class="o">=</span><span class="n">prior_tag</span>
+</span><span data-line="108">        <span class="p">)</span>
+</span><span data-line="109">
+</span><span data-line="110">        <span class="n">num_frames</span> <span class="o">=</span> <span class="n">coords</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span><span data-line="111">        <span class="n">delta_forces</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span data-line="112">        <span class="n">aux_data_list</span> <span class="o">=</span> <span class="p">[</span>
+</span><span data-line="113">            <span class="n">AtomicData</span><span class="o">.</span><span class="n">from_points</span><span class="p">(</span>
+</span><span data-line="114">                <span class="n">pos</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">coords</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span>
+</span><span data-line="115">                <span class="n">forces</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">forces</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span>
+</span><span data-line="116">                <span class="n">atom_types</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">embeds</span><span class="p">),</span>
+</span><span data-line="117">                <span class="n">masses</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+</span><span data-line="118">                <span class="n">neighborlist</span><span class="o">=</span><span class="n">prior_nls</span><span class="p">,</span>
+</span><span data-line="119">            <span class="p">)</span>
+</span><span data-line="120">            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">batch_size</span><span class="p">)</span>
+</span><span data-line="121">        <span class="p">]</span>
+</span><span data-line="122">        <span class="n">collated_data</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">collate</span><span class="p">(</span><span class="n">aux_data_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="n">aux_data_list</span><span class="p">)</span>
+</span><span data-line="123">        <span class="n">collated_data</span> <span class="o">=</span> <span class="n">collated_data</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+</span><span data-line="124">        <span class="n">slices</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">num_frames</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">)</span>
+</span><span data-line="125">        <span class="n">n_chunks</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">slices</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+</span><span data-line="126">        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_chunks</span><span class="p">):</span>
+</span><span data-line="127">            <span class="n">current_frames</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="n">slices</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">slices</span><span class="p">[</span><span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
+</span><span data-line="128">
+</span><span data-line="129">            <span class="n">collated_data</span><span class="o">.</span><span class="n">pos</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span>
+</span><span data-line="130">                <span class="n">coords</span><span class="p">[</span><span class="n">current_frames</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+</span><span data-line="131">                <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
+</span><span data-line="132">            <span class="p">)</span>
+</span><span data-line="133">            <span class="n">collated_data</span><span class="o">.</span><span class="n">forces</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span>
+</span><span data-line="134">                <span class="n">forces</span><span class="p">[</span><span class="n">current_frames</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+</span><span data-line="135">                <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
+</span><span data-line="136">            <span class="p">)</span>
+</span><span data-line="137">            <span class="n">_</span> <span class="o">=</span> <span class="n">remove_baseline_forces_collated</span><span class="p">(</span>
+</span><span data-line="138">                <span class="n">collated_data</span><span class="p">,</span>
+</span><span data-line="139">                <span class="n">prior_model</span><span class="p">,</span>
+</span><span data-line="140">            <span class="p">)</span>
+</span><span data-line="141">            <span class="n">delta_force</span> <span class="o">=</span> <span class="p">(</span>
+</span><span data-line="142">                <span class="n">collated_data</span><span class="o">.</span><span class="n">forces</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
+</span><span data-line="143">                <span class="o">.</span><span class="n">cpu</span><span class="p">()</span>
+</span><span data-line="144">                <span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">slices</span><span class="p">[</span><span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">slices</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+</span><span data-line="145">            <span class="p">)</span>
+</span><span data-line="146">            <span class="n">delta_forces</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">delta_force</span><span class="o">.</span><span class="n">numpy</span><span class="p">())</span>
+</span><span data-line="147">        <span class="k">if</span> <span class="n">slices</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">num_frames</span><span class="p">:</span>
+</span><span data-line="148">            <span class="c1"># final piece</span>
+</span><span data-line="149">            <span class="n">last_batch_size</span> <span class="o">=</span> <span class="n">num_frames</span> <span class="o">-</span> <span class="n">slices</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+</span><span data-line="150">            <span class="n">collated_data</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">collate</span><span class="p">(</span>
+</span><span data-line="151">                <span class="n">aux_data_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="n">aux_data_list</span><span class="p">[:</span><span class="n">last_batch_size</span><span class="p">]</span>
+</span><span data-line="152">            <span class="p">)</span>
+</span><span data-line="153">            <span class="n">collated_data</span> <span class="o">=</span> <span class="n">collated_data</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+</span><span data-line="154">            <span class="n">collated_data</span><span class="o">.</span><span class="n">pos</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span>
+</span><span data-line="155">                <span class="n">coords</span><span class="p">[</span><span class="n">slices</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="p">:,</span> <span class="p">:,</span> <span class="p">:]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+</span><span data-line="156">                <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
+</span><span data-line="157">            <span class="p">)</span>
+</span><span data-line="158">            <span class="n">collated_data</span><span class="o">.</span><span class="n">forces</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span>
+</span><span data-line="159">                <span class="n">forces</span><span class="p">[</span><span class="n">slices</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="p">:,</span> <span class="p">:,</span> <span class="p">:]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+</span><span data-line="160">                <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
+</span><span data-line="161">            <span class="p">)</span>
+</span><span data-line="162">            <span class="n">_</span> <span class="o">=</span> <span class="n">remove_baseline_forces_collated</span><span class="p">(</span>
+</span><span data-line="163">                <span class="n">collated_data</span><span class="p">,</span>
+</span><span data-line="164">                <span class="n">prior_model</span><span class="p">,</span>
+</span><span data-line="165">            <span class="p">)</span>
+</span><span data-line="166">            <span class="n">delta_force</span> <span class="o">=</span> <span class="p">(</span>
+</span><span data-line="167">                <span class="n">collated_data</span><span class="o">.</span><span class="n">forces</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">last_batch_size</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+</span><span data-line="168">            <span class="p">)</span>
+</span><span data-line="169">            <span class="n">delta_forces</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">delta_force</span><span class="o">.</span><span class="n">numpy</span><span class="p">())</span>
+</span><span data-line="170">
+</span><span data-line="171">        <span class="n">fnout</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+</span><span data-line="172">            <span class="n">save_dir</span><span class="p">,</span>
+</span><span data-line="173">            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">get_output_tag</span><span class="p">([</span><span class="n">tag</span><span class="p">,</span><span class="w"> </span><span class="n">samples</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">prior_tag</span><span class="p">,</span><span class="w"> </span><span class="n">force_tag</span><span class="p">],</span><span class="w"> </span><span class="n">placement</span><span class="o">=</span><span class="s1">&#39;before&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">delta_forces.npy&quot;</span><span class="p">,</span>
+</span><span data-line="174">        <span class="p">)</span>
+</span><span data-line="175">
+</span><span data-line="176">        <span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span>
+</span><span data-line="177">            <span class="n">fnout</span><span class="p">,</span>
+</span><span data-line="178">            <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">delta_forces</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">*</span><span class="n">coords</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span>
+</span><span data-line="179">        <span class="p">)</span></div>
+
+</span><span data-line="180">
+</span><span data-line="181">
+</span><span data-line="182"><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+</span><span data-line="183">    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Start produce_delta_forces.py: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ctime</span><span class="p">()))</span>
+</span><span data-line="184">    <span class="n">CLI</span><span class="p">([</span><span class="n">produce_delta_forces</span><span class="p">])</span>
+</span><span data-line="185">    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Finish produce_delta_forces.py: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ctime</span><span class="p">()))</span>
+</span><span data-line="186">
+</span><span data-line="187">
+</span><span data-line="188"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+</span><span data-line="189">    <span class="n">main</span><span class="p">()</span>
+</span></pre></div>
+        </article><button class="back-to-top" type="button">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+  </svg>
+  <span>Back to top</span>
+</button><div class="navigation flex print:hidden"></div></div>
+    </div>
+  </main>
+</div>
+<footer class="sy-foot">
+  <div class="sy-foot-inner sy-container mx-auto">
+    <div class="sy-foot-reserved md:flex justify-between items-center">
+      <div class="sy-foot-copyright"><p>2026, Clementi Group</p>
+  
+  <p>
+    Made with
+    
+    <a href="https://www.sphinx-doc.org/">Sphinx</a> and
+    
+    <a href="https://shibuya.lepture.com">Shibuya theme</a>.
+  </p>
+</div>
+      <div class="sy-foot-socials"></div>
+    </div>
+  </div>
+</footer>
+      <script src="../../../_static/documentation_options.js?v=7026087e"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../_static/shibuya.js?v=cac61aee"></script></body>
+</html>

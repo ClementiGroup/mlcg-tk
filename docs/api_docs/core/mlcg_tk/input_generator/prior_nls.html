@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en" data-accent-color="teal" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>prior_nls module - mlcg-tk 0.0.0 documentation</title><link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Search" href="../../../../search.html" /><link rel="next" title="raw_data_loader module" href="raw_data_loader.html" /><link rel="prev" title="prior_gen module" href="prior_gen.html" /><script>
+    function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
+    setColorMode(localStorage._theme||"auto");
+  </script><link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=e1a1ceaf" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/shibuya.css?v=44020203" />
+    <link media="print" rel="stylesheet" type="text/css" href="../../../../_static/print.css?v=20ff2c19" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sy-f-text: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+  --sy-f-heading: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+}
+</style>
+    <meta property="og:type" content="website"/><meta property="og:title" content="prior_nls module"/>
+    <meta name="twitter:card" content="summary"/>
+  </head>
+<body><div class="sy-head">
+  <div class="sy-head-blur"></div>
+  <div class="sy-head-inner sy-container mx-auto">
+    <a class="sy-head-brand" href="../../../../index.html">
+      
+      
+      <strong>mlcg-tk</strong>
+    </a>
+    <div class="sy-head-nav" id="head-nav">
+      <nav class="sy-head-links"></nav>
+      <div class="sy-head-extra flex items-center print:hidden"><form class="searchbox flex items-center" action="../../../../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <kbd>/</kbd>
+</form><div class="sy-head-socials"></div></div>
+    </div>
+    <div class="sy-head-actions flex items-center shrink-0 print:hidden"><button class="js-theme theme-switch flex items-center"
+data-aria-auto="Switch to light color mode"
+data-aria-light="Switch to dark color mode"
+data-aria-dark="Switch to auto color mode">
+<i class="i-lucide theme-icon"></i>
+</button><button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="head-nav" aria-expanded="false">
+        <div class="hamburger">
+          <span class="hamburger_1"></span>
+          <span class="hamburger_2"></span>
+          <span class="hamburger_3"></span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="sy-page sy-container flex mx-auto">
+  <aside id="lside" class="sy-lside md:w-72 md:shrink-0 print:hidden">
+    <div class="sy-lside-inner md:sticky">
+      <div class="sy-scrollbar p-6">
+        <div class="globaltoc" data-expand-depth="1"><p class="caption" role="heading" aria-level="3"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 _expand"><a class="reference internal" href="../../../../user_guide/index.html">Data pipeline user guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../user_guide/intro.html">About the Training Data Generation Pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../user_guide/intro.html#create-a-directory-to-output-all-the-intermediate-files">0) Create a directory to output all the intermediate files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../user_guide/aa_to_cg.html">1) Loading and processing all-atom simulation data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../user_guide/stats_priors.html">2) Computing statistics and fitting priors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../user_guide/delta_forces.html">3) Producing delta forces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../user_guide/packaging.html">4) Package Training Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../user_guide/packaging.html#add-decoys-to-training-data">4.1) Add Decoys To Training Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../user_guide/sim_input.html">5) Generate simulation input</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../../index.html">API documentation</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../../modules.html">Core API</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="../input_generator.html">input_generator package</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="prior_fit.html">prior_fit package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="prior_fit/dihedral.html">dihedral module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="prior_fit/fit_potentials.html">fit_potentials module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="prior_fit/harmonic.html">harmonic module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="prior_fit/histogram.html">histogram module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="prior_fit/polynomial.html">polynomial module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="prior_fit/repulsion.html">repulsion module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="prior_fit/restricted_bending.html">restricted_bending module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="prior_fit/utils.html">utils module</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="embedding_maps.html">embedding_maps module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="prior_gen.html">prior_gen module</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">prior_nls module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="raw_data_loader.html">raw_data_loader module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="raw_dataset.html">raw_dataset module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="utils.html">utils module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../prior_tools.html">prior_tools package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../prior_tools/utils.html">utils module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../scripts/index.html">Scripts</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../scripts/gen_input_data.html"><code class="docutils literal notranslate"><span class="pre">gen_input_data.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../scripts/fit_priors.html"><code class="docutils literal notranslate"><span class="pre">fit_priors.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../scripts/merge_statistics.html"><code class="docutils literal notranslate"><span class="pre">merge_statistics.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../scripts/produce_delta_forces.html"><code class="docutils literal notranslate"><span class="pre">produce_delta_forces.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../scripts/package_training_data.html"><code class="docutils literal notranslate"><span class="pre">package_training_data.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../scripts/add_decoys.html"><code class="docutils literal notranslate"><span class="pre">add_decoys.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../scripts/gen_sim_input.html"><code class="docutils literal notranslate"><span class="pre">gen_sim_input.py</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="lside-overlay js-menu" role="button" aria-label="Close left sidebar" aria-controls="lside" aria-expanded="false"></div>
+  <aside id="rside" class="sy-rside pb-3 w-64 shrink-0 order-last">
+    <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
+      <i class="i-lucide close"></i>
+    </button>
+    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div class="localtoc"><h3>On this page</h3><ul>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_nls.CA_pseudo_dihedral"><code class="docutils literal notranslate"><span class="pre">CA_pseudo_dihedral</span></code></a><ul>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_nls.CA_pseudo_dihedral.nl_names"><code class="docutils literal notranslate">nl_names</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_nls.CA_pseudo_dihedral.get_fit_kwargs"><code class="docutils literal notranslate">get_fit_kwargs()</span></code></a></li>
+<li><a class="reference internal" href="#id0"><code class="docutils literal notranslate">nl_names</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_nls.Gamma1"><code class="docutils literal notranslate"><span class="pre">Gamma1</span></code></a><ul>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_nls.Gamma1.nl_names"><code class="docutils literal notranslate">nl_names</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_nls.Gamma1.get_fit_kwargs"><code class="docutils literal notranslate">get_fit_kwargs()</span></code></a></li>
+<li><a class="reference internal" href="#id1"><code class="docutils literal notranslate">nl_names</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_nls.Gamma2"><code class="docutils literal notranslate"><span class="pre">Gamma2</span></code></a><ul>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_nls.Gamma2.nl_names"><code class="docutils literal notranslate">nl_names</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_nls.Gamma2.get_fit_kwargs"><code class="docutils literal notranslate">get_fit_kwargs()</span></code></a></li>
+<li><a class="reference internal" href="#id2"><code class="docutils literal notranslate">nl_names</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_nls.Non_Bonded"><code class="docutils literal notranslate"><span class="pre">Non_Bonded</span></code></a><ul>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_nls.Non_Bonded.nl_names"><code class="docutils literal notranslate">nl_names</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_nls.Non_Bonded.get_fit_kwargs"><code class="docutils literal notranslate">get_fit_kwargs()</span></code></a></li>
+<li><a class="reference internal" href="#id3"><code class="docutils literal notranslate">nl_names</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_nls.Omega"><code class="docutils literal notranslate"><span class="pre">Omega</span></code></a><ul>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_nls.Omega.nl_names"><code class="docutils literal notranslate">nl_names</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_nls.Omega.get_fit_kwargs"><code class="docutils literal notranslate">get_fit_kwargs()</span></code></a></li>
+<li><a class="reference internal" href="#id4"><code class="docutils literal notranslate">nl_names</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_nls.Omega.replace_gly_ca_stats"><code class="docutils literal notranslate">replace_gly_ca_stats</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_nls.Phi"><code class="docutils literal notranslate"><span class="pre">Phi</span></code></a><ul>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_nls.Phi.nl_names"><code class="docutils literal notranslate">nl_names</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_nls.Phi.get_fit_kwargs"><code class="docutils literal notranslate">get_fit_kwargs()</span></code></a></li>
+<li><a class="reference internal" href="#id5"><code class="docutils literal notranslate">nl_names</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_nls.Psi"><code class="docutils literal notranslate"><span class="pre">Psi</span></code></a><ul>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_nls.Psi.nl_names"><code class="docutils literal notranslate">nl_names</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_nls.Psi.get_fit_kwargs"><code class="docutils literal notranslate">get_fit_kwargs()</span></code></a></li>
+<li><a class="reference internal" href="#id6"><code class="docutils literal notranslate">nl_names</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_nls.StandardAngles"><code class="docutils literal notranslate"><span class="pre">StandardAngles</span></code></a><ul>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_nls.StandardAngles.nl_names"><code class="docutils literal notranslate">nl_names</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_nls.StandardAngles.get_fit_kwargs"><code class="docutils literal notranslate">get_fit_kwargs()</span></code></a></li>
+<li><a class="reference internal" href="#id7"><code class="docutils literal notranslate">nl_names</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_nls.StandardBonds"><code class="docutils literal notranslate"><span class="pre">StandardBonds</span></code></a><ul>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_nls.StandardBonds.nl_names"><code class="docutils literal notranslate">nl_names</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_nls.StandardBonds.get_fit_kwargs"><code class="docutils literal notranslate">get_fit_kwargs()</span></code></a></li>
+<li><a class="reference internal" href="#id8"><code class="docutils literal notranslate">nl_names</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.prior_nls.check_graph_distance"><code class="docutils literal notranslate"><span class="pre">check_graph_distance()</span></code></a></li>
+</ul>
+</div><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
+  </aside>
+  <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+<div class="sy-breadcrumbs" role="navigation">
+  <div class="sy-breadcrumbs-inner flex items-center">
+    <div class="md:hidden mr-3">
+      <button class="js-menu" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
+        <i class="i-lucide menu"></i>
+      </button>
+    </div>
+    <ol class="flex-1" itemscope itemtype="https://schema.org/BreadcrumbList"><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../../../../index.html"><span itemprop="name">mlcg-tk</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="1" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../../../index.html"><span itemprop="name">API documentation</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="2" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../../modules.html"><span itemprop="name">Core API</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="3" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../input_generator.html"><span itemprop="name">input_generator package</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="4" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <strong itemprop="name">prior_nls module</strong>
+        <meta itemprop="position" content="5" />
+      </li></ol>
+    <div class="xl:hidden ml-1">
+      <button class="js-menu" aria-label="Show table of contents" type="button" aria-controls="rside"
+        aria-expanded="false">
+        <i class="i-lucide outdent"></i>
+      </button>
+    </div>
+  </div>
+</div><div class="flex flex-col break-words justify-between">
+      <div class="relative min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
+  <article class="yue" role="main">
+          <section id="module-mlcg_tk.input_generator.prior_nls">
+<span id="prior-nls-module"></span><h1>prior_nls module<a class="headerlink" href="#module-mlcg_tk.input_generator.prior_nls" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_nls.CA_pseudo_dihedral">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mlcg_tk.input_generator.prior_nls.</span></span><span class="sig-name descname"><span class="pre">CA_pseudo_dihedral</span></span><a class="reference internal" href="../../../../_modules/mlcg_tk/input_generator/prior_nls.html#CA_pseudo_dihedral"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.prior_nls.CA_pseudo_dihedral" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Proper dihedral angle formed by the 4 subsequence CA.
+It should represent the dihedral formed by 4 ca-ca</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_nls.CA_pseudo_dihedral.nl_names">
+<span class="sig-name descname"><span class="pre">nl_names</span></span><a class="headerlink" href="#mlcg_tk.input_generator.prior_nls.CA_pseudo_dihedral.nl_names" title="Link to this definition">¶</a></dt>
+<dd><p>All possible outputs of bonded neighbourlist;
+Atom groups of psi angles of each amino acid are recorded separately</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_nls.CA_pseudo_dihedral.get_fit_kwargs">
+<span class="sig-name descname"><span class="pre">get_fit_kwargs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nl_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/mlcg_tk/input_generator/prior_nls.html#CA_pseudo_dihedral.get_fit_kwargs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.prior_nls.CA_pseudo_dihedral.get_fit_kwargs" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id0">
+<span class="sig-name descname"><span class="pre">nl_names</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['pseudo_ca_dihedral']</span></span><a class="headerlink" href="#id0" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_nls.Gamma1">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mlcg_tk.input_generator.prior_nls.</span></span><span class="sig-name descname"><span class="pre">Gamma1</span></span><a class="reference internal" href="../../../../_modules/mlcg_tk/input_generator/prior_nls.html#Gamma1"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.prior_nls.Gamma1" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Improper dihedral angle formed by the following atoms:
+N_{n} - CB_{n} - C_{n} - CA_{n}
+where n represents the amino acid for which the angle is defined;
+gamma_1 angle is measured between the plane formed by the first, third, and
+fourth atom and the vector from the first to second atom.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_nls.Gamma1.nl_names">
+<span class="sig-name descname"><span class="pre">nl_names</span></span><a class="headerlink" href="#mlcg_tk.input_generator.prior_nls.Gamma1.nl_names" title="Link to this definition">¶</a></dt>
+<dd><p>All possible outputs of bonded neighbourlist;
+Atom groups of gamma_1 angles are not separaeted by amino acid type</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_nls.Gamma1.get_fit_kwargs">
+<span class="sig-name descname"><span class="pre">get_fit_kwargs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nl_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/mlcg_tk/input_generator/prior_nls.html#Gamma1.get_fit_kwargs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.prior_nls.Gamma1.get_fit_kwargs" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id1">
+<span class="sig-name descname"><span class="pre">nl_names</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['gamma_1']</span></span><a class="headerlink" href="#id1" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_nls.Gamma2">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mlcg_tk.input_generator.prior_nls.</span></span><span class="sig-name descname"><span class="pre">Gamma2</span></span><a class="reference internal" href="../../../../_modules/mlcg_tk/input_generator/prior_nls.html#Gamma2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.prior_nls.Gamma2" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Improper dihedral angle formed by the following atoms:
+CA_{n} - O_{n} - N_{n+1} - C_{n}
+where n represents the amino acid for which the angle is defined;
+gamma_2 angle is measured between the plane formed by the first, third, and
+fourth atom and the vector from the first to second atom.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_nls.Gamma2.nl_names">
+<span class="sig-name descname"><span class="pre">nl_names</span></span><a class="headerlink" href="#mlcg_tk.input_generator.prior_nls.Gamma2.nl_names" title="Link to this definition">¶</a></dt>
+<dd><p>All possible outputs of bonded neighbourlist;
+Atom groups of gamma_2 angles are not separaeted by amino acid type</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_nls.Gamma2.get_fit_kwargs">
+<span class="sig-name descname"><span class="pre">get_fit_kwargs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nl_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/mlcg_tk/input_generator/prior_nls.html#Gamma2.get_fit_kwargs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.prior_nls.Gamma2.get_fit_kwargs" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id2">
+<span class="sig-name descname"><span class="pre">nl_names</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['gamma_2']</span></span><a class="headerlink" href="#id2" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_nls.Non_Bonded">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mlcg_tk.input_generator.prior_nls.</span></span><span class="sig-name descname"><span class="pre">Non_Bonded</span></span><a class="reference internal" href="../../../../_modules/mlcg_tk/input_generator/prior_nls.html#Non_Bonded"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.prior_nls.Non_Bonded" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Pairwise interactions corresponding to nonbonded atoms</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_nls.Non_Bonded.nl_names">
+<span class="sig-name descname"><span class="pre">nl_names</span></span><a class="headerlink" href="#mlcg_tk.input_generator.prior_nls.Non_Bonded.nl_names" title="Link to this definition">¶</a></dt>
+<dd><p>All possible outputs of bonded neighbourlist;
+If <cite>separate_termini</cite> is False, only bonds are returned, otherwise
+atom groups are split based on interactions between only bulk atoms or
+interactions with atoms in terminal residues.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_nls.Non_Bonded.get_fit_kwargs">
+<span class="sig-name descname"><span class="pre">get_fit_kwargs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nl_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/mlcg_tk/input_generator/prior_nls.html#Non_Bonded.get_fit_kwargs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.prior_nls.Non_Bonded.get_fit_kwargs" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id3">
+<span class="sig-name descname"><span class="pre">nl_names</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['n_term_nonbonded',</span> <span class="pre">'bulk_nonbonded',</span> <span class="pre">'c_term_nonbonded',</span> <span class="pre">'non_bonded']</span></span><a class="headerlink" href="#id3" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_nls.Omega">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mlcg_tk.input_generator.prior_nls.</span></span><span class="sig-name descname"><span class="pre">Omega</span></span><a class="reference internal" href="../../../../_modules/mlcg_tk/input_generator/prior_nls.html#Omega"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.prior_nls.Omega" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Omega (proper) dihedral angle formed by the following atoms:
+CA_{n-1} - C_{n-1} - N_{n} - C_{n}
+where n represents the amino acid for which the angle is defined</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_nls.Omega.nl_names">
+<span class="sig-name descname"><span class="pre">nl_names</span></span><a class="headerlink" href="#mlcg_tk.input_generator.prior_nls.Omega.nl_names" title="Link to this definition">¶</a></dt>
+<dd><p>All possible outputs of bonded neighbourlist;
+Atom groups of omega angles are recorded separately only for proline</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_nls.Omega.get_fit_kwargs">
+<span class="sig-name descname"><span class="pre">get_fit_kwargs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nl_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/mlcg_tk/input_generator/prior_nls.html#Omega.get_fit_kwargs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.prior_nls.Omega.get_fit_kwargs" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4">
+<span class="sig-name descname"><span class="pre">nl_names</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['pro_omega',</span> <span class="pre">'non_pro_omega']</span></span><a class="headerlink" href="#id4" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_nls.Omega.replace_gly_ca_stats">
+<span class="sig-name descname"><span class="pre">replace_gly_ca_stats</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></span><a class="headerlink" href="#mlcg_tk.input_generator.prior_nls.Omega.replace_gly_ca_stats" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_nls.Phi">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mlcg_tk.input_generator.prior_nls.</span></span><span class="sig-name descname"><span class="pre">Phi</span></span><a class="reference internal" href="../../../../_modules/mlcg_tk/input_generator/prior_nls.html#Phi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.prior_nls.Phi" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Phi (proper) dihedral angle formed by the following atoms:
+C_{n-1} - N_{n} - CA_{n} - C_{n}
+where n represents the amino acid for which the angle is defined</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_nls.Phi.nl_names">
+<span class="sig-name descname"><span class="pre">nl_names</span></span><a class="headerlink" href="#mlcg_tk.input_generator.prior_nls.Phi.nl_names" title="Link to this definition">¶</a></dt>
+<dd><p>All possible outputs of bonded neighbourlist;
+Atom groups of phi angles of each amino acid are recorded separately</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_nls.Phi.get_fit_kwargs">
+<span class="sig-name descname"><span class="pre">get_fit_kwargs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nl_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/mlcg_tk/input_generator/prior_nls.html#Phi.get_fit_kwargs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.prior_nls.Phi.get_fit_kwargs" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id5">
+<span class="sig-name descname"><span class="pre">nl_names</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['ALA_phi',</span> <span class="pre">'CYS_phi',</span> <span class="pre">'ASP_phi',</span> <span class="pre">'GLU_phi',</span> <span class="pre">'PHE_phi',</span> <span class="pre">'GLY_phi',</span> <span class="pre">'HIS_phi',</span> <span class="pre">'ILE_phi',</span> <span class="pre">'LYS_phi',</span> <span class="pre">'LEU_phi',</span> <span class="pre">'MET_phi',</span> <span class="pre">'ASN_phi',</span> <span class="pre">'PRO_phi',</span> <span class="pre">'GLN_phi',</span> <span class="pre">'ARG_phi',</span> <span class="pre">'SER_phi',</span> <span class="pre">'THR_phi',</span> <span class="pre">'VAL_phi',</span> <span class="pre">'TRP_phi',</span> <span class="pre">'TYR_phi']</span></span><a class="headerlink" href="#id5" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_nls.Psi">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mlcg_tk.input_generator.prior_nls.</span></span><span class="sig-name descname"><span class="pre">Psi</span></span><a class="reference internal" href="../../../../_modules/mlcg_tk/input_generator/prior_nls.html#Psi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.prior_nls.Psi" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Psi (proper) dihedral angle formed by the following atoms:
+N_{n} - CA_{n} - C_{n} - N_{n+1}
+where n represents the amino acid for which the angle is defined</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_nls.Psi.nl_names">
+<span class="sig-name descname"><span class="pre">nl_names</span></span><a class="headerlink" href="#mlcg_tk.input_generator.prior_nls.Psi.nl_names" title="Link to this definition">¶</a></dt>
+<dd><p>All possible outputs of bonded neighbourlist;
+Atom groups of psi angles of each amino acid are recorded separately</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_nls.Psi.get_fit_kwargs">
+<span class="sig-name descname"><span class="pre">get_fit_kwargs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nl_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/mlcg_tk/input_generator/prior_nls.html#Psi.get_fit_kwargs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.prior_nls.Psi.get_fit_kwargs" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id6">
+<span class="sig-name descname"><span class="pre">nl_names</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['ALA_psi',</span> <span class="pre">'CYS_psi',</span> <span class="pre">'ASP_psi',</span> <span class="pre">'GLU_psi',</span> <span class="pre">'PHE_psi',</span> <span class="pre">'GLY_psi',</span> <span class="pre">'HIS_psi',</span> <span class="pre">'ILE_psi',</span> <span class="pre">'LYS_psi',</span> <span class="pre">'LEU_psi',</span> <span class="pre">'MET_psi',</span> <span class="pre">'ASN_psi',</span> <span class="pre">'PRO_psi',</span> <span class="pre">'GLN_psi',</span> <span class="pre">'ARG_psi',</span> <span class="pre">'SER_psi',</span> <span class="pre">'THR_psi',</span> <span class="pre">'VAL_psi',</span> <span class="pre">'TRP_psi',</span> <span class="pre">'TYR_psi']</span></span><a class="headerlink" href="#id6" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_nls.StandardAngles">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mlcg_tk.input_generator.prior_nls.</span></span><span class="sig-name descname"><span class="pre">StandardAngles</span></span><a class="reference internal" href="../../../../_modules/mlcg_tk/input_generator/prior_nls.html#StandardAngles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.prior_nls.StandardAngles" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Interactions corresponding to angles formed between three physically bonded atoms</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_nls.StandardAngles.nl_names">
+<span class="sig-name descname"><span class="pre">nl_names</span></span><a class="headerlink" href="#mlcg_tk.input_generator.prior_nls.StandardAngles.nl_names" title="Link to this definition">¶</a></dt>
+<dd><p>All possible outputs of bonded neighbourlist;
+If <cite>separate_termini</cite> is False, only bonds are returned, otherwise
+atom groups are split based on interactions between only bulk atoms or
+interactions with atoms in terminal residues.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_nls.StandardAngles.get_fit_kwargs">
+<span class="sig-name descname"><span class="pre">get_fit_kwargs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nl_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/mlcg_tk/input_generator/prior_nls.html#StandardAngles.get_fit_kwargs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.prior_nls.StandardAngles.get_fit_kwargs" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id7">
+<span class="sig-name descname"><span class="pre">nl_names</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['n_term_angles',</span> <span class="pre">'bulk_angles',</span> <span class="pre">'c_term_angles',</span> <span class="pre">'angles']</span></span><a class="headerlink" href="#id7" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_nls.StandardBonds">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mlcg_tk.input_generator.prior_nls.</span></span><span class="sig-name descname"><span class="pre">StandardBonds</span></span><a class="reference internal" href="../../../../_modules/mlcg_tk/input_generator/prior_nls.html#StandardBonds"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.prior_nls.StandardBonds" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Pairwise interactions corresponding to physically bonded atoms</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_nls.StandardBonds.nl_names">
+<span class="sig-name descname"><span class="pre">nl_names</span></span><a class="headerlink" href="#mlcg_tk.input_generator.prior_nls.StandardBonds.nl_names" title="Link to this definition">¶</a></dt>
+<dd><p>All possible outputs of bonded neighbourlist;
+If <cite>separate_termini</cite> is False, only bonds are returned, otherwise
+atom groups are split based on interactions between only bulk atoms or
+interactions with atoms in terminal residues.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_nls.StandardBonds.get_fit_kwargs">
+<span class="sig-name descname"><span class="pre">get_fit_kwargs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nl_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/mlcg_tk/input_generator/prior_nls.html#StandardBonds.get_fit_kwargs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.prior_nls.StandardBonds.get_fit_kwargs" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id8">
+<span class="sig-name descname"><span class="pre">nl_names</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['n_term_bonds',</span> <span class="pre">'bulk_bonds',</span> <span class="pre">'c_term_bonds',</span> <span class="pre">'bonds']</span></span><a class="headerlink" href="#id8" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_nls.check_graph_distance">
+<span class="sig-prename descclassname"><span class="pre">mlcg_tk.input_generator.prior_nls.</span></span><span class="sig-name descname"><span class="pre">check_graph_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">conn_comp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_distance</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/mlcg_tk/input_generator/prior_nls.html#check_graph_distance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.prior_nls.check_graph_distance" title="Link to this definition">¶</a></dt>
+<dd><p>Function to check if the shortest path between to nodes in a graph is smaller than <cite>min_distance</cite></p>
+<p>This covers the case when the nodes are in different connected components before hand.
+to save computation time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+        </article><button class="back-to-top" type="button">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+  </svg>
+  <span>Back to top</span>
+</button><div class="navigation flex print:hidden"><div class="navigation-prev">
+    <a href="prior_gen.html">
+      <i class="i-lucide chevron-left"></i>
+      <div class="page-info">
+        <span>Previous</span><div class="title">prior_gen module</div></div>
+    </a>
+  </div><div class="navigation-next">
+    <a href="raw_data_loader.html">
+      <div class="page-info">
+        <span>Next</span>
+        <div class="title">raw_data_loader module</div>
+      </div>
+      <i class="i-lucide chevron-right"></i>
+    </a>
+  </div></div></div>
+    </div>
+  </main>
+</div>
+<footer class="sy-foot">
+  <div class="sy-foot-inner sy-container mx-auto">
+    <div class="sy-foot-reserved md:flex justify-between items-center">
+      <div class="sy-foot-copyright"><p>2026, Clementi Group</p>
+  
+  <p>
+    Made with
+    
+    <a href="https://www.sphinx-doc.org/">Sphinx</a> and
+    
+    <a href="https://shibuya.lepture.com">Shibuya theme</a>.
+  </p>
+</div>
+      <div class="sy-foot-socials"></div>
+    </div>
+  </div>
+</footer>
+      <script src="../../../../_static/documentation_options.js?v=7026087e"></script>
+      <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../../_static/shibuya.js?v=cac61aee"></script></body>
+</html>

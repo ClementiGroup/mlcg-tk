@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en" data-accent-color="teal" data-content_root="../../../">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>mlcg_tk.scripts.package_training_data - mlcg-tk 0.0.0 documentation</title><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" /><script>
+    function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
+    setColorMode(localStorage._theme||"auto");
+  </script><link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=e1a1ceaf" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/shibuya.css?v=44020203" />
+    <link media="print" rel="stylesheet" type="text/css" href="../../../_static/print.css?v=20ff2c19" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sy-f-text: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+  --sy-f-heading: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+}
+</style>
+    <meta property="og:type" content="website"/><meta property="og:title" content="mlcg_tk.scripts.package_training_data"/>
+    <meta name="twitter:card" content="summary"/>
+  </head>
+<body><div class="sy-head">
+  <div class="sy-head-blur"></div>
+  <div class="sy-head-inner sy-container mx-auto">
+    <a class="sy-head-brand" href="../../../index.html">
+      
+      
+      <strong>mlcg-tk</strong>
+    </a>
+    <div class="sy-head-nav" id="head-nav">
+      <nav class="sy-head-links"></nav>
+      <div class="sy-head-extra flex items-center print:hidden"><form class="searchbox flex items-center" action="../../../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <kbd>/</kbd>
+</form><div class="sy-head-socials"></div></div>
+    </div>
+    <div class="sy-head-actions flex items-center shrink-0 print:hidden"><button class="js-theme theme-switch flex items-center"
+data-aria-auto="Switch to light color mode"
+data-aria-light="Switch to dark color mode"
+data-aria-dark="Switch to auto color mode">
+<i class="i-lucide theme-icon"></i>
+</button><button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="head-nav" aria-expanded="false">
+        <div class="hamburger">
+          <span class="hamburger_1"></span>
+          <span class="hamburger_2"></span>
+          <span class="hamburger_3"></span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="sy-page sy-container flex mx-auto">
+  <aside id="lside" class="sy-lside md:w-72 md:shrink-0 print:hidden">
+    <div class="sy-lside-inner md:sticky">
+      <div class="sy-scrollbar p-6">
+        <div class="globaltoc" data-expand-depth="1"><p class="caption" role="heading" aria-level="3"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../../../user_guide/index.html">Data pipeline user guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/intro.html">About the Training Data Generation Pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/intro.html#create-a-directory-to-output-all-the-intermediate-files">0) Create a directory to output all the intermediate files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/aa_to_cg.html">1) Loading and processing all-atom simulation data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/stats_priors.html">2) Computing statistics and fitting priors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/delta_forces.html">3) Producing delta forces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/packaging.html">4) Package Training Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/packaging.html#add-decoys-to-training-data">4.1) Add Decoys To Training Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/sim_input.html">5) Generate simulation input</a></li>
+</ul>
+</li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../../../api_docs/index.html">API documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api_docs/core/modules.html">Core API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/input_generator.html">input_generator package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/input_generator/prior_fit.html">prior_fit package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/input_generator/prior_fit/dihedral.html">dihedral module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/input_generator/prior_fit/fit_potentials.html">fit_potentials module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/input_generator/prior_fit/harmonic.html">harmonic module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/input_generator/prior_fit/histogram.html">histogram module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/input_generator/prior_fit/polynomial.html">polynomial module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/input_generator/prior_fit/repulsion.html">repulsion module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/input_generator/prior_fit/restricted_bending.html">restricted_bending module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/input_generator/prior_fit/utils.html">utils module</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/input_generator/embedding_maps.html">embedding_maps module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/input_generator/prior_gen.html">prior_gen module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/input_generator/prior_nls.html">prior_nls module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/input_generator/raw_data_loader.html">raw_data_loader module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/input_generator/raw_dataset.html">raw_dataset module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/input_generator/utils.html">utils module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/prior_tools.html">prior_tools package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api_docs/core/mlcg_tk/prior_tools/utils.html">utils module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api_docs/scripts/index.html">Scripts</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api_docs/scripts/gen_input_data.html"><code class="docutils literal notranslate"><span class="pre">gen_input_data.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api_docs/scripts/fit_priors.html"><code class="docutils literal notranslate"><span class="pre">fit_priors.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api_docs/scripts/merge_statistics.html"><code class="docutils literal notranslate"><span class="pre">merge_statistics.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api_docs/scripts/produce_delta_forces.html"><code class="docutils literal notranslate"><span class="pre">produce_delta_forces.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api_docs/scripts/package_training_data.html"><code class="docutils literal notranslate"><span class="pre">package_training_data.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api_docs/scripts/add_decoys.html"><code class="docutils literal notranslate"><span class="pre">add_decoys.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api_docs/scripts/gen_sim_input.html"><code class="docutils literal notranslate"><span class="pre">gen_sim_input.py</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="lside-overlay js-menu" role="button" aria-label="Close left sidebar" aria-controls="lside" aria-expanded="false"></div>
+  <aside id="rside" class="sy-rside pb-3 w-64 shrink-0 order-last">
+    <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
+      <i class="i-lucide close"></i>
+    </button>
+    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
+  </aside>
+  <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+<div class="sy-breadcrumbs" role="navigation">
+  <div class="sy-breadcrumbs-inner flex items-center">
+    <div class="md:hidden mr-3">
+      <button class="js-menu" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
+        <i class="i-lucide menu"></i>
+      </button>
+    </div>
+    <ol class="flex-1" itemscope itemtype="https://schema.org/BreadcrumbList"><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../../../index.html"><span itemprop="name">mlcg-tk</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="1" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../../index.html"><span itemprop="name">Module code</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="2" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <strong itemprop="name">mlcg_tk.scripts.package_training_data</strong>
+        <meta itemprop="position" content="3" />
+      </li></ol>
+    <div class="xl:hidden ml-1">
+      <button class="js-menu" aria-label="Show table of contents" type="button" aria-controls="rside"
+        aria-expanded="false">
+        <i class="i-lucide outdent"></i>
+      </button>
+    </div>
+  </div>
+</div><div class="flex flex-col break-words justify-between">
+      <div class="relative min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
+  <article class="yue" role="main">
+          <h1>Source code for mlcg_tk.scripts.package_training_data</h1><div class="highlight"><pre>
+<span></span><span data-line="1"><span class="kn">import</span><span class="w"> </span><span class="nn">os.path</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">osp</span>
+</span><span data-line="2"><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+</span><span data-line="3">
+</span><span data-line="4"><span class="kn">from</span><span class="w"> </span><span class="nn">mlcg_tk.input_generator.raw_dataset</span><span class="w"> </span><span class="kn">import</span> <span class="n">RawDataset</span>
+</span><span data-line="5"><span class="kn">from</span><span class="w"> </span><span class="nn">mlcg_tk.input_generator.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_output_tag</span>
+</span><span data-line="6">
+</span><span data-line="7"><span class="kn">from</span><span class="w"> </span><span class="nn">tqdm</span><span class="w"> </span><span class="kn">import</span> <span class="n">tqdm</span>
+</span><span data-line="8"><span class="kn">from</span><span class="w"> </span><span class="nn">time</span><span class="w"> </span><span class="kn">import</span> <span class="n">ctime</span>
+</span><span data-line="9"><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+</span><span data-line="10"><span class="kn">import</span><span class="w"> </span><span class="nn">pickle</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pck</span>
+</span><span data-line="11"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span>
+</span><span data-line="12"><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">train_test_split</span>
+</span><span data-line="13"><span class="kn">from</span><span class="w"> </span><span class="nn">jsonargparse</span><span class="w"> </span><span class="kn">import</span> <span class="n">CLI</span>
+</span><span data-line="14"><span class="kn">from</span><span class="w"> </span><span class="nn">copy</span><span class="w"> </span><span class="kn">import</span> <span class="n">deepcopy</span>
+</span><span data-line="15"><span class="kn">import</span><span class="w"> </span><span class="nn">h5py</span>
+</span><span data-line="16"><span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span>
+</span><span data-line="17">
+</span><span data-line="18">
+<div class="viewcode-block" id="package_training_data">
+<a class="viewcode-back" href="../../../api_docs/scripts/package_training_data.html#mlcg_tk.scripts.package_training_data.package_training_data">[docs]</a>
+</span><span data-line="19"><span class="k">def</span><span class="w"> </span><span class="nf">package_training_data</span><span class="p">(</span>
+</span><span data-line="20">    <span class="n">dataset_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="21">    <span class="n">names</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+</span><span data-line="22">    <span class="n">dataset_tag</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="23">    <span class="n">force_tag</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="24">    <span class="n">training_data_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="25">    <span class="n">save_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="26">    <span class="n">save_h5</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span data-line="27">    <span class="n">save_partition</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span data-line="28">    <span class="n">single_protein</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+</span><span data-line="29">    <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">256</span><span class="p">,</span>
+</span><span data-line="30">    <span class="n">stride</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+</span><span data-line="31">    <span class="n">train_size</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.8</span><span class="p">,</span>
+</span><span data-line="32">    <span class="n">train_mols</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="33">    <span class="n">val_mols</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="34">    <span class="n">random_state</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="35">    <span class="n">mol_num_batches</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+</span><span data-line="36">    <span class="n">keep_batches</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+</span><span data-line="37"><span class="p">):</span>
+</span><span data-line="38"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="39"><span class="sd">    Computes structural features and accumulates statistics on dataset samples</span>
+</span><span data-line="40">
+</span><span data-line="41"><span class="sd">    Parameters</span>
+</span><span data-line="42"><span class="sd">    ----------</span>
+</span><span data-line="43"><span class="sd">    dataset_name : str</span>
+</span><span data-line="44"><span class="sd">        Name given to specific dataset</span>
+</span><span data-line="45"><span class="sd">    dataset_tag : str</span>
+</span><span data-line="46"><span class="sd">        Label given to all output files produced from dataset</span>
+</span><span data-line="47"><span class="sd">    names : List[str]</span>
+</span><span data-line="48"><span class="sd">        List of sample names</span>
+</span><span data-line="49"><span class="sd">    force_tag : str</span>
+</span><span data-line="50"><span class="sd">        Label given to produced delta forces and saved packaged data</span>
+</span><span data-line="51"><span class="sd">    training_data_dir : str</span>
+</span><span data-line="52"><span class="sd">        Path to directory from which input will be loaded</span>
+</span><span data-line="53"><span class="sd">    save_dir : str</span>
+</span><span data-line="54"><span class="sd">        Path to directory to which output will be saved</span>
+</span><span data-line="55"><span class="sd">    save_h5 : bool</span>
+</span><span data-line="56"><span class="sd">        Whether to save dataset h5 file(s)</span>
+</span><span data-line="57"><span class="sd">    save_partition : bool</span>
+</span><span data-line="58"><span class="sd">        Whether to save dataset partition file(s)</span>
+</span><span data-line="59"><span class="sd">    single_protein : bool</span>
+</span><span data-line="60"><span class="sd">        Whether the produced partition file should be for a single-molecule model</span>
+</span><span data-line="61"><span class="sd">        Will be ignored if save_partition is False</span>
+</span><span data-line="62"><span class="sd">    batch_size : int</span>
+</span><span data-line="63"><span class="sd">        Number of samples of dataset to include in each training batch</span>
+</span><span data-line="64"><span class="sd">    stride : int</span>
+</span><span data-line="65"><span class="sd">        Integer by which to stride frames</span>
+</span><span data-line="66"><span class="sd">    train_size : Union[float, int]</span>
+</span><span data-line="67"><span class="sd">        Either the proportion (if float) or number of samples (if int) of molecules in training data</span>
+</span><span data-line="68"><span class="sd">        If None, lists should be supplied for training and validation samples</span>
+</span><span data-line="69"><span class="sd">    train_mols : Optional[List]</span>
+</span><span data-line="70"><span class="sd">        Molecules to be used for training set</span>
+</span><span data-line="71"><span class="sd">    val_mols : Optional[List]</span>
+</span><span data-line="72"><span class="sd">        Molecules to be used for validation set</span>
+</span><span data-line="73"><span class="sd">    random_state : Optional[str]</span>
+</span><span data-line="74"><span class="sd">        Controls shuffling applied to the data before applying the split</span>
+</span><span data-line="75"><span class="sd">    mol_num_batches : int</span>
+</span><span data-line="76"><span class="sd">        If greater than 1, will load each molecule data from the specified number of batches</span>
+</span><span data-line="77"><span class="sd">        that were be treated as different samples</span>
+</span><span data-line="78"><span class="sd">    keep_batches : bool</span>
+</span><span data-line="79"><span class="sd">        If set to True, batches will be put as individual molecules in the h5 dataset and</span>
+</span><span data-line="80"><span class="sd">        the partition file will be built accordingly. Otherwise, if batches exist, they will be</span>
+</span><span data-line="81"><span class="sd">        accumulated into one single molecule.</span>
+</span><span data-line="82"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="83">    <span class="k">if</span> <span class="n">keep_batches</span> <span class="ow">and</span> <span class="n">mol_num_batches</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+</span><span data-line="84">        <span class="n">dataset</span> <span class="o">=</span> <span class="n">RawDataset</span><span class="p">(</span>
+</span><span data-line="85">            <span class="n">dataset_name</span><span class="p">,</span> <span class="n">names</span><span class="p">,</span> <span class="n">dataset_tag</span><span class="p">,</span> <span class="n">n_batches</span><span class="o">=</span><span class="n">mol_num_batches</span>
+</span><span data-line="86">        <span class="p">)</span>
+</span><span data-line="87">    <span class="k">else</span><span class="p">:</span>
+</span><span data-line="88">        <span class="n">dataset</span> <span class="o">=</span> <span class="n">RawDataset</span><span class="p">(</span><span class="n">dataset_name</span><span class="p">,</span> <span class="n">names</span><span class="p">,</span> <span class="n">dataset_tag</span><span class="p">)</span>
+</span><span data-line="89">    <span class="n">output_tag</span> <span class="o">=</span> <span class="n">get_output_tag</span><span class="p">([</span><span class="n">dataset_name</span><span class="p">,</span> <span class="n">force_tag</span><span class="p">],</span> <span class="n">placement</span><span class="o">=</span><span class="s2">&quot;after&quot;</span><span class="p">)</span>
+</span><span data-line="90">    <span class="n">non_empty_names</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span data-line="91">    <span class="k">if</span> <span class="n">save_h5</span><span class="p">:</span>
+</span><span data-line="92">        <span class="c1"># Create H5 of training data</span>
+</span><span data-line="93">        <span class="n">fnout_h5</span> <span class="o">=</span> <span class="n">osp</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">save_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">output_tag</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="si">}</span><span class="s2">.h5&quot;</span><span class="p">)</span>
+</span><span data-line="94">
+</span><span data-line="95">        <span class="k">with</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">fnout_h5</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span><span data-line="96">            <span class="n">metaset</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="n">dataset_name</span><span class="p">)</span>
+</span><span data-line="97">            <span class="k">for</span> <span class="n">samples</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Packaging </span><span class="si">{</span><span class="n">dataset_name</span><span class="si">}</span><span class="s2"> dataset...&quot;</span><span class="p">):</span>
+</span><span data-line="98">                <span class="k">if</span> <span class="ow">not</span> <span class="n">samples</span><span class="o">.</span><span class="n">has_delta_forces_output</span><span class="p">(</span>
+</span><span data-line="99">                    <span class="n">training_data_dir</span><span class="o">=</span><span class="n">training_data_dir</span><span class="p">,</span>
+</span><span data-line="100">                    <span class="n">force_tag</span><span class="o">=</span><span class="n">force_tag</span><span class="p">,</span>
+</span><span data-line="101">                    <span class="n">mol_num_batches</span><span class="o">=</span><span class="n">mol_num_batches</span><span class="p">,</span>
+</span><span data-line="102">                <span class="p">):</span>
+</span><span data-line="103">                    <span class="k">continue</span>
+</span><span data-line="104">                <span class="k">else</span><span class="p">:</span>
+</span><span data-line="105">                    <span class="n">non_empty_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">samples</span><span class="o">.</span><span class="n">mol_name</span><span class="p">)</span>
+</span><span data-line="106">
+</span><span data-line="107">                <span class="k">if</span> <span class="n">mol_num_batches</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">keep_batches</span><span class="p">:</span>
+</span><span data-line="108">                    <span class="p">(</span>
+</span><span data-line="109">                        <span class="n">cg_coords</span><span class="p">,</span>
+</span><span data-line="110">                        <span class="n">cg_delta_forces</span><span class="p">,</span>
+</span><span data-line="111">                        <span class="n">cg_embeds</span><span class="p">,</span>
+</span><span data-line="112">                    <span class="p">)</span> <span class="o">=</span> <span class="n">samples</span><span class="o">.</span><span class="n">load_all_batches_training_inputs</span><span class="p">(</span>
+</span><span data-line="113">                        <span class="n">training_data_dir</span><span class="o">=</span><span class="n">training_data_dir</span><span class="p">,</span>
+</span><span data-line="114">                        <span class="n">force_tag</span><span class="o">=</span><span class="n">force_tag</span><span class="p">,</span>
+</span><span data-line="115">                        <span class="n">mol_num_batches</span><span class="o">=</span><span class="n">mol_num_batches</span><span class="p">,</span>
+</span><span data-line="116">                    <span class="p">)</span>
+</span><span data-line="117">                <span class="k">else</span><span class="p">:</span>
+</span><span data-line="118">                    <span class="p">(</span>
+</span><span data-line="119">                        <span class="n">cg_coords</span><span class="p">,</span>
+</span><span data-line="120">                        <span class="n">cg_delta_forces</span><span class="p">,</span>
+</span><span data-line="121">                        <span class="n">cg_embeds</span><span class="p">,</span>
+</span><span data-line="122">                    <span class="p">)</span> <span class="o">=</span> <span class="n">samples</span><span class="o">.</span><span class="n">load_training_inputs</span><span class="p">(</span>
+</span><span data-line="123">                        <span class="n">training_data_dir</span><span class="o">=</span><span class="n">training_data_dir</span><span class="p">,</span>
+</span><span data-line="124">                        <span class="n">force_tag</span><span class="o">=</span><span class="n">force_tag</span><span class="p">,</span>
+</span><span data-line="125">                    <span class="p">)</span>
+</span><span data-line="126">
+</span><span data-line="127">                <span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">samples</span><span class="o">.</span><span class="n">tag</span><span class="si">}{</span><span class="n">samples</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span data-line="128">                <span class="n">hdf_group</span> <span class="o">=</span> <span class="n">metaset</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+</span><span data-line="129">
+</span><span data-line="130">                <span class="n">hdf_group</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">&quot;cg_coords&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">cg_coords</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">))</span>
+</span><span data-line="131">                <span class="n">hdf_group</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span>
+</span><span data-line="132">                    <span class="s2">&quot;cg_delta_forces&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">cg_delta_forces</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+</span><span data-line="133">                <span class="p">)</span>
+</span><span data-line="134">                <span class="n">hdf_group</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;cg_embeds&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cg_embeds</span>
+</span><span data-line="135">                <span class="n">hdf_group</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;N_frames&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cg_coords</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span><span data-line="136">
+</span><span data-line="137">    <span class="k">if</span> <span class="n">save_partition</span><span class="p">:</span>
+</span><span data-line="138">        <span class="c1"># Create partition file</span>
+</span><span data-line="139">        <span class="n">fnout_part</span> <span class="o">=</span> <span class="n">osp</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">save_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;partition</span><span class="si">{</span><span class="n">output_tag</span><span class="si">}</span><span class="s2">.yaml&quot;</span><span class="p">)</span>
+</span><span data-line="140">        <span class="k">if</span> <span class="n">single_protein</span><span class="p">:</span>
+</span><span data-line="141">            <span class="k">if</span> <span class="n">keep_batches</span> <span class="ow">and</span> <span class="n">mol_num_batches</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+</span><span data-line="142">                <span class="n">train_mols</span> <span class="o">=</span> <span class="p">[</span>
+</span><span data-line="143">                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">dataset_tag</span><span class="si">}{</span><span class="n">name</span><span class="si">}</span><span class="s2">_batch_</span><span class="si">{</span><span class="n">b</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span data-line="144">                    <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">mol_num_batches</span><span class="p">)</span>
+</span><span data-line="145">                    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">non_empty_names</span>
+</span><span data-line="146">                <span class="p">]</span>
+</span><span data-line="147">                <span class="n">val_mols</span> <span class="o">=</span> <span class="p">[</span>
+</span><span data-line="148">                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">dataset_tag</span><span class="si">}{</span><span class="n">name</span><span class="si">}</span><span class="s2">_batch_</span><span class="si">{</span><span class="n">b</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span data-line="149">                    <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">mol_num_batches</span><span class="p">)</span>
+</span><span data-line="150">                    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">non_empty_names</span>
+</span><span data-line="151">                <span class="p">]</span>
+</span><span data-line="152">            <span class="k">else</span><span class="p">:</span>
+</span><span data-line="153">                <span class="n">train_mols</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">dataset_tag</span><span class="si">}{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">non_empty_names</span><span class="p">]</span>
+</span><span data-line="154">                <span class="n">val_mols</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">dataset_tag</span><span class="si">}{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">non_empty_names</span><span class="p">]</span>
+</span><span data-line="155">            <span class="k">if</span> <span class="n">train_size</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="156">                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+</span><span data-line="157">                    <span class="s2">&quot;For single-protein partitions, a train size has to be specified&quot;</span>
+</span><span data-line="158">                <span class="p">)</span>
+</span><span data-line="159">            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">train_size</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+</span><span data-line="160">                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+</span><span data-line="161">                    <span class="s2">&quot;For single-protein partitions, train_size has to be a float corresponding to the ratio of frames for training&quot;</span>
+</span><span data-line="162">                <span class="p">)</span>
+</span><span data-line="163">            <span class="k">assert</span> <span class="n">train_size</span> <span class="o">&lt;=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="s2">&quot;train_size has to be a ratio of frames below 1.0&quot;</span>
+</span><span data-line="164">        <span class="k">else</span><span class="p">:</span>
+</span><span data-line="165">            <span class="k">if</span> <span class="n">train_mols</span> <span class="o">==</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">val_mols</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="166">                <span class="k">if</span> <span class="n">train_size</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="167">                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+</span><span data-line="168">                        <span class="s2">&quot;Either a train size or predefined lists for training and validation samples must be specified.&quot;</span>
+</span><span data-line="169">                    <span class="p">)</span>
+</span><span data-line="170">
+</span><span data-line="171">                <span class="n">train_mols</span><span class="p">,</span> <span class="n">val_mols</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span>
+</span><span data-line="172">                    <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">dataset_tag</span><span class="si">}{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">non_empty_names</span><span class="p">],</span>
+</span><span data-line="173">                    <span class="n">train_size</span><span class="o">=</span><span class="n">train_size</span><span class="p">,</span>
+</span><span data-line="174">                    <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span data-line="175">                    <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span><span class="p">,</span>
+</span><span data-line="176">                <span class="p">)</span>
+</span><span data-line="177">            <span class="k">elif</span> <span class="n">train_mols</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="178">                <span class="n">val_mols</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">non_empty_names</span><span class="p">)</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">train_mols</span><span class="p">)</span>
+</span><span data-line="179">            <span class="k">elif</span> <span class="n">val_mols</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="180">                <span class="n">train_mols</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">non_empty_names</span><span class="p">)</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">val_mols</span><span class="p">)</span>
+</span><span data-line="181">
+</span><span data-line="182">        <span class="n">partition_opts</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;train&quot;</span><span class="p">:</span> <span class="p">{},</span> <span class="s2">&quot;val&quot;</span><span class="p">:</span> <span class="p">{}}</span>
+</span><span data-line="183">
+</span><span data-line="184">        <span class="c1"># make training data partition</span>
+</span><span data-line="185">        <span class="n">partition_opts</span><span class="p">[</span><span class="s2">&quot;train&quot;</span><span class="p">][</span><span class="s2">&quot;metasets&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+</span><span data-line="186">        <span class="n">partition_opts</span><span class="p">[</span><span class="s2">&quot;train&quot;</span><span class="p">][</span><span class="s2">&quot;metasets&quot;</span><span class="p">][</span><span class="n">dataset_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+</span><span data-line="187">            <span class="s2">&quot;molecules&quot;</span><span class="p">:</span> <span class="n">train_mols</span><span class="p">,</span>
+</span><span data-line="188">            <span class="s2">&quot;stride&quot;</span><span class="p">:</span> <span class="n">stride</span><span class="p">,</span>
+</span><span data-line="189">        <span class="p">}</span>
+</span><span data-line="190">        <span class="n">partition_opts</span><span class="p">[</span><span class="s2">&quot;train&quot;</span><span class="p">][</span><span class="s2">&quot;batch_sizes&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">dataset_name</span><span class="p">:</span> <span class="n">batch_size</span><span class="p">}</span>
+</span><span data-line="191">
+</span><span data-line="192">        <span class="c1"># make validation data partition</span>
+</span><span data-line="193">        <span class="n">partition_opts</span><span class="p">[</span><span class="s2">&quot;val&quot;</span><span class="p">][</span><span class="s2">&quot;metasets&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+</span><span data-line="194">        <span class="n">partition_opts</span><span class="p">[</span><span class="s2">&quot;val&quot;</span><span class="p">][</span><span class="s2">&quot;metasets&quot;</span><span class="p">][</span><span class="n">dataset_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+</span><span data-line="195">            <span class="s2">&quot;molecules&quot;</span><span class="p">:</span> <span class="n">val_mols</span><span class="p">,</span>
+</span><span data-line="196">            <span class="s2">&quot;stride&quot;</span><span class="p">:</span> <span class="n">stride</span><span class="p">,</span>
+</span><span data-line="197">        <span class="p">}</span>
+</span><span data-line="198">        <span class="n">partition_opts</span><span class="p">[</span><span class="s2">&quot;val&quot;</span><span class="p">][</span><span class="s2">&quot;batch_sizes&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">dataset_name</span><span class="p">:</span> <span class="n">batch_size</span><span class="p">}</span>
+</span><span data-line="199">
+</span><span data-line="200">        <span class="k">if</span> <span class="n">single_protein</span><span class="p">:</span>
+</span><span data-line="201">            <span class="n">partition_opts</span><span class="p">[</span><span class="s2">&quot;train&quot;</span><span class="p">][</span><span class="s2">&quot;metasets&quot;</span><span class="p">][</span><span class="n">dataset_name</span><span class="p">][</span><span class="s2">&quot;detailed_indices&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+</span><span data-line="202">            <span class="n">partition_opts</span><span class="p">[</span><span class="s2">&quot;val&quot;</span><span class="p">][</span><span class="s2">&quot;metasets&quot;</span><span class="p">][</span><span class="n">dataset_name</span><span class="p">][</span><span class="s2">&quot;detailed_indices&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+</span><span data-line="203">            <span class="k">for</span> <span class="n">mol</span> <span class="ow">in</span> <span class="n">train_mols</span><span class="p">:</span>
+</span><span data-line="204">                <span class="k">with</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">fnout_h5</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span><span data-line="205">                    <span class="n">n_frames</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="n">dataset_name</span><span class="p">][</span><span class="n">mol</span><span class="p">][</span><span class="s2">&quot;cg_coords&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span><span data-line="206">                <span class="n">train_frames</span><span class="p">,</span> <span class="n">val_frames</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span>
+</span><span data-line="207">                    <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n_frames</span><span class="p">),</span>
+</span><span data-line="208">                    <span class="n">train_size</span><span class="o">=</span><span class="n">train_size</span><span class="p">,</span>
+</span><span data-line="209">                    <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span data-line="210">                    <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span><span class="p">,</span>
+</span><span data-line="211">                <span class="p">)</span>
+</span><span data-line="212">                <span class="n">mol_output_tag</span> <span class="o">=</span> <span class="n">get_output_tag</span><span class="p">([</span><span class="n">mol</span><span class="p">,</span> <span class="n">force_tag</span><span class="p">],</span> <span class="n">placement</span><span class="o">=</span><span class="s2">&quot;after&quot;</span><span class="p">)</span>
+</span><span data-line="213">                <span class="n">train_fnout</span> <span class="o">=</span> <span class="n">osp</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">save_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;train_idx</span><span class="si">{</span><span class="n">mol_output_tag</span><span class="si">}</span><span class="s2">.npy&quot;</span><span class="p">)</span>
+</span><span data-line="214">                <span class="n">val_fnout</span> <span class="o">=</span> <span class="n">osp</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">save_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;val_idx</span><span class="si">{</span><span class="n">mol_output_tag</span><span class="si">}</span><span class="s2">.npy&quot;</span><span class="p">)</span>
+</span><span data-line="215">
+</span><span data-line="216">                <span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">train_fnout</span><span class="p">,</span> <span class="n">train_frames</span><span class="p">)</span>
+</span><span data-line="217">                <span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">val_fnout</span><span class="p">,</span> <span class="n">val_frames</span><span class="p">)</span>
+</span><span data-line="218">
+</span><span data-line="219">                <span class="n">partition_opts</span><span class="p">[</span><span class="s2">&quot;train&quot;</span><span class="p">][</span><span class="s2">&quot;metasets&quot;</span><span class="p">][</span><span class="n">dataset_name</span><span class="p">][</span><span class="s2">&quot;detailed_indices&quot;</span><span class="p">][</span>
+</span><span data-line="220">                    <span class="n">mol</span>
+</span><span data-line="221">                <span class="p">]</span> <span class="o">=</span> <span class="n">train_fnout</span>
+</span><span data-line="222">                <span class="n">partition_opts</span><span class="p">[</span><span class="s2">&quot;val&quot;</span><span class="p">][</span><span class="s2">&quot;metasets&quot;</span><span class="p">][</span><span class="n">dataset_name</span><span class="p">][</span><span class="s2">&quot;detailed_indices&quot;</span><span class="p">][</span>
+</span><span data-line="223">                    <span class="n">mol</span>
+</span><span data-line="224">                <span class="p">]</span> <span class="o">=</span> <span class="n">val_fnout</span>
+</span><span data-line="225">        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fnout_part</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ofile</span><span class="p">:</span>
+</span><span data-line="226">            <span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">partition_opts</span><span class="p">,</span> <span class="n">ofile</span><span class="p">)</span></div>
+
+</span><span data-line="227">
+</span><span data-line="228">
+<div class="viewcode-block" id="combine_datasets">
+<a class="viewcode-back" href="../../../api_docs/scripts/package_training_data.html#mlcg_tk.scripts.package_training_data.combine_datasets">[docs]</a>
+</span><span data-line="229"><span class="k">def</span><span class="w"> </span><span class="nf">combine_datasets</span><span class="p">(</span>
+</span><span data-line="230">    <span class="n">dataset_names</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+</span><span data-line="231">    <span class="n">save_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="232">    <span class="n">force_tag</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+</span><span data-line="233">    <span class="n">save_h5</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span data-line="234">    <span class="n">save_partition</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span data-line="235"><span class="p">):</span>
+</span><span data-line="236"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="237"><span class="sd">    Computes structural features and accumulates statistics on dataset samples</span>
+</span><span data-line="238">
+</span><span data-line="239"><span class="sd">    Parameters</span>
+</span><span data-line="240"><span class="sd">    ----------</span>
+</span><span data-line="241"><span class="sd">    dataset_names : List[str]</span>
+</span><span data-line="242"><span class="sd">        List of dataset name to combine</span>
+</span><span data-line="243"><span class="sd">    save_dir : str</span>
+</span><span data-line="244"><span class="sd">        Path to directory from which datasets will be loaded and to which output will be saved</span>
+</span><span data-line="245"><span class="sd">    force_tag : str</span>
+</span><span data-line="246"><span class="sd">        Label given to produced delta forces and saved packaged data</span>
+</span><span data-line="247"><span class="sd">    save_h5 : bool</span>
+</span><span data-line="248"><span class="sd">        Whether to save dataset h5 file(s)</span>
+</span><span data-line="249"><span class="sd">    save_partition : bool</span>
+</span><span data-line="250"><span class="sd">        Whether to save dataset partition file(s)</span>
+</span><span data-line="251"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="252">
+</span><span data-line="253">    <span class="n">datasets_label</span> <span class="o">=</span> <span class="s2">&quot;_&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dataset_names</span><span class="p">)</span>
+</span><span data-line="254">    <span class="n">output_tag</span> <span class="o">=</span> <span class="n">get_output_tag</span><span class="p">([</span><span class="n">datasets_label</span><span class="p">,</span> <span class="n">force_tag</span><span class="p">],</span> <span class="n">placement</span><span class="o">=</span><span class="s2">&quot;after&quot;</span><span class="p">)</span>
+</span><span data-line="255">
+</span><span data-line="256">    <span class="k">if</span> <span class="n">save_h5</span><span class="p">:</span>
+</span><span data-line="257">        <span class="n">fnout_h5</span> <span class="o">=</span> <span class="n">osp</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">save_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;combined</span><span class="si">{</span><span class="n">output_tag</span><span class="si">}</span><span class="s2">.h5&quot;</span><span class="p">)</span>
+</span><span data-line="258">
+</span><span data-line="259">        <span class="k">with</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">fnout_h5</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span><span data-line="260">            <span class="k">for</span> <span class="n">dataset</span> <span class="ow">in</span> <span class="n">dataset_names</span><span class="p">:</span>
+</span><span data-line="261">                <span class="n">f</span><span class="p">[</span><span class="n">dataset</span><span class="p">]</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">ExternalLink</span><span class="p">(</span>
+</span><span data-line="262">                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">dataset</span><span class="si">}{</span><span class="n">get_output_tag</span><span class="p">(</span><span class="n">force_tag</span><span class="p">,</span><span class="w"> </span><span class="n">placement</span><span class="o">=</span><span class="s1">&#39;after&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">.h5&quot;</span><span class="p">,</span>
+</span><span data-line="263">                    <span class="sa">f</span><span class="s2">&quot;/</span><span class="si">{</span><span class="n">dataset</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+</span><span data-line="264">                <span class="p">)</span>
+</span><span data-line="265">
+</span><span data-line="266">    <span class="k">if</span> <span class="n">save_partition</span><span class="p">:</span>
+</span><span data-line="267">        <span class="n">fnout_part</span> <span class="o">=</span> <span class="n">osp</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">save_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;partition</span><span class="si">{</span><span class="n">output_tag</span><span class="si">}</span><span class="s2">.yaml&quot;</span><span class="p">)</span>
+</span><span data-line="268">
+</span><span data-line="269">        <span class="n">partition_opts</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;train&quot;</span><span class="p">:</span> <span class="p">{},</span> <span class="s2">&quot;val&quot;</span><span class="p">:</span> <span class="p">{}}</span>
+</span><span data-line="270">        <span class="n">partition_opts</span><span class="p">[</span><span class="s2">&quot;train&quot;</span><span class="p">][</span><span class="s2">&quot;metasets&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+</span><span data-line="271">        <span class="n">partition_opts</span><span class="p">[</span><span class="s2">&quot;train&quot;</span><span class="p">][</span><span class="s2">&quot;batch_sizes&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+</span><span data-line="272">        <span class="n">partition_opts</span><span class="p">[</span><span class="s2">&quot;val&quot;</span><span class="p">][</span><span class="s2">&quot;metasets&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+</span><span data-line="273">        <span class="n">partition_opts</span><span class="p">[</span><span class="s2">&quot;val&quot;</span><span class="p">][</span><span class="s2">&quot;batch_sizes&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+</span><span data-line="274">
+</span><span data-line="275">        <span class="k">for</span> <span class="n">dataset</span> <span class="ow">in</span> <span class="n">dataset_names</span><span class="p">:</span>
+</span><span data-line="276">            <span class="n">data_fn</span> <span class="o">=</span> <span class="n">osp</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+</span><span data-line="277">                <span class="n">save_dir</span><span class="p">,</span>
+</span><span data-line="278">                <span class="sa">f</span><span class="s2">&quot;partition_</span><span class="si">{</span><span class="n">dataset</span><span class="si">}{</span><span class="n">get_output_tag</span><span class="p">(</span><span class="n">force_tag</span><span class="p">,</span><span class="w"> </span><span class="n">placement</span><span class="o">=</span><span class="s1">&#39;after&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">.yaml&quot;</span><span class="p">,</span>
+</span><span data-line="279">            <span class="p">)</span>
+</span><span data-line="280">            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">data_fn</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ifile</span><span class="p">:</span>
+</span><span data-line="281">                <span class="n">data_partition</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">ifile</span><span class="p">)</span>
+</span><span data-line="282">
+</span><span data-line="283">            <span class="c1"># make training data partition</span>
+</span><span data-line="284">            <span class="n">partition_opts</span><span class="p">[</span><span class="s2">&quot;train&quot;</span><span class="p">][</span><span class="s2">&quot;metasets&quot;</span><span class="p">][</span><span class="n">dataset</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_partition</span><span class="p">[</span><span class="s2">&quot;train&quot;</span><span class="p">][</span>
+</span><span data-line="285">                <span class="s2">&quot;metasets&quot;</span>
+</span><span data-line="286">            <span class="p">][</span><span class="n">dataset</span><span class="p">]</span>
+</span><span data-line="287">            <span class="n">partition_opts</span><span class="p">[</span><span class="s2">&quot;train&quot;</span><span class="p">][</span><span class="s2">&quot;batch_sizes&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+</span><span data-line="288">                <span class="n">dataset</span><span class="p">:</span> <span class="n">data_partition</span><span class="p">[</span><span class="s2">&quot;train&quot;</span><span class="p">][</span><span class="s2">&quot;batch_sizes&quot;</span><span class="p">]</span>
+</span><span data-line="289">            <span class="p">}</span>
+</span><span data-line="290">
+</span><span data-line="291">            <span class="c1"># make validation data partition</span>
+</span><span data-line="292">            <span class="n">partition_opts</span><span class="p">[</span><span class="s2">&quot;val&quot;</span><span class="p">][</span><span class="s2">&quot;metasets&quot;</span><span class="p">][</span><span class="n">dataset</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_partition</span><span class="p">[</span><span class="s2">&quot;val&quot;</span><span class="p">][</span>
+</span><span data-line="293">                <span class="s2">&quot;metasets&quot;</span>
+</span><span data-line="294">            <span class="p">][</span><span class="n">dataset</span><span class="p">]</span>
+</span><span data-line="295">            <span class="n">partition_opts</span><span class="p">[</span><span class="s2">&quot;val&quot;</span><span class="p">][</span><span class="s2">&quot;batch_sizes&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+</span><span data-line="296">                <span class="n">dataset</span><span class="p">:</span> <span class="n">data_partition</span><span class="p">[</span><span class="s2">&quot;val&quot;</span><span class="p">][</span><span class="s2">&quot;batch_sizes&quot;</span><span class="p">]</span>
+</span><span data-line="297">            <span class="p">}</span>
+</span><span data-line="298">
+</span><span data-line="299">        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fnout_part</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ofile</span><span class="p">:</span>
+</span><span data-line="300">            <span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">partition_opts</span><span class="p">,</span> <span class="n">ofile</span><span class="p">)</span></div>
+
+</span><span data-line="301">
+</span><span data-line="302">
+</span><span data-line="303"><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+</span><span data-line="304">    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Start package_training_data.py: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ctime</span><span class="p">()))</span>
+</span><span data-line="305">
+</span><span data-line="306">    <span class="n">CLI</span><span class="p">([</span><span class="n">package_training_data</span><span class="p">,</span> <span class="n">combine_datasets</span><span class="p">],</span> <span class="n">as_positional</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span><span data-line="307">
+</span><span data-line="308">    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Finish package_training_data.py: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ctime</span><span class="p">()))</span>
+</span><span data-line="309">
+</span><span data-line="310">
+</span><span data-line="311"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+</span><span data-line="312">    <span class="n">main</span><span class="p">()</span>
+</span></pre></div>
+        </article><button class="back-to-top" type="button">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+  </svg>
+  <span>Back to top</span>
+</button><div class="navigation flex print:hidden"></div></div>
+    </div>
+  </main>
+</div>
+<footer class="sy-foot">
+  <div class="sy-foot-inner sy-container mx-auto">
+    <div class="sy-foot-reserved md:flex justify-between items-center">
+      <div class="sy-foot-copyright"><p>2026, Clementi Group</p>
+  
+  <p>
+    Made with
+    
+    <a href="https://www.sphinx-doc.org/">Sphinx</a> and
+    
+    <a href="https://shibuya.lepture.com">Shibuya theme</a>.
+  </p>
+</div>
+      <div class="sy-foot-socials"></div>
+    </div>
+  </div>
+</footer>
+      <script src="../../../_static/documentation_options.js?v=7026087e"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../_static/shibuya.js?v=cac61aee"></script></body>
+</html>

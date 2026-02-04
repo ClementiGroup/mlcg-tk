@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en" data-accent-color="teal" data-content_root="../../">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>gen_input_data.py - mlcg-tk 0.0.0 documentation</title><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><link rel="next" title="fit_priors.py" href="fit_priors.html" /><link rel="prev" title="Scripts" href="index.html" /><script>
+    function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
+    setColorMode(localStorage._theme||"auto");
+  </script><link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=e1a1ceaf" />
+    <link rel="stylesheet" type="text/css" href="../../_static/shibuya.css?v=44020203" />
+    <link media="print" rel="stylesheet" type="text/css" href="../../_static/print.css?v=20ff2c19" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sy-f-text: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+  --sy-f-heading: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+}
+</style>
+    <meta property="og:type" content="website"/><meta property="og:title" content="gen_input_data.py"/>
+    <meta name="twitter:card" content="summary"/>
+  </head>
+<body><div class="sy-head">
+  <div class="sy-head-blur"></div>
+  <div class="sy-head-inner sy-container mx-auto">
+    <a class="sy-head-brand" href="../../index.html">
+      
+      
+      <strong>mlcg-tk</strong>
+    </a>
+    <div class="sy-head-nav" id="head-nav">
+      <nav class="sy-head-links"></nav>
+      <div class="sy-head-extra flex items-center print:hidden"><form class="searchbox flex items-center" action="../../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <kbd>/</kbd>
+</form><div class="sy-head-socials"></div></div>
+    </div>
+    <div class="sy-head-actions flex items-center shrink-0 print:hidden"><button class="js-theme theme-switch flex items-center"
+data-aria-auto="Switch to light color mode"
+data-aria-light="Switch to dark color mode"
+data-aria-dark="Switch to auto color mode">
+<i class="i-lucide theme-icon"></i>
+</button><button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="head-nav" aria-expanded="false">
+        <div class="hamburger">
+          <span class="hamburger_1"></span>
+          <span class="hamburger_2"></span>
+          <span class="hamburger_3"></span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="sy-page sy-container flex mx-auto">
+  <aside id="lside" class="sy-lside md:w-72 md:shrink-0 print:hidden">
+    <div class="sy-lside-inner md:sticky">
+      <div class="sy-scrollbar p-6">
+        <div class="globaltoc" data-expand-depth="1"><p class="caption" role="heading" aria-level="3"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 _expand"><a class="reference internal" href="../../user_guide/index.html">Data pipeline user guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/intro.html">About the Training Data Generation Pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/intro.html#create-a-directory-to-output-all-the-intermediate-files">0) Create a directory to output all the intermediate files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/aa_to_cg.html">1) Loading and processing all-atom simulation data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/stats_priors.html">2) Computing statistics and fitting priors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/delta_forces.html">3) Producing delta forces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/packaging.html">4) Package Training Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/packaging.html#add-decoys-to-training-data">4.1) Add Decoys To Training Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/sim_input.html">5) Generate simulation input</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../core/modules.html">Core API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../core/mlcg_tk/input_generator.html">input_generator package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../core/mlcg_tk/input_generator/prior_fit.html">prior_fit package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../core/mlcg_tk/input_generator/prior_fit/dihedral.html">dihedral module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../core/mlcg_tk/input_generator/prior_fit/fit_potentials.html">fit_potentials module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../core/mlcg_tk/input_generator/prior_fit/harmonic.html">harmonic module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../core/mlcg_tk/input_generator/prior_fit/histogram.html">histogram module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../core/mlcg_tk/input_generator/prior_fit/polynomial.html">polynomial module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../core/mlcg_tk/input_generator/prior_fit/repulsion.html">repulsion module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../core/mlcg_tk/input_generator/prior_fit/restricted_bending.html">restricted_bending module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../core/mlcg_tk/input_generator/prior_fit/utils.html">utils module</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../core/mlcg_tk/input_generator/embedding_maps.html">embedding_maps module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../core/mlcg_tk/input_generator/prior_gen.html">prior_gen module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../core/mlcg_tk/input_generator/prior_nls.html">prior_nls module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../core/mlcg_tk/input_generator/raw_data_loader.html">raw_data_loader module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../core/mlcg_tk/input_generator/raw_dataset.html">raw_dataset module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../core/mlcg_tk/input_generator/utils.html">utils module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../core/mlcg_tk/prior_tools.html">prior_tools package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../core/mlcg_tk/prior_tools/utils.html">utils module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Scripts</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">gen_input_data.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="fit_priors.html"><code class="docutils literal notranslate"><span class="pre">fit_priors.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="merge_statistics.html"><code class="docutils literal notranslate"><span class="pre">merge_statistics.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="produce_delta_forces.html"><code class="docutils literal notranslate"><span class="pre">produce_delta_forces.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="package_training_data.html"><code class="docutils literal notranslate"><span class="pre">package_training_data.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="add_decoys.html"><code class="docutils literal notranslate"><span class="pre">add_decoys.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="gen_sim_input.html"><code class="docutils literal notranslate"><span class="pre">gen_sim_input.py</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="lside-overlay js-menu" role="button" aria-label="Close left sidebar" aria-controls="lside" aria-expanded="false"></div>
+  <aside id="rside" class="sy-rside pb-3 w-64 shrink-0 order-last">
+    <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
+      <i class="i-lucide close"></i>
+    </button>
+    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div class="localtoc"><h3>On this page</h3><ul>
+<li><a class="reference internal" href="#mlcg_tk.scripts.gen_input_data.build_neighborlists"><code class="docutils literal notranslate"><span class="pre">build_neighborlists()</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.scripts.gen_input_data.process_raw_dataset"><code class="docutils literal notranslate"><span class="pre">process_raw_dataset()</span></code></a></li>
+</ul>
+</div><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
+  </aside>
+  <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+<div class="sy-breadcrumbs" role="navigation">
+  <div class="sy-breadcrumbs-inner flex items-center">
+    <div class="md:hidden mr-3">
+      <button class="js-menu" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
+        <i class="i-lucide menu"></i>
+      </button>
+    </div>
+    <ol class="flex-1" itemscope itemtype="https://schema.org/BreadcrumbList"><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../../index.html"><span itemprop="name">mlcg-tk</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="1" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../index.html"><span itemprop="name">API documentation</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="2" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="index.html"><span itemprop="name">Scripts</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="3" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <strong itemprop="name"><code class="docutils literal notranslate"><span class="pre">gen_input_data.py</span></code></strong>
+        <meta itemprop="position" content="4" />
+      </li></ol>
+    <div class="xl:hidden ml-1">
+      <button class="js-menu" aria-label="Show table of contents" type="button" aria-controls="rside"
+        aria-expanded="false">
+        <i class="i-lucide outdent"></i>
+      </button>
+    </div>
+  </div>
+</div><div class="flex flex-col break-words justify-between">
+      <div class="relative min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
+  <article class="yue" role="main">
+          <section id="gen-input-data-py">
+<h1><code class="docutils literal notranslate"><span class="pre">gen_input_data.py</span></code><a class="headerlink" href="#gen-input-data-py" title="Link to this heading">¶</a></h1>
+<dl class="py function" id="module-mlcg_tk.scripts.gen_input_data">
+<dt class="sig sig-object py" id="mlcg_tk.scripts.gen_input_data.build_neighborlists">
+<span class="sig-prename descclassname"><span class="pre">mlcg_tk.scripts.gen_input_data.</span></span><span class="sig-name descname"><span class="pre">build_neighborlists</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_loader</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pdb_template_fn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cg_atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embedding_map</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embedding_func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_residues</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prior_tag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prior_builders</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raw_data_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cg_mapping_strategy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_stride</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_cis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mol_num_batches</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atoms_batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collection_cls</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;class</span> <span class="pre">'mlcg_tk.input_generator.raw_dataset.SampleCollection'&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mlcg_tk/scripts/gen_input_data.html#build_neighborlists"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.scripts.gen_input_data.build_neighborlists" title="Link to this definition">¶</a></dt>
+<dd><p>Generates neighbour lists for all samples in dataset using prior term information</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataset_name</strong> (<em>str</em>) – Name given to specific dataset</p></li>
+<li><p><strong>names</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – List of sample names</p></li>
+<li><p><strong>sample_loader</strong> (<a class="reference internal" href="../core/mlcg_tk/input_generator/raw_data_loader.html#mlcg_tk.input_generator.raw_data_loader.DatasetLoader" title="mlcg_tk.input_generator.raw_data_loader.DatasetLoader"><em>DatasetLoader</em></a>) – Loader object defined for specific dataset</p></li>
+<li><p><strong>tag</strong> (<em>str</em>) – Label given to all output files produced from dataset</p></li>
+<li><p><strong>pdb_template_fn</strong> (<em>str</em>) – Template file location of atomistic structure to be used for topology</p></li>
+<li><p><strong>save_dir</strong> (<em>str</em>) – Path to directory in which output will be saved</p></li>
+<li><p><strong>cg_atoms</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – List of atom names to preserve in coarse-grained resolution</p></li>
+<li><p><strong>embedding_map</strong> (<a class="reference internal" href="../core/mlcg_tk/input_generator/embedding_maps.html#mlcg_tk.input_generator.embedding_maps.CGEmbeddingMap" title="mlcg_tk.input_generator.embedding_maps.CGEmbeddingMap"><em>CGEmbeddingMap</em></a>) – Mapping object</p></li>
+<li><p><strong>embedding_func</strong> (<em>Callable</em>) – Function which will be used to apply CG mapping</p></li>
+<li><p><strong>skip_residues</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – List of residues to skip, can be None</p></li>
+<li><p><strong>prior_tag</strong> (<em>str</em>) – String identifying the specific combination of prior terms</p></li>
+<li><p><strong>prior_builders</strong> (<em>List</em><em>[</em><a class="reference internal" href="../core/mlcg_tk/input_generator/prior_gen.html#mlcg_tk.input_generator.prior_gen.PriorBuilder" title="mlcg_tk.input_generator.prior_gen.PriorBuilder"><em>PriorBuilder</em></a><em>]</em>) – List of PriorBuilder objects and their corresponding parameters</p></li>
+<li><p><strong>stride</strong> (<em>int</em>) – unused in this function
+present to allow the use of the same .yaml config for process_raw_dataset and build_neighborlists</p></li>
+<li><p><strong>force_stride</strong> (<em>int</em>) – unused in this function
+present to allow the use of the same .yaml config for process_raw_dataset and build_neighborlists</p></li>
+<li><p><strong>filter_cis</strong> (<em>bool</em>) – unused in this function
+present to allow the use of the same .yaml config for process_raw_dataset and build_neighborlists</p></li>
+<li><p><strong>batch_size</strong> (<em>bool</em>) – unused in this function
+present to allow the use of the same .yaml config for process_raw_dataset and build_neighborlists</p></li>
+<li><p><strong>mol_num_batches</strong> (<em>int</em>) – unused in this function
+present to allow the use of the same .yaml config for process_raw_dataset and build_neighborlists</p></li>
+<li><p><strong>atoms_batch_size</strong> (<em>int</em>) – unused in this function
+present to allow the use of the same .yaml config for process_raw_dataset and build_neighborlists</p></li>
+<li><p><strong>collection_cls</strong> (<em>Type</em><em>[</em><a class="reference internal" href="../core/mlcg_tk/input_generator/raw_dataset.html#mlcg_tk.input_generator.raw_dataset.SampleCollection" title="mlcg_tk.input_generator.raw_dataset.SampleCollection"><em>SampleCollection</em></a><em>]</em>) – Class type for sample collection</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mlcg_tk.scripts.gen_input_data.process_raw_dataset">
+<span class="sig-prename descclassname"><span class="pre">mlcg_tk.scripts.gen_input_data.</span></span><span class="sig-name descname"><span class="pre">process_raw_dataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_loader</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raw_data_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pdb_template_fn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cg_atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embedding_map</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embedding_func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_residues</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cg_mapping_strategy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_stride</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_cis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mol_num_batches</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atoms_batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collection_cls</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;class</span> <span class="pre">'mlcg_tk.input_generator.raw_dataset.SampleCollection'&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mlcg_tk/scripts/gen_input_data.html#process_raw_dataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.scripts.gen_input_data.process_raw_dataset" title="Link to this definition">¶</a></dt>
+<dd><p>Applies coarse-grained mapping to coordinates and forces using input sample
+topology and specified mapping strategies</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataset_name</strong> (<em>str</em>) – Name given to specific dataset</p></li>
+<li><p><strong>names</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – List of sample names</p></li>
+<li><p><strong>sample_loader</strong> (<a class="reference internal" href="../core/mlcg_tk/input_generator/raw_data_loader.html#mlcg_tk.input_generator.raw_data_loader.DatasetLoader" title="mlcg_tk.input_generator.raw_data_loader.DatasetLoader"><em>DatasetLoader</em></a>) – Loader object defined for specific dataset</p></li>
+<li><p><strong>raw_data_dir</strong> (<em>str</em>) – Path to coordinate and force files</p></li>
+<li><p><strong>tag</strong> (<em>str</em>) – Label given to all output files produced from dataset</p></li>
+<li><p><strong>pdb_template_fn</strong> (<em>str</em>) – Template file location of atomistic structure to be used for topology</p></li>
+<li><p><strong>save_dir</strong> (<em>str</em>) – Path to directory in which output will be saved</p></li>
+<li><p><strong>cg_atoms</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – List of atom names to preserve in coarse-grained resolution</p></li>
+<li><p><strong>embedding_map</strong> (<a class="reference internal" href="../core/mlcg_tk/input_generator/embedding_maps.html#mlcg_tk.input_generator.embedding_maps.CGEmbeddingMap" title="mlcg_tk.input_generator.embedding_maps.CGEmbeddingMap"><em>CGEmbeddingMap</em></a>) – Mapping object</p></li>
+<li><p><strong>embedding_func</strong> (<em>Callable</em>) – Function which will be used to apply CG mapping</p></li>
+<li><p><strong>skip_residues</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – List of residues to skip, can be None</p></li>
+<li><p><strong>cg_mapping_strategy</strong> (<em>str</em>) – Strategy to use for coordinate and force mappings;
+currently only “slice_aggregate” and “slice_optimize” are implemented</p></li>
+<li><p><strong>stride</strong> (<em>int</em>) – Interval by which to stride loaded data</p></li>
+<li><p><strong>force_stride</strong> (<em>int</em>) – stride for inferring the force maps in aggforce</p></li>
+<li><p><strong>filter_cis</strong> (<em>bool</em>) – if True, frames with cis-configurations will be filtered out from the dataset</p></li>
+<li><p><strong>batch_size</strong> (<em>int</em>) – Optional size in which performing batches of AA mapping to CG, to avoid
+memory overhead in large AA dataset</p></li>
+<li><p><strong>mol_num_batches</strong> (<em>int</em>) – If greater than 1, will save each molecule data into the specified number of batches
+that will be treated as different samples</p></li>
+<li><p><strong>atoms_batch_size</strong> (<em>int</em><em>, </em><em>optional</em>) – Optional batch size for processing atoms in large molecules (default: None). If specified, constraints among atoms for coordinate and
+force mappings (as defined by <cite>cg_mapping_strategy</cite>) will be computed in batches of this size. To significantly improve
+computational efficiency, it is assumed that structures have ordered residues. If <cite>atoms_batch_size</cite> exceeds the total number of atoms
+in the molecule, all atoms will be processed at once (default behavior).</p></li>
+<li><p><strong>collection_cls</strong> (<em>Type</em><em>[</em><a class="reference internal" href="../core/mlcg_tk/input_generator/raw_dataset.html#mlcg_tk.input_generator.raw_dataset.SampleCollection" title="mlcg_tk.input_generator.raw_dataset.SampleCollection"><em>SampleCollection</em></a><em>]</em>) – Class type for sample collection</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+        </article><button class="back-to-top" type="button">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+  </svg>
+  <span>Back to top</span>
+</button><div class="navigation flex print:hidden"><div class="navigation-prev">
+    <a href="index.html">
+      <i class="i-lucide chevron-left"></i>
+      <div class="page-info">
+        <span>Previous</span><div class="title">Scripts</div></div>
+    </a>
+  </div><div class="navigation-next">
+    <a href="fit_priors.html">
+      <div class="page-info">
+        <span>Next</span>
+        <div class="title"><code class="docutils literal notranslate"><span class="pre">fit_priors.py</span></code></div>
+      </div>
+      <i class="i-lucide chevron-right"></i>
+    </a>
+  </div></div></div>
+    </div>
+  </main>
+</div>
+<footer class="sy-foot">
+  <div class="sy-foot-inner sy-container mx-auto">
+    <div class="sy-foot-reserved md:flex justify-between items-center">
+      <div class="sy-foot-copyright"><p>2026, Clementi Group</p>
+  
+  <p>
+    Made with
+    
+    <a href="https://www.sphinx-doc.org/">Sphinx</a> and
+    
+    <a href="https://shibuya.lepture.com">Shibuya theme</a>.
+  </p>
+</div>
+      <div class="sy-foot-socials"></div>
+    </div>
+  </div>
+</footer>
+      <script src="../../_static/documentation_options.js?v=7026087e"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/shibuya.js?v=cac61aee"></script></body>
+</html>
