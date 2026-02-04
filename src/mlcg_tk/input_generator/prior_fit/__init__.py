@@ -10,7 +10,7 @@ from .polynomial import (
     polynomial_wrapper_fit_func,
 )
 from .restricted_bending import (
-    fit_rb_from_potential_estimates, 
-    restricted_quartic_angle
+    fit_rb_from_potential_estimates,
+    restricted_quartic_angle,
 )
 from .histogram import HistogramsNL

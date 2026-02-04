@@ -23,9 +23,9 @@ def fit_repulsion_from_potential_estimates(
         through logarithmic inversion of the associated Boltzmann factor
     dG_nz:
         The value of the energy :math:`U` as a function of the bin
-        centers, as retrieved via: 
-        
-        :math:`U(x) = -\frac{1}{\beta}\log{ \left( p(x)\right)}`  
+        centers, as retrieved via:
+
+        :math:`U(x) = -\frac{1}{\beta}\log{ \left( p(x)\right)}`
 
         where :math:`\beta` is the inverse thermodynamic temperature and
         :math:`p(x)` is the normalized probability distribution of
@@ -50,7 +50,7 @@ def fit_repulsion_from_values(
     ncounts_nz: torch.Tensor,
     percentile: float,
     cutoff: Optional[float] = None,
-    **kwargs
+    **kwargs,
 ) -> Dict:
     """Method for fitting interaction parameters directly from input features
 

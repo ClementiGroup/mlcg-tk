@@ -12,7 +12,6 @@ from mlcg.nn.prior import _Prior
 from mlcg.geometry._symmetrize import _symmetrise_map, _flip_map
 from mlcg.utils import tensor2tuple
 
-
 plt.rcParams["figure.max_open_warning"] = 50
 
 

@@ -153,7 +153,7 @@ def fit_dihedral_from_potential_estimates(
     Loop over n_degs basins and use either the AIC criterion
     or a prechosen degree to select best fit. Parameter fitting
     occurs over unmaksed regions of the free energy only.
-    
+
     Parameters
     ----------
     bin_centers_nz:

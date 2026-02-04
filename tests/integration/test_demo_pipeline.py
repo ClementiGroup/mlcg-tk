@@ -5,7 +5,6 @@ import pytest
 import os
 from os.path import join as osp
 
-
 _here = Path(__file__).parent
 _examples_dir = Path(osp(_here.parent.parent, "examples"))
 
@@ -96,4 +95,3 @@ def test_pipeline(runner_idx, num_containers, test_dir):
                 f"STDOUT:\n{result.stdout}\n\n"
                 f"STDERR:\n{result.stderr}\n"
             )
-

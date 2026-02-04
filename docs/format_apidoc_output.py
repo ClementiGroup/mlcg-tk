@@ -38,7 +38,6 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, Iterable, List, Optional
 
-
 HDR_UNDERLINE_CHARS = r"=~\-^\"'#*+`:.><_"
 
 
@@ -138,6 +137,7 @@ def apply_docname_rewrites(text: str, doc_map: Dict[str, str]) -> str:
     We rewrite only exact old docnames (with either dot form or old path form),
     optionally with ".rst" suffix.
     """
+
     # 1) Rewrite :doc:`...` roles
     def repl_doc_role(m: re.Match) -> str:
         target = m.group(1).strip()

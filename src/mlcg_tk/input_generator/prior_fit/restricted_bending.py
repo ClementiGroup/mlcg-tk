@@ -45,7 +45,7 @@ def ddx2_restricted_quartic_angle_numpy(x, a, b, c, d, k):
     sin = np.sin(x)
 
     ddquart = (
-        - 4 * a * (cos**4 - 3 * sin**2 * cos**2)
+        -4 * a * (cos**4 - 3 * sin**2 * cos**2)
         - 3 * b * (cos**3 - 2 * sin**2 * cos)
         - 2 * c * (cos**2 - sin**2)
         - d * cos

@@ -927,12 +927,13 @@ class SimInput:
         List of SampleCollection objects for all structures
     """
 
-    def __init__(self, 
-                 dataset_name: str, 
-                 tag: str, 
-                 pdb_fns: List[str],
-                 collection_cls: Type[SampleCollection] = SampleCollection
-            ) -> None:
+    def __init__(
+        self,
+        dataset_name: str,
+        tag: str,
+        pdb_fns: List[str],
+        collection_cls: Type[SampleCollection] = SampleCollection,
+    ) -> None:
         self.dataset_name = dataset_name
         self.names = [fn[:-4] for fn in pdb_fns]
         self.dataset = []

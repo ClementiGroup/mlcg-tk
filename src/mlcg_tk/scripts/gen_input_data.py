@@ -89,12 +89,13 @@ def process_raw_dataset(
         Class type for sample collection
 
     """
-    dataset = RawDataset(dataset_name, 
-                         names, 
-                         tag, 
-                         n_batches=mol_num_batches,
-                         collection_cls=collection_cls
-                    )
+    dataset = RawDataset(
+        dataset_name,
+        names,
+        tag,
+        n_batches=mol_num_batches,
+        collection_cls=collection_cls,
+    )
     for samples in tqdm(dataset, f"Processing CG data for {dataset_name} dataset..."):
         samples.input_traj, samples.top_dataframe = sample_loader.get_traj_top(
             samples.mol_name, pdb_template_fn

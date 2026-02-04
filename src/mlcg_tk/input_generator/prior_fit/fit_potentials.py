@@ -87,7 +87,7 @@ def fit_potentials(
             bin_centers_nz=bin_centers_nz,
             dG_nz=dG_nz,
             ncounts_nz=ncounts_nz,
-            **target_fit_kwargs
+            **target_fit_kwargs,
         )
 
         statistics[kf] = params

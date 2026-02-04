@@ -6,10 +6,10 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'mlcg-tk'
-copyright = '2026, Clementi Group'
-author = 'Clementi Group'
-release = '0.0.0'
+project = "mlcg-tk"
+copyright = "2026, Clementi Group"
+author = "Clementi Group"
+release = "0.0.0"
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
@@ -26,18 +26,18 @@ extensions = [
     "sphinx_autodoc_typehints",
 ]
 
-templates_path = ['_templates']
+templates_path = ["_templates"]
 exclude_patterns = []
 
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
-html_theme = 'shibuya'
-#toc_object_entries_show_parents = "all"
+html_theme = "shibuya"
+# toc_object_entries_show_parents = "all"
 html_theme_options = {
-  "accent_color": "teal",
-  "toctree_maxdepth": 8,
-  "globaltoc_expand_depth": 1,
+    "accent_color": "teal",
+    "toctree_maxdepth": 8,
+    "globaltoc_expand_depth": 1,
 }
-html_static_path = ['_static']
+html_static_path = ["_static"]
