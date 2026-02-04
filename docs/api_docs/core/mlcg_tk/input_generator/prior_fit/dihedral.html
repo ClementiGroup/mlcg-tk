@@ -208,19 +208,14 @@ to N basis functions.</p>
 <span class="sig-prename descclassname"><span class="pre">mlcg_tk.input_generator.prior_fit.dihedral.</span></span><span class="sig-name descname"><span class="pre">fit_dihedral_from_potential_estimates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bin_centers_nz</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dG_nz</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_degs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">6</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constrain_deg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">regression_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'linear'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'aic'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/mlcg_tk/input_generator/prior_fit/dihedral.html#fit_dihedral_from_potential_estimates"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.prior_fit.dihedral.fit_dihedral_from_potential_estimates" title="Link to this definition">¶</a></dt>
 <dd><p>Loop over n_degs basins and use either the AIC criterion
 or a prechosen degree to select best fit. Parameter fitting
-occurs over unmaksed regions of the free energy only.
-:type bin_centers_nz: <span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></span>
-:param bin_centers_nz: Bin centers over which the fit is carried out
-:type dG_nz: <span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></span>
-:param dG_nz: The emperical free energy correspinding to the bin centers
-:type n_degs: <span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>
-:param n_degs: The maximum number of degrees to attempt to fit if using the AIC</p>
-<blockquote>
-<div><p>criterion for prior model selection</p>
-</div></blockquote>
+occurs over unmaksed regions of the free energy only.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
+<li><p><strong>bin_centers_nz</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></span>) – Bin centers over which the fit is carried out</p></li>
+<li><p><strong>dG_nz</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></span>) – The emperical free energy correspinding to the bin centers</p></li>
+<li><p><strong>n_degs</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – The maximum number of degrees to attempt to fit if using the AIC
+criterion for prior model selection</p></li>
 <li><p><strong>constrain_deg</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]</span>) – If not None, a single fit is produced for the specified integer
 degree instead of using the AIC criterion for fit selection between
 multiple degrees</p></li>

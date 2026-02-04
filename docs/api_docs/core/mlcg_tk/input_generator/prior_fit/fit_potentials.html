@@ -195,25 +195,22 @@ required to alter GLY statistics if defined in PriorBuilder.nl_builder.</p></li>
 <dd class="field-odd"><p><ul>
 <li><p>model <span class="xref std std-ref">mlcg.nn.GradientsOut</span> module containing gathered</p></li>
 <li><p>statistics and estimated energy parameters based on the <cite>TargetPrior</cite>.</p></li>
-<li><p>The following key/value pairs are common across all <a href="#id1"><span class="problematic" id="id2">`</span></a>TargetPrior`s</p></li>
-<li><p><em>.. code-block:: python</em> –</p>
-<p>(<a href="#id3"><span class="problematic" id="id4">*</span></a>specific_types) : {</p>
-<blockquote>
-<div><p>…</p>
-<dl class="simple">
-<dt>”p”<span class="classifier">torch.Tensor of shape [n_bins], containing the normalized bin counts</span></dt><dd><p>of the of the 1-D feature corresponding to the atom_type group
-(<a href="#id5"><span class="problematic" id="id6">*</span></a>specific_types) = (specific_types[0], specific_types[1], …)</p>
-</dd>
-</dl>
-<p>”p_bin”: : torch.Tensor of shape [n_bins] containing the bin center values
-“V” : torch.tensor of shape [n_bins], containing the emperically estimated</p>
-<blockquote>
-<div><p>free energy curve according to a direct Boltzmann inversion of the
-normalized probability distribution for the feature.</p>
-</div></blockquote>
-<p>”V_bin” : torch_tensor of shape [n_bins], containing the bin center values</p>
-</div></blockquote>
-<p>}</p>
+<li><p>The following key/value pairs are common across all <a href="#id1"><span class="problematic" id="id2">`</span></a>TargetPrior`s –</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="p">(</span><span class="o">*</span><span class="n">specific_types</span><span class="p">)</span> <span class="p">:</span> <span class="p">{</span>
+</span><span data-line="2">
+</span><span data-line="3">    <span class="o">...</span>
+</span><span data-line="4">
+</span><span data-line="5">    <span class="s2">&quot;p&quot;</span> <span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="n">of</span> <span class="n">shape</span> <span class="p">[</span><span class="n">n_bins</span><span class="p">],</span> <span class="n">containing</span> <span class="n">the</span> <span class="n">normalized</span> <span class="nb">bin</span> <span class="n">counts</span>
+</span><span data-line="6">        <span class="n">of</span> <span class="n">the</span> <span class="n">of</span> <span class="n">the</span> <span class="mi">1</span><span class="o">-</span><span class="n">D</span> <span class="n">feature</span> <span class="n">corresponding</span> <span class="n">to</span> <span class="n">the</span> <span class="n">atom_type</span> <span class="n">group</span>
+</span><span data-line="7">        <span class="p">(</span><span class="o">*</span><span class="n">specific_types</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="n">specific_types</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">specific_types</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="o">...</span><span class="p">)</span>
+</span><span data-line="8">    <span class="s2">&quot;p_bin&quot;</span><span class="p">:</span> <span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="n">of</span> <span class="n">shape</span> <span class="p">[</span><span class="n">n_bins</span><span class="p">]</span> <span class="n">containing</span> <span class="n">the</span> <span class="nb">bin</span> <span class="n">center</span> <span class="n">values</span>
+</span><span data-line="9">    <span class="s2">&quot;V&quot;</span> <span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span> <span class="n">of</span> <span class="n">shape</span> <span class="p">[</span><span class="n">n_bins</span><span class="p">],</span> <span class="n">containing</span> <span class="n">the</span> <span class="n">emperically</span> <span class="n">estimated</span>
+</span><span data-line="10">        <span class="n">free</span> <span class="n">energy</span> <span class="n">curve</span> <span class="n">according</span> <span class="n">to</span> <span class="n">a</span> <span class="n">direct</span> <span class="n">Boltzmann</span> <span class="n">inversion</span> <span class="n">of</span> <span class="n">the</span>
+</span><span data-line="11">        <span class="n">normalized</span> <span class="n">probability</span> <span class="n">distribution</span> <span class="k">for</span> <span class="n">the</span> <span class="n">feature</span><span class="o">.</span>
+</span><span data-line="12">    <span class="s2">&quot;V_bin&quot;</span> <span class="p">:</span> <span class="n">torch_tensor</span> <span class="n">of</span> <span class="n">shape</span> <span class="p">[</span><span class="n">n_bins</span><span class="p">],</span> <span class="n">containing</span> <span class="n">the</span> <span class="nb">bin</span> <span class="n">center</span> <span class="n">values</span>
+</span><span data-line="13"><span class="p">}</span>
+</span></pre></div>
+</div>
 </li>
 <li><p>where <cite>…</cite> indicates other sub-key/value pairs apart from those enumerated above,</p></li>
 <li><p>which may appear depending on the chosen <cite>TargetPrior</cite>. For example,</p></li>

@@ -168,7 +168,7 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="13">    <span class="n">embedding_map</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">CGEmbeddingMap</span><span class="p">],</span>
 </span><span data-line="14">    <span class="n">temperature</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
 </span><span data-line="15"><span class="p">):</span>
-</span><span data-line="16"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="16"><span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 </span><span data-line="17"><span class="sd">    Fits energy function to atom type-specific statistics defined</span>
 </span><span data-line="18"><span class="sd">    for a group of atoms in a neighbour list.</span>
 </span><span data-line="19">
@@ -199,21 +199,21 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="44"><span class="sd">    statistics and estimated energy parameters based on the `TargetPrior`.</span>
 </span><span data-line="45"><span class="sd">    The following key/value pairs are common across all `TargetPrior`s:</span>
 </span><span data-line="46">
-</span><span data-line="47"><span class="sd">    .. code-block:: python</span>
+</span><span data-line="47"><span class="sd">        .. code-block:: python</span>
 </span><span data-line="48">
-</span><span data-line="49"><span class="sd">        (*specific_types) : {</span>
+</span><span data-line="49"><span class="sd">            (*specific_types) : {</span>
 </span><span data-line="50">
-</span><span data-line="51"><span class="sd">            ...</span>
+</span><span data-line="51"><span class="sd">                ...</span>
 </span><span data-line="52">
-</span><span data-line="53"><span class="sd">            &quot;p&quot; : torch.Tensor of shape [n_bins], containing the normalized bin counts</span>
-</span><span data-line="54"><span class="sd">                of the of the 1-D feature corresponding to the atom_type group</span>
-</span><span data-line="55"><span class="sd">                (*specific_types) = (specific_types[0], specific_types[1], ...)</span>
-</span><span data-line="56"><span class="sd">            &quot;p_bin&quot;: : torch.Tensor of shape [n_bins] containing the bin center values</span>
-</span><span data-line="57"><span class="sd">            &quot;V&quot; : torch.tensor of shape [n_bins], containing the emperically estimated</span>
-</span><span data-line="58"><span class="sd">                free energy curve according to a direct Boltzmann inversion of the</span>
-</span><span data-line="59"><span class="sd">                normalized probability distribution for the feature.</span>
-</span><span data-line="60"><span class="sd">            &quot;V_bin&quot; : torch_tensor of shape [n_bins], containing the bin center values</span>
-</span><span data-line="61"><span class="sd">        }</span>
+</span><span data-line="53"><span class="sd">                &quot;p&quot; : torch.Tensor of shape [n_bins], containing the normalized bin counts</span>
+</span><span data-line="54"><span class="sd">                    of the of the 1-D feature corresponding to the atom_type group</span>
+</span><span data-line="55"><span class="sd">                    (*specific_types) = (specific_types[0], specific_types[1], ...)</span>
+</span><span data-line="56"><span class="sd">                &quot;p_bin&quot;: : torch.Tensor of shape [n_bins] containing the bin center values</span>
+</span><span data-line="57"><span class="sd">                &quot;V&quot; : torch.tensor of shape [n_bins], containing the emperically estimated</span>
+</span><span data-line="58"><span class="sd">                    free energy curve according to a direct Boltzmann inversion of the</span>
+</span><span data-line="59"><span class="sd">                    normalized probability distribution for the feature.</span>
+</span><span data-line="60"><span class="sd">                &quot;V_bin&quot; : torch_tensor of shape [n_bins], containing the bin center values</span>
+</span><span data-line="61"><span class="sd">            }</span>
 </span><span data-line="62">
 </span><span data-line="63"><span class="sd">    where `...` indicates other sub-key/value pairs apart from those enumerated above,</span>
 </span><span data-line="64"><span class="sd">    which may appear depending on the chosen `TargetPrior`. For example,</span>

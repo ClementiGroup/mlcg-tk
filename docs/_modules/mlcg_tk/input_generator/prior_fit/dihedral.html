@@ -314,124 +314,125 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="153"><span class="sd">    Loop over n_degs basins and use either the AIC criterion</span>
 </span><span data-line="154"><span class="sd">    or a prechosen degree to select best fit. Parameter fitting</span>
 </span><span data-line="155"><span class="sd">    occurs over unmaksed regions of the free energy only.</span>
-</span><span data-line="156"><span class="sd">    Parameters</span>
-</span><span data-line="157"><span class="sd">    ----------</span>
-</span><span data-line="158"><span class="sd">    bin_centers_nz:</span>
-</span><span data-line="159"><span class="sd">        Bin centers over which the fit is carried out</span>
-</span><span data-line="160"><span class="sd">    dG_nz:</span>
-</span><span data-line="161"><span class="sd">        The emperical free energy correspinding to the bin centers</span>
-</span><span data-line="162"><span class="sd">    n_degs:</span>
-</span><span data-line="163"><span class="sd">        The maximum number of degrees to attempt to fit if using the AIC</span>
-</span><span data-line="164"><span class="sd">        criterion for prior model selection</span>
-</span><span data-line="165"><span class="sd">    constrain_deg:</span>
-</span><span data-line="166"><span class="sd">        If not None, a single fit is produced for the specified integer</span>
-</span><span data-line="167"><span class="sd">        degree instead of using the AIC criterion for fit selection between</span>
-</span><span data-line="168"><span class="sd">        multiple degrees</span>
-</span><span data-line="169"><span class="sd">    regression_method:</span>
-</span><span data-line="170"><span class="sd">        String specifying which regression method to use. If &quot;nonlinear&quot;,</span>
-</span><span data-line="171"><span class="sd">        the default `scipy.optimize.curve_fit` method is used. If &#39;linear&#39;,</span>
-</span><span data-line="172"><span class="sd">        linear regression via `torch.linalg.lstsq` is used</span>
-</span><span data-line="173"><span class="sd">    metric:</span>
-</span><span data-line="174"><span class="sd">        If a constrain deg is not specified, this string specifies whether to</span>
-</span><span data-line="175"><span class="sd">        use either AIC (&#39;aic&#39;) or adjusted R squared (&#39;r2&#39;) for automated degree</span>
-</span><span data-line="176"><span class="sd">        selection. If the automatic degree determination fails, users should</span>
-</span><span data-line="177"><span class="sd">        consider searching for a proper constrained degree.</span>
-</span><span data-line="178">
-</span><span data-line="179"><span class="sd">    Returns</span>
-</span><span data-line="180"><span class="sd">    -------</span>
-</span><span data-line="181"><span class="sd">    Dict:</span>
-</span><span data-line="182"><span class="sd">        Statistics dictionary with fitted interaction parameters</span>
-</span><span data-line="183"><span class="sd">    &quot;&quot;&quot;</span>
-</span><span data-line="184">
-</span><span data-line="185">    <span class="n">integral</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span>
-</span><span data-line="186">        <span class="nb">float</span><span class="p">(</span><span class="n">trapezoid</span><span class="p">(</span><span class="n">dG_nz</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">(),</span> <span class="n">bin_centers_nz</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()))</span>
-</span><span data-line="187">    <span class="p">)</span>
-</span><span data-line="188">
-</span><span data-line="189">    <span class="n">mask</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">dG_nz</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">1e-4</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">integral</span><span class="p">)</span>
-</span><span data-line="190">
-</span><span data-line="191">    <span class="k">if</span> <span class="n">constrain_deg</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="192">        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">constrain_deg</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
-</span><span data-line="193">        <span class="n">stat</span> <span class="o">=</span> <span class="n">_init_parameter_dict</span><span class="p">(</span><span class="n">constrain_deg</span><span class="p">)</span>
-</span><span data-line="194">        <span class="k">if</span> <span class="n">regression_method</span> <span class="o">==</span> <span class="s2">&quot;linear&quot;</span><span class="p">:</span>
-</span><span data-line="195">            <span class="n">popt</span> <span class="o">=</span> <span class="p">(</span>
-</span><span data-line="196">                <span class="n">_linear_regression</span><span class="p">(</span><span class="n">bin_centers_nz</span><span class="p">[</span><span class="n">mask</span><span class="p">],</span> <span class="n">dG_nz</span><span class="p">[</span><span class="n">mask</span><span class="p">],</span> <span class="n">constrain_deg</span><span class="p">)</span>
-</span><span data-line="197">                <span class="o">.</span><span class="n">solution</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
-</span><span data-line="198">                <span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
-</span><span data-line="199">            <span class="p">)</span>
-</span><span data-line="200">        <span class="k">elif</span> <span class="n">regression_method</span> <span class="o">==</span> <span class="s2">&quot;nonlinear&quot;</span><span class="p">:</span>
-</span><span data-line="201">            <span class="n">p0</span> <span class="o">=</span> <span class="n">_init_parameters</span><span class="p">(</span><span class="n">constrain_deg</span><span class="p">)</span>
-</span><span data-line="202">            <span class="n">popt</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">curve_fit</span><span class="p">(</span>
-</span><span data-line="203">                <span class="k">lambda</span> <span class="n">theta</span><span class="p">,</span> <span class="o">*</span><span class="n">p0</span><span class="p">:</span> <span class="n">dihedral_wrapper_fit_func</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">p0</span><span class="p">),</span>
-</span><span data-line="204">                <span class="n">bin_centers_nz</span><span class="p">[</span><span class="n">mask</span><span class="p">],</span>
-</span><span data-line="205">                <span class="n">dG_nz</span><span class="p">[</span><span class="n">mask</span><span class="p">],</span>
-</span><span data-line="206">                <span class="n">p0</span><span class="o">=</span><span class="n">p0</span><span class="p">,</span>
-</span><span data-line="207">            <span class="p">)</span>
-</span><span data-line="208">        <span class="k">else</span><span class="p">:</span>
-</span><span data-line="209">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-</span><span data-line="210">                <span class="s2">&quot;regression method </span><span class="si">{}</span><span class="s2"> is neither &#39;linear&#39; nor &#39;nonlinear&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-</span><span data-line="211">                    <span class="n">regression_method</span>
-</span><span data-line="212">                <span class="p">)</span>
-</span><span data-line="213">            <span class="p">)</span>
-</span><span data-line="214">        <span class="n">stat</span> <span class="o">=</span> <span class="n">_make_parameter_dict</span><span class="p">(</span><span class="n">stat</span><span class="p">,</span> <span class="n">popt</span><span class="p">,</span> <span class="n">constrain_deg</span><span class="p">)</span>
-</span><span data-line="215">
-</span><span data-line="216">    <span class="k">else</span><span class="p">:</span>
-</span><span data-line="217">        <span class="k">if</span> <span class="n">metric</span> <span class="o">==</span> <span class="s2">&quot;aic&quot;</span><span class="p">:</span>
-</span><span data-line="218">            <span class="n">metric_func</span> <span class="o">=</span> <span class="n">_compute_aic</span>
-</span><span data-line="219">            <span class="n">best_func</span> <span class="o">=</span> <span class="nb">min</span>
-</span><span data-line="220">        <span class="k">elif</span> <span class="n">metric</span> <span class="o">==</span> <span class="s2">&quot;r2&quot;</span><span class="p">:</span>
-</span><span data-line="221">            <span class="n">metric_func</span> <span class="o">=</span> <span class="n">_compute_adjusted_R2</span>
-</span><span data-line="222">            <span class="n">best_func</span> <span class="o">=</span> <span class="nb">max</span>
-</span><span data-line="223">        <span class="k">else</span><span class="p">:</span>
-</span><span data-line="224">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;metric </span><span class="si">{}</span><span class="s2"> is neither &#39;aic&#39; nor &#39;r2&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">metric</span><span class="p">))</span>
-</span><span data-line="225">
-</span><span data-line="226">        <span class="c1"># Determine best fit for unknown # of parameters</span>
-</span><span data-line="227">        <span class="n">stat</span> <span class="o">=</span> <span class="n">_init_parameter_dict</span><span class="p">(</span><span class="n">n_degs</span><span class="p">)</span>
-</span><span data-line="228">        <span class="n">popts</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span data-line="229">        <span class="n">metric_vals</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span data-line="230">
-</span><span data-line="231">        <span class="k">try</span><span class="p">:</span>
-</span><span data-line="232">            <span class="k">for</span> <span class="n">deg</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_degs</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
-</span><span data-line="233">                <span class="n">free_parameters</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">deg</span><span class="p">)</span>
-</span><span data-line="234">                <span class="k">if</span> <span class="n">regression_method</span> <span class="o">==</span> <span class="s2">&quot;linear&quot;</span><span class="p">:</span>
-</span><span data-line="235">                    <span class="n">popt</span> <span class="o">=</span> <span class="p">(</span>
-</span><span data-line="236">                        <span class="n">_linear_regression</span><span class="p">(</span><span class="n">bin_centers_nz</span><span class="p">[</span><span class="n">mask</span><span class="p">],</span> <span class="n">dG_nz</span><span class="p">[</span><span class="n">mask</span><span class="p">],</span> <span class="n">deg</span><span class="p">)</span>
-</span><span data-line="237">                        <span class="o">.</span><span class="n">solution</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
-</span><span data-line="238">                        <span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
-</span><span data-line="239">                    <span class="p">)</span>
-</span><span data-line="240">                <span class="k">elif</span> <span class="n">regression_method</span> <span class="o">==</span> <span class="s2">&quot;nonlinear&quot;</span><span class="p">:</span>
-</span><span data-line="241">                    <span class="n">p0</span> <span class="o">=</span> <span class="n">_init_parameters</span><span class="p">(</span><span class="n">deg</span><span class="p">)</span>
-</span><span data-line="242">                    <span class="n">popt</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">curve_fit</span><span class="p">(</span>
-</span><span data-line="243">                        <span class="k">lambda</span> <span class="n">theta</span><span class="p">,</span> <span class="o">*</span><span class="n">p0</span><span class="p">:</span> <span class="n">dihedral_wrapper_fit_func</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">p0</span><span class="p">),</span>
-</span><span data-line="244">                        <span class="n">bin_centers_nz</span><span class="p">[</span><span class="n">mask</span><span class="p">],</span>
-</span><span data-line="245">                        <span class="n">dG_nz</span><span class="p">[</span><span class="n">mask</span><span class="p">],</span>
-</span><span data-line="246">                        <span class="n">p0</span><span class="o">=</span><span class="n">p0</span><span class="p">,</span>
-</span><span data-line="247">                    <span class="p">)</span>
-</span><span data-line="248">                <span class="k">else</span><span class="p">:</span>
-</span><span data-line="249">                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-</span><span data-line="250">                        <span class="s2">&quot;regression method </span><span class="si">{}</span><span class="s2"> is neither &#39;linear&#39; nor &#39;nonlinear&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-</span><span data-line="251">                            <span class="n">regression_method</span>
-</span><span data-line="252">                        <span class="p">)</span>
-</span><span data-line="253">                    <span class="p">)</span>
-</span><span data-line="254">                <span class="n">metric_val</span> <span class="o">=</span> <span class="n">metric_func</span><span class="p">(</span>
-</span><span data-line="255">                    <span class="n">bin_centers_nz</span><span class="p">,</span> <span class="n">dG_nz</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">popt</span><span class="p">,</span> <span class="n">free_parameters</span>
-</span><span data-line="256">                <span class="p">)</span>
-</span><span data-line="257">                <span class="n">popts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">popt</span><span class="p">)</span>
-</span><span data-line="258">                <span class="n">metric_vals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">metric_val</span><span class="p">)</span>
-</span><span data-line="259">            <span class="n">best_val</span> <span class="o">=</span> <span class="n">best_func</span><span class="p">(</span><span class="n">metric_vals</span><span class="p">)</span>
-</span><span data-line="260">            <span class="n">best_i_val</span> <span class="o">=</span> <span class="n">metric_vals</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">best_val</span><span class="p">)</span>
-</span><span data-line="261">            <span class="n">popt</span> <span class="o">=</span> <span class="n">popts</span><span class="p">[</span><span class="n">best_i_val</span><span class="p">]</span>
-</span><span data-line="262">            <span class="n">stat</span> <span class="o">=</span> <span class="n">_make_parameter_dict</span><span class="p">(</span><span class="n">stat</span><span class="p">,</span> <span class="n">popt</span><span class="p">,</span> <span class="n">n_degs</span><span class="p">)</span>
-</span><span data-line="263">        <span class="k">except</span><span class="p">:</span>
-</span><span data-line="264">            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;failed to fit potential estimate for Dihedral&quot;</span><span class="p">)</span>
-</span><span data-line="265">            <span class="n">stat</span> <span class="o">=</span> <span class="n">_init_parameter_dict</span><span class="p">(</span><span class="n">n_degs</span><span class="p">)</span>
-</span><span data-line="266">            <span class="n">k1_names</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">stat</span><span class="p">[</span><span class="s2">&quot;k1s&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
-</span><span data-line="267">            <span class="n">k2_names</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">stat</span><span class="p">[</span><span class="s2">&quot;k2s&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
-</span><span data-line="268">            <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_degs</span><span class="p">):</span>
-</span><span data-line="269">                <span class="n">k1_name</span> <span class="o">=</span> <span class="n">k1_names</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span>
-</span><span data-line="270">                <span class="n">k2_name</span> <span class="o">=</span> <span class="n">k2_names</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span>
-</span><span data-line="271">                <span class="n">stat</span><span class="p">[</span><span class="s2">&quot;k1s&quot;</span><span class="p">][</span><span class="n">k1_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="s2">&quot;nan&quot;</span><span class="p">))</span>
-</span><span data-line="272">                <span class="n">stat</span><span class="p">[</span><span class="s2">&quot;k2s&quot;</span><span class="p">][</span><span class="n">k2_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="s2">&quot;nan&quot;</span><span class="p">))</span>
-</span><span data-line="273">    <span class="k">return</span> <span class="n">stat</span></div>
+</span><span data-line="156"><span class="sd">    </span>
+</span><span data-line="157"><span class="sd">    Parameters</span>
+</span><span data-line="158"><span class="sd">    ----------</span>
+</span><span data-line="159"><span class="sd">    bin_centers_nz:</span>
+</span><span data-line="160"><span class="sd">        Bin centers over which the fit is carried out</span>
+</span><span data-line="161"><span class="sd">    dG_nz:</span>
+</span><span data-line="162"><span class="sd">        The emperical free energy correspinding to the bin centers</span>
+</span><span data-line="163"><span class="sd">    n_degs:</span>
+</span><span data-line="164"><span class="sd">        The maximum number of degrees to attempt to fit if using the AIC</span>
+</span><span data-line="165"><span class="sd">        criterion for prior model selection</span>
+</span><span data-line="166"><span class="sd">    constrain_deg:</span>
+</span><span data-line="167"><span class="sd">        If not None, a single fit is produced for the specified integer</span>
+</span><span data-line="168"><span class="sd">        degree instead of using the AIC criterion for fit selection between</span>
+</span><span data-line="169"><span class="sd">        multiple degrees</span>
+</span><span data-line="170"><span class="sd">    regression_method:</span>
+</span><span data-line="171"><span class="sd">        String specifying which regression method to use. If &quot;nonlinear&quot;,</span>
+</span><span data-line="172"><span class="sd">        the default `scipy.optimize.curve_fit` method is used. If &#39;linear&#39;,</span>
+</span><span data-line="173"><span class="sd">        linear regression via `torch.linalg.lstsq` is used</span>
+</span><span data-line="174"><span class="sd">    metric:</span>
+</span><span data-line="175"><span class="sd">        If a constrain deg is not specified, this string specifies whether to</span>
+</span><span data-line="176"><span class="sd">        use either AIC (&#39;aic&#39;) or adjusted R squared (&#39;r2&#39;) for automated degree</span>
+</span><span data-line="177"><span class="sd">        selection. If the automatic degree determination fails, users should</span>
+</span><span data-line="178"><span class="sd">        consider searching for a proper constrained degree.</span>
+</span><span data-line="179">
+</span><span data-line="180"><span class="sd">    Returns</span>
+</span><span data-line="181"><span class="sd">    -------</span>
+</span><span data-line="182"><span class="sd">    Dict:</span>
+</span><span data-line="183"><span class="sd">        Statistics dictionary with fitted interaction parameters</span>
+</span><span data-line="184"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="185">
+</span><span data-line="186">    <span class="n">integral</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span>
+</span><span data-line="187">        <span class="nb">float</span><span class="p">(</span><span class="n">trapezoid</span><span class="p">(</span><span class="n">dG_nz</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">(),</span> <span class="n">bin_centers_nz</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()))</span>
+</span><span data-line="188">    <span class="p">)</span>
+</span><span data-line="189">
+</span><span data-line="190">    <span class="n">mask</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">dG_nz</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">1e-4</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">integral</span><span class="p">)</span>
+</span><span data-line="191">
+</span><span data-line="192">    <span class="k">if</span> <span class="n">constrain_deg</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="193">        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">constrain_deg</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+</span><span data-line="194">        <span class="n">stat</span> <span class="o">=</span> <span class="n">_init_parameter_dict</span><span class="p">(</span><span class="n">constrain_deg</span><span class="p">)</span>
+</span><span data-line="195">        <span class="k">if</span> <span class="n">regression_method</span> <span class="o">==</span> <span class="s2">&quot;linear&quot;</span><span class="p">:</span>
+</span><span data-line="196">            <span class="n">popt</span> <span class="o">=</span> <span class="p">(</span>
+</span><span data-line="197">                <span class="n">_linear_regression</span><span class="p">(</span><span class="n">bin_centers_nz</span><span class="p">[</span><span class="n">mask</span><span class="p">],</span> <span class="n">dG_nz</span><span class="p">[</span><span class="n">mask</span><span class="p">],</span> <span class="n">constrain_deg</span><span class="p">)</span>
+</span><span data-line="198">                <span class="o">.</span><span class="n">solution</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+</span><span data-line="199">                <span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+</span><span data-line="200">            <span class="p">)</span>
+</span><span data-line="201">        <span class="k">elif</span> <span class="n">regression_method</span> <span class="o">==</span> <span class="s2">&quot;nonlinear&quot;</span><span class="p">:</span>
+</span><span data-line="202">            <span class="n">p0</span> <span class="o">=</span> <span class="n">_init_parameters</span><span class="p">(</span><span class="n">constrain_deg</span><span class="p">)</span>
+</span><span data-line="203">            <span class="n">popt</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">curve_fit</span><span class="p">(</span>
+</span><span data-line="204">                <span class="k">lambda</span> <span class="n">theta</span><span class="p">,</span> <span class="o">*</span><span class="n">p0</span><span class="p">:</span> <span class="n">dihedral_wrapper_fit_func</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">p0</span><span class="p">),</span>
+</span><span data-line="205">                <span class="n">bin_centers_nz</span><span class="p">[</span><span class="n">mask</span><span class="p">],</span>
+</span><span data-line="206">                <span class="n">dG_nz</span><span class="p">[</span><span class="n">mask</span><span class="p">],</span>
+</span><span data-line="207">                <span class="n">p0</span><span class="o">=</span><span class="n">p0</span><span class="p">,</span>
+</span><span data-line="208">            <span class="p">)</span>
+</span><span data-line="209">        <span class="k">else</span><span class="p">:</span>
+</span><span data-line="210">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+</span><span data-line="211">                <span class="s2">&quot;regression method </span><span class="si">{}</span><span class="s2"> is neither &#39;linear&#39; nor &#39;nonlinear&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+</span><span data-line="212">                    <span class="n">regression_method</span>
+</span><span data-line="213">                <span class="p">)</span>
+</span><span data-line="214">            <span class="p">)</span>
+</span><span data-line="215">        <span class="n">stat</span> <span class="o">=</span> <span class="n">_make_parameter_dict</span><span class="p">(</span><span class="n">stat</span><span class="p">,</span> <span class="n">popt</span><span class="p">,</span> <span class="n">constrain_deg</span><span class="p">)</span>
+</span><span data-line="216">
+</span><span data-line="217">    <span class="k">else</span><span class="p">:</span>
+</span><span data-line="218">        <span class="k">if</span> <span class="n">metric</span> <span class="o">==</span> <span class="s2">&quot;aic&quot;</span><span class="p">:</span>
+</span><span data-line="219">            <span class="n">metric_func</span> <span class="o">=</span> <span class="n">_compute_aic</span>
+</span><span data-line="220">            <span class="n">best_func</span> <span class="o">=</span> <span class="nb">min</span>
+</span><span data-line="221">        <span class="k">elif</span> <span class="n">metric</span> <span class="o">==</span> <span class="s2">&quot;r2&quot;</span><span class="p">:</span>
+</span><span data-line="222">            <span class="n">metric_func</span> <span class="o">=</span> <span class="n">_compute_adjusted_R2</span>
+</span><span data-line="223">            <span class="n">best_func</span> <span class="o">=</span> <span class="nb">max</span>
+</span><span data-line="224">        <span class="k">else</span><span class="p">:</span>
+</span><span data-line="225">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;metric </span><span class="si">{}</span><span class="s2"> is neither &#39;aic&#39; nor &#39;r2&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">metric</span><span class="p">))</span>
+</span><span data-line="226">
+</span><span data-line="227">        <span class="c1"># Determine best fit for unknown # of parameters</span>
+</span><span data-line="228">        <span class="n">stat</span> <span class="o">=</span> <span class="n">_init_parameter_dict</span><span class="p">(</span><span class="n">n_degs</span><span class="p">)</span>
+</span><span data-line="229">        <span class="n">popts</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span data-line="230">        <span class="n">metric_vals</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span data-line="231">
+</span><span data-line="232">        <span class="k">try</span><span class="p">:</span>
+</span><span data-line="233">            <span class="k">for</span> <span class="n">deg</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_degs</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+</span><span data-line="234">                <span class="n">free_parameters</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">deg</span><span class="p">)</span>
+</span><span data-line="235">                <span class="k">if</span> <span class="n">regression_method</span> <span class="o">==</span> <span class="s2">&quot;linear&quot;</span><span class="p">:</span>
+</span><span data-line="236">                    <span class="n">popt</span> <span class="o">=</span> <span class="p">(</span>
+</span><span data-line="237">                        <span class="n">_linear_regression</span><span class="p">(</span><span class="n">bin_centers_nz</span><span class="p">[</span><span class="n">mask</span><span class="p">],</span> <span class="n">dG_nz</span><span class="p">[</span><span class="n">mask</span><span class="p">],</span> <span class="n">deg</span><span class="p">)</span>
+</span><span data-line="238">                        <span class="o">.</span><span class="n">solution</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+</span><span data-line="239">                        <span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+</span><span data-line="240">                    <span class="p">)</span>
+</span><span data-line="241">                <span class="k">elif</span> <span class="n">regression_method</span> <span class="o">==</span> <span class="s2">&quot;nonlinear&quot;</span><span class="p">:</span>
+</span><span data-line="242">                    <span class="n">p0</span> <span class="o">=</span> <span class="n">_init_parameters</span><span class="p">(</span><span class="n">deg</span><span class="p">)</span>
+</span><span data-line="243">                    <span class="n">popt</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">curve_fit</span><span class="p">(</span>
+</span><span data-line="244">                        <span class="k">lambda</span> <span class="n">theta</span><span class="p">,</span> <span class="o">*</span><span class="n">p0</span><span class="p">:</span> <span class="n">dihedral_wrapper_fit_func</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">p0</span><span class="p">),</span>
+</span><span data-line="245">                        <span class="n">bin_centers_nz</span><span class="p">[</span><span class="n">mask</span><span class="p">],</span>
+</span><span data-line="246">                        <span class="n">dG_nz</span><span class="p">[</span><span class="n">mask</span><span class="p">],</span>
+</span><span data-line="247">                        <span class="n">p0</span><span class="o">=</span><span class="n">p0</span><span class="p">,</span>
+</span><span data-line="248">                    <span class="p">)</span>
+</span><span data-line="249">                <span class="k">else</span><span class="p">:</span>
+</span><span data-line="250">                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+</span><span data-line="251">                        <span class="s2">&quot;regression method </span><span class="si">{}</span><span class="s2"> is neither &#39;linear&#39; nor &#39;nonlinear&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+</span><span data-line="252">                            <span class="n">regression_method</span>
+</span><span data-line="253">                        <span class="p">)</span>
+</span><span data-line="254">                    <span class="p">)</span>
+</span><span data-line="255">                <span class="n">metric_val</span> <span class="o">=</span> <span class="n">metric_func</span><span class="p">(</span>
+</span><span data-line="256">                    <span class="n">bin_centers_nz</span><span class="p">,</span> <span class="n">dG_nz</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">popt</span><span class="p">,</span> <span class="n">free_parameters</span>
+</span><span data-line="257">                <span class="p">)</span>
+</span><span data-line="258">                <span class="n">popts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">popt</span><span class="p">)</span>
+</span><span data-line="259">                <span class="n">metric_vals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">metric_val</span><span class="p">)</span>
+</span><span data-line="260">            <span class="n">best_val</span> <span class="o">=</span> <span class="n">best_func</span><span class="p">(</span><span class="n">metric_vals</span><span class="p">)</span>
+</span><span data-line="261">            <span class="n">best_i_val</span> <span class="o">=</span> <span class="n">metric_vals</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">best_val</span><span class="p">)</span>
+</span><span data-line="262">            <span class="n">popt</span> <span class="o">=</span> <span class="n">popts</span><span class="p">[</span><span class="n">best_i_val</span><span class="p">]</span>
+</span><span data-line="263">            <span class="n">stat</span> <span class="o">=</span> <span class="n">_make_parameter_dict</span><span class="p">(</span><span class="n">stat</span><span class="p">,</span> <span class="n">popt</span><span class="p">,</span> <span class="n">n_degs</span><span class="p">)</span>
+</span><span data-line="264">        <span class="k">except</span><span class="p">:</span>
+</span><span data-line="265">            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;failed to fit potential estimate for Dihedral&quot;</span><span class="p">)</span>
+</span><span data-line="266">            <span class="n">stat</span> <span class="o">=</span> <span class="n">_init_parameter_dict</span><span class="p">(</span><span class="n">n_degs</span><span class="p">)</span>
+</span><span data-line="267">            <span class="n">k1_names</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">stat</span><span class="p">[</span><span class="s2">&quot;k1s&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+</span><span data-line="268">            <span class="n">k2_names</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">stat</span><span class="p">[</span><span class="s2">&quot;k2s&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+</span><span data-line="269">            <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_degs</span><span class="p">):</span>
+</span><span data-line="270">                <span class="n">k1_name</span> <span class="o">=</span> <span class="n">k1_names</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span>
+</span><span data-line="271">                <span class="n">k2_name</span> <span class="o">=</span> <span class="n">k2_names</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span>
+</span><span data-line="272">                <span class="n">stat</span><span class="p">[</span><span class="s2">&quot;k1s&quot;</span><span class="p">][</span><span class="n">k1_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="s2">&quot;nan&quot;</span><span class="p">))</span>
+</span><span data-line="273">                <span class="n">stat</span><span class="p">[</span><span class="s2">&quot;k2s&quot;</span><span class="p">][</span><span class="n">k2_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="s2">&quot;nan&quot;</span><span class="p">))</span>
+</span><span data-line="274">    <span class="k">return</span> <span class="n">stat</span></div>
 
 </span></pre></div>
         </article><button class="back-to-top" type="button">
