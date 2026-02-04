@@ -13,7 +13,7 @@ def fit_potentials(
     embedding_map: Optional[CGEmbeddingMap],
     temperature: float,
 ):
-    """
+    r"""
     Fits energy function to atom type-specific statistics defined
     for a group of atoms in a neighbour list.
 
@@ -44,21 +44,21 @@ def fit_potentials(
     statistics and estimated energy parameters based on the `TargetPrior`.
     The following key/value pairs are common across all `TargetPrior`s:
 
-    .. code-block:: python
+        .. code-block:: python
 
-        (*specific_types) : {
+            (*specific_types) : {
 
-            ...
+                ...
 
-            "p" : torch.Tensor of shape [n_bins], containing the normalized bin counts
-                of the of the 1-D feature corresponding to the atom_type group
-                (*specific_types) = (specific_types[0], specific_types[1], ...)
-            "p_bin": : torch.Tensor of shape [n_bins] containing the bin center values
-            "V" : torch.tensor of shape [n_bins], containing the emperically estimated
-                free energy curve according to a direct Boltzmann inversion of the
-                normalized probability distribution for the feature.
-            "V_bin" : torch_tensor of shape [n_bins], containing the bin center values
-        }
+                "p" : torch.Tensor of shape [n_bins], containing the normalized bin counts
+                    of the of the 1-D feature corresponding to the atom_type group
+                    (*specific_types) = (specific_types[0], specific_types[1], ...)
+                "p_bin": : torch.Tensor of shape [n_bins] containing the bin center values
+                "V" : torch.tensor of shape [n_bins], containing the emperically estimated
+                    free energy curve according to a direct Boltzmann inversion of the
+                    normalized probability distribution for the feature.
+                "V_bin" : torch_tensor of shape [n_bins], containing the bin center values
+            }
 
     where `...` indicates other sub-key/value pairs apart from those enumerated above,
     which may appear depending on the chosen `TargetPrior`. For example,
