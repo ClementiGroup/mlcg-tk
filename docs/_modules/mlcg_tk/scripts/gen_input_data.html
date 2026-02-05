@@ -244,161 +244,162 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="89"><span class="sd">        Class type for sample collection</span>
 </span><span data-line="90">
 </span><span data-line="91"><span class="sd">    &quot;&quot;&quot;</span>
-</span><span data-line="92">    <span class="n">dataset</span> <span class="o">=</span> <span class="n">RawDataset</span><span class="p">(</span><span class="n">dataset_name</span><span class="p">,</span> 
-</span><span data-line="93">                         <span class="n">names</span><span class="p">,</span> 
-</span><span data-line="94">                         <span class="n">tag</span><span class="p">,</span> 
-</span><span data-line="95">                         <span class="n">n_batches</span><span class="o">=</span><span class="n">mol_num_batches</span><span class="p">,</span>
-</span><span data-line="96">                         <span class="n">collection_cls</span><span class="o">=</span><span class="n">collection_cls</span>
-</span><span data-line="97">                    <span class="p">)</span>
-</span><span data-line="98">    <span class="k">for</span> <span class="n">samples</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Processing CG data for </span><span class="si">{</span><span class="n">dataset_name</span><span class="si">}</span><span class="s2"> dataset...&quot;</span><span class="p">):</span>
-</span><span data-line="99">        <span class="n">samples</span><span class="o">.</span><span class="n">input_traj</span><span class="p">,</span> <span class="n">samples</span><span class="o">.</span><span class="n">top_dataframe</span> <span class="o">=</span> <span class="n">sample_loader</span><span class="o">.</span><span class="n">get_traj_top</span><span class="p">(</span>
-</span><span data-line="100">            <span class="n">samples</span><span class="o">.</span><span class="n">mol_name</span><span class="p">,</span> <span class="n">pdb_template_fn</span>
-</span><span data-line="101">        <span class="p">)</span>
-</span><span data-line="102">
-</span><span data-line="103">        <span class="n">samples</span><span class="o">.</span><span class="n">apply_cg_mapping</span><span class="p">(</span>
-</span><span data-line="104">            <span class="n">cg_atoms</span><span class="o">=</span><span class="n">cg_atoms</span><span class="p">,</span>
-</span><span data-line="105">            <span class="n">embedding_function</span><span class="o">=</span><span class="n">embedding_func</span><span class="p">,</span>
-</span><span data-line="106">            <span class="n">embedding_dict</span><span class="o">=</span><span class="n">embedding_map</span><span class="p">,</span>
-</span><span data-line="107">            <span class="n">skip_residues</span><span class="o">=</span><span class="n">skip_residues</span><span class="p">,</span>
-</span><span data-line="108">        <span class="p">)</span>
-</span><span data-line="109">
-</span><span data-line="110">        <span class="n">aa_coords</span><span class="p">,</span> <span class="n">aa_forces</span> <span class="o">=</span> <span class="n">sample_loader</span><span class="o">.</span><span class="n">load_coords_forces</span><span class="p">(</span>
-</span><span data-line="111">            <span class="n">raw_data_dir</span><span class="p">,</span>
-</span><span data-line="112">            <span class="n">samples</span><span class="o">.</span><span class="n">mol_name</span><span class="p">,</span>
-</span><span data-line="113">            <span class="n">stride</span><span class="o">=</span><span class="n">stride</span><span class="p">,</span>
-</span><span data-line="114">            <span class="n">batch</span><span class="o">=</span><span class="n">samples</span><span class="o">.</span><span class="n">batch</span><span class="p">,</span>
-</span><span data-line="115">            <span class="n">n_batches</span><span class="o">=</span><span class="n">samples</span><span class="o">.</span><span class="n">n_batches</span><span class="p">,</span>
-</span><span data-line="116">        <span class="p">)</span>
-</span><span data-line="117">
-</span><span data-line="118">        <span class="k">if</span> <span class="n">samples</span><span class="o">.</span><span class="n">n_batches</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">samples</span><span class="o">.</span><span class="n">batch</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-</span><span data-line="119">            <span class="c1"># this ensures that we are using the same force map across batches</span>
-</span><span data-line="120">            <span class="n">mapping</span> <span class="o">=</span> <span class="n">samples</span><span class="o">.</span><span class="n">load_cg_force_map</span><span class="p">(</span><span class="n">save_dir</span><span class="p">)</span>
-</span><span data-line="121">        <span class="k">else</span><span class="p">:</span>
-</span><span data-line="122">            <span class="n">mapping</span> <span class="o">=</span> <span class="n">cg_mapping_strategy</span>
-</span><span data-line="123">
-</span><span data-line="124">        <span class="n">cg_coords</span><span class="p">,</span> <span class="n">cg_forces</span> <span class="o">=</span> <span class="n">samples</span><span class="o">.</span><span class="n">process_coords_forces</span><span class="p">(</span>
-</span><span data-line="125">            <span class="n">aa_coords</span><span class="p">,</span>
-</span><span data-line="126">            <span class="n">aa_forces</span><span class="p">,</span>
-</span><span data-line="127">            <span class="n">topology</span><span class="o">=</span><span class="n">samples</span><span class="o">.</span><span class="n">input_traj</span><span class="o">.</span><span class="n">top</span><span class="p">,</span>
-</span><span data-line="128">            <span class="n">mapping</span><span class="o">=</span><span class="n">mapping</span><span class="p">,</span>
-</span><span data-line="129">            <span class="n">force_stride</span><span class="o">=</span><span class="n">force_stride</span><span class="p">,</span>
-</span><span data-line="130">            <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span>
-</span><span data-line="131">            <span class="n">filter_cis</span><span class="o">=</span><span class="n">filter_cis</span><span class="p">,</span>
-</span><span data-line="132">            <span class="n">atoms_batch_size</span><span class="o">=</span><span class="n">atoms_batch_size</span><span class="p">,</span>
-</span><span data-line="133">        <span class="p">)</span>
-</span><span data-line="134">
-</span><span data-line="135">        <span class="n">samples</span><span class="o">.</span><span class="n">save_cg_output</span><span class="p">(</span><span class="n">save_dir</span><span class="p">,</span> <span class="n">save_coord_force</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">save_cg_maps</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span data-line="136">        <span class="c1"># the sample object will retain the output so it makes sense to delete them</span>
-</span><span data-line="137">        <span class="k">del</span> <span class="n">samples</span><span class="o">.</span><span class="n">cg_coords</span>
-</span><span data-line="138">        <span class="k">del</span> <span class="n">samples</span><span class="o">.</span><span class="n">cg_forces</span>
-</span><span data-line="139">        <span class="k">del</span> <span class="n">samples</span><span class="o">.</span><span class="n">cg_map</span>
-</span><span data-line="140">        <span class="k">del</span> <span class="n">samples</span><span class="o">.</span><span class="n">force_map</span></div>
+</span><span data-line="92">    <span class="n">dataset</span> <span class="o">=</span> <span class="n">RawDataset</span><span class="p">(</span>
+</span><span data-line="93">        <span class="n">dataset_name</span><span class="p">,</span>
+</span><span data-line="94">        <span class="n">names</span><span class="p">,</span>
+</span><span data-line="95">        <span class="n">tag</span><span class="p">,</span>
+</span><span data-line="96">        <span class="n">n_batches</span><span class="o">=</span><span class="n">mol_num_batches</span><span class="p">,</span>
+</span><span data-line="97">        <span class="n">collection_cls</span><span class="o">=</span><span class="n">collection_cls</span><span class="p">,</span>
+</span><span data-line="98">    <span class="p">)</span>
+</span><span data-line="99">    <span class="k">for</span> <span class="n">samples</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Processing CG data for </span><span class="si">{</span><span class="n">dataset_name</span><span class="si">}</span><span class="s2"> dataset...&quot;</span><span class="p">):</span>
+</span><span data-line="100">        <span class="n">samples</span><span class="o">.</span><span class="n">input_traj</span><span class="p">,</span> <span class="n">samples</span><span class="o">.</span><span class="n">top_dataframe</span> <span class="o">=</span> <span class="n">sample_loader</span><span class="o">.</span><span class="n">get_traj_top</span><span class="p">(</span>
+</span><span data-line="101">            <span class="n">samples</span><span class="o">.</span><span class="n">mol_name</span><span class="p">,</span> <span class="n">pdb_template_fn</span>
+</span><span data-line="102">        <span class="p">)</span>
+</span><span data-line="103">
+</span><span data-line="104">        <span class="n">samples</span><span class="o">.</span><span class="n">apply_cg_mapping</span><span class="p">(</span>
+</span><span data-line="105">            <span class="n">cg_atoms</span><span class="o">=</span><span class="n">cg_atoms</span><span class="p">,</span>
+</span><span data-line="106">            <span class="n">embedding_function</span><span class="o">=</span><span class="n">embedding_func</span><span class="p">,</span>
+</span><span data-line="107">            <span class="n">embedding_dict</span><span class="o">=</span><span class="n">embedding_map</span><span class="p">,</span>
+</span><span data-line="108">            <span class="n">skip_residues</span><span class="o">=</span><span class="n">skip_residues</span><span class="p">,</span>
+</span><span data-line="109">        <span class="p">)</span>
+</span><span data-line="110">
+</span><span data-line="111">        <span class="n">aa_coords</span><span class="p">,</span> <span class="n">aa_forces</span> <span class="o">=</span> <span class="n">sample_loader</span><span class="o">.</span><span class="n">load_coords_forces</span><span class="p">(</span>
+</span><span data-line="112">            <span class="n">raw_data_dir</span><span class="p">,</span>
+</span><span data-line="113">            <span class="n">samples</span><span class="o">.</span><span class="n">mol_name</span><span class="p">,</span>
+</span><span data-line="114">            <span class="n">stride</span><span class="o">=</span><span class="n">stride</span><span class="p">,</span>
+</span><span data-line="115">            <span class="n">batch</span><span class="o">=</span><span class="n">samples</span><span class="o">.</span><span class="n">batch</span><span class="p">,</span>
+</span><span data-line="116">            <span class="n">n_batches</span><span class="o">=</span><span class="n">samples</span><span class="o">.</span><span class="n">n_batches</span><span class="p">,</span>
+</span><span data-line="117">        <span class="p">)</span>
+</span><span data-line="118">
+</span><span data-line="119">        <span class="k">if</span> <span class="n">samples</span><span class="o">.</span><span class="n">n_batches</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">samples</span><span class="o">.</span><span class="n">batch</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+</span><span data-line="120">            <span class="c1"># this ensures that we are using the same force map across batches</span>
+</span><span data-line="121">            <span class="n">mapping</span> <span class="o">=</span> <span class="n">samples</span><span class="o">.</span><span class="n">load_cg_force_map</span><span class="p">(</span><span class="n">save_dir</span><span class="p">)</span>
+</span><span data-line="122">        <span class="k">else</span><span class="p">:</span>
+</span><span data-line="123">            <span class="n">mapping</span> <span class="o">=</span> <span class="n">cg_mapping_strategy</span>
+</span><span data-line="124">
+</span><span data-line="125">        <span class="n">cg_coords</span><span class="p">,</span> <span class="n">cg_forces</span> <span class="o">=</span> <span class="n">samples</span><span class="o">.</span><span class="n">process_coords_forces</span><span class="p">(</span>
+</span><span data-line="126">            <span class="n">aa_coords</span><span class="p">,</span>
+</span><span data-line="127">            <span class="n">aa_forces</span><span class="p">,</span>
+</span><span data-line="128">            <span class="n">topology</span><span class="o">=</span><span class="n">samples</span><span class="o">.</span><span class="n">input_traj</span><span class="o">.</span><span class="n">top</span><span class="p">,</span>
+</span><span data-line="129">            <span class="n">mapping</span><span class="o">=</span><span class="n">mapping</span><span class="p">,</span>
+</span><span data-line="130">            <span class="n">force_stride</span><span class="o">=</span><span class="n">force_stride</span><span class="p">,</span>
+</span><span data-line="131">            <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span>
+</span><span data-line="132">            <span class="n">filter_cis</span><span class="o">=</span><span class="n">filter_cis</span><span class="p">,</span>
+</span><span data-line="133">            <span class="n">atoms_batch_size</span><span class="o">=</span><span class="n">atoms_batch_size</span><span class="p">,</span>
+</span><span data-line="134">        <span class="p">)</span>
+</span><span data-line="135">
+</span><span data-line="136">        <span class="n">samples</span><span class="o">.</span><span class="n">save_cg_output</span><span class="p">(</span><span class="n">save_dir</span><span class="p">,</span> <span class="n">save_coord_force</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">save_cg_maps</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="137">        <span class="c1"># the sample object will retain the output so it makes sense to delete them</span>
+</span><span data-line="138">        <span class="k">del</span> <span class="n">samples</span><span class="o">.</span><span class="n">cg_coords</span>
+</span><span data-line="139">        <span class="k">del</span> <span class="n">samples</span><span class="o">.</span><span class="n">cg_forces</span>
+</span><span data-line="140">        <span class="k">del</span> <span class="n">samples</span><span class="o">.</span><span class="n">cg_map</span>
+</span><span data-line="141">        <span class="k">del</span> <span class="n">samples</span><span class="o">.</span><span class="n">force_map</span></div>
 
-</span><span data-line="141">
 </span><span data-line="142">
+</span><span data-line="143">
 <div class="viewcode-block" id="build_neighborlists">
 <a class="viewcode-back" href="../../../api_docs/scripts/gen_input_data.html#mlcg_tk.scripts.gen_input_data.build_neighborlists">[docs]</a>
-</span><span data-line="143"><span class="k">def</span><span class="w"> </span><span class="nf">build_neighborlists</span><span class="p">(</span>
-</span><span data-line="144">    <span class="n">dataset_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-</span><span data-line="145">    <span class="n">names</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
-</span><span data-line="146">    <span class="n">sample_loader</span><span class="p">:</span> <span class="n">DatasetLoader</span><span class="p">,</span>
-</span><span data-line="147">    <span class="n">tag</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-</span><span data-line="148">    <span class="n">pdb_template_fn</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-</span><span data-line="149">    <span class="n">save_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-</span><span data-line="150">    <span class="n">cg_atoms</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
-</span><span data-line="151">    <span class="n">embedding_map</span><span class="p">:</span> <span class="n">CGEmbeddingMap</span><span class="p">,</span>
-</span><span data-line="152">    <span class="n">embedding_func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
-</span><span data-line="153">    <span class="n">skip_residues</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
-</span><span data-line="154">    <span class="n">prior_tag</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-</span><span data-line="155">    <span class="n">prior_builders</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">PriorBuilder</span><span class="p">],</span>
-</span><span data-line="156">    <span class="n">raw_data_dir</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span data-line="157">    <span class="n">cg_mapping_strategy</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span data-line="158">    <span class="n">stride</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-</span><span data-line="159">    <span class="n">force_stride</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
-</span><span data-line="160">    <span class="n">filter_cis</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-</span><span data-line="161">    <span class="n">batch_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span data-line="162">    <span class="n">mol_num_batches</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-</span><span data-line="163">    <span class="n">atoms_batch_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span data-line="164">    <span class="n">collection_cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">SampleCollection</span><span class="p">]</span> <span class="o">=</span> <span class="n">SampleCollection</span><span class="p">,</span>
-</span><span data-line="165"><span class="p">):</span>
-</span><span data-line="166"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span data-line="167"><span class="sd">    Generates neighbour lists for all samples in dataset using prior term information</span>
-</span><span data-line="168">
-</span><span data-line="169"><span class="sd">    Parameters</span>
-</span><span data-line="170"><span class="sd">    ----------</span>
-</span><span data-line="171"><span class="sd">    dataset_name : str</span>
-</span><span data-line="172"><span class="sd">        Name given to specific dataset</span>
-</span><span data-line="173"><span class="sd">    names : List[str]</span>
-</span><span data-line="174"><span class="sd">        List of sample names</span>
-</span><span data-line="175"><span class="sd">    sample_loader : DatasetLoader</span>
-</span><span data-line="176"><span class="sd">        Loader object defined for specific dataset</span>
-</span><span data-line="177"><span class="sd">    tag : str</span>
-</span><span data-line="178"><span class="sd">        Label given to all output files produced from dataset</span>
-</span><span data-line="179"><span class="sd">    pdb_template_fn : str</span>
-</span><span data-line="180"><span class="sd">        Template file location of atomistic structure to be used for topology</span>
-</span><span data-line="181"><span class="sd">    save_dir : str</span>
-</span><span data-line="182"><span class="sd">        Path to directory in which output will be saved</span>
-</span><span data-line="183"><span class="sd">    cg_atoms : List[str]</span>
-</span><span data-line="184"><span class="sd">        List of atom names to preserve in coarse-grained resolution</span>
-</span><span data-line="185"><span class="sd">    embedding_map : CGEmbeddingMap</span>
-</span><span data-line="186"><span class="sd">        Mapping object</span>
-</span><span data-line="187"><span class="sd">    embedding_func : Callable</span>
-</span><span data-line="188"><span class="sd">        Function which will be used to apply CG mapping</span>
-</span><span data-line="189"><span class="sd">    skip_residues : List[str]</span>
-</span><span data-line="190"><span class="sd">        List of residues to skip, can be None</span>
-</span><span data-line="191"><span class="sd">    prior_tag : str</span>
-</span><span data-line="192"><span class="sd">        String identifying the specific combination of prior terms</span>
-</span><span data-line="193"><span class="sd">    prior_builders : List[PriorBuilder]</span>
-</span><span data-line="194"><span class="sd">        List of PriorBuilder objects and their corresponding parameters</span>
-</span><span data-line="195">
-</span><span data-line="196"><span class="sd">    stride : int</span>
-</span><span data-line="197"><span class="sd">        unused in this function</span>
-</span><span data-line="198"><span class="sd">        present to allow the use of the same .yaml config for process_raw_dataset and build_neighborlists</span>
-</span><span data-line="199"><span class="sd">    force_stride : int</span>
-</span><span data-line="200"><span class="sd">        unused in this function</span>
-</span><span data-line="201"><span class="sd">        present to allow the use of the same .yaml config for process_raw_dataset and build_neighborlists</span>
-</span><span data-line="202"><span class="sd">    filter_cis : bool</span>
-</span><span data-line="203"><span class="sd">        unused in this function</span>
-</span><span data-line="204"><span class="sd">        present to allow the use of the same .yaml config for process_raw_dataset and build_neighborlists</span>
-</span><span data-line="205"><span class="sd">    batch_size : bool</span>
-</span><span data-line="206"><span class="sd">        unused in this function</span>
-</span><span data-line="207"><span class="sd">        present to allow the use of the same .yaml config for process_raw_dataset and build_neighborlists</span>
-</span><span data-line="208"><span class="sd">    mol_num_batches : int</span>
-</span><span data-line="209"><span class="sd">        unused in this function</span>
-</span><span data-line="210"><span class="sd">        present to allow the use of the same .yaml config for process_raw_dataset and build_neighborlists</span>
-</span><span data-line="211"><span class="sd">    atoms_batch_size : int</span>
-</span><span data-line="212"><span class="sd">        unused in this function</span>
-</span><span data-line="213"><span class="sd">        present to allow the use of the same .yaml config for process_raw_dataset and build_neighborlists</span>
-</span><span data-line="214"><span class="sd">    collection_cls : Type[SampleCollection]</span>
-</span><span data-line="215"><span class="sd">        Class type for sample collection</span>
-</span><span data-line="216"><span class="sd">    &quot;&quot;&quot;</span>
-</span><span data-line="217">    <span class="n">dataset</span> <span class="o">=</span> <span class="n">RawDataset</span><span class="p">(</span><span class="n">dataset_name</span><span class="p">,</span> <span class="n">names</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">collection_cls</span><span class="o">=</span><span class="n">collection_cls</span><span class="p">)</span>
-</span><span data-line="218">    <span class="k">for</span> <span class="n">samples</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Building NL for </span><span class="si">{</span><span class="n">dataset_name</span><span class="si">}</span><span class="s2"> dataset...&quot;</span><span class="p">):</span>
-</span><span data-line="219">        <span class="n">samples</span><span class="o">.</span><span class="n">input_traj</span><span class="p">,</span> <span class="n">samples</span><span class="o">.</span><span class="n">top_dataframe</span> <span class="o">=</span> <span class="n">sample_loader</span><span class="o">.</span><span class="n">get_traj_top</span><span class="p">(</span>
-</span><span data-line="220">            <span class="n">samples</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">pdb_template_fn</span>
-</span><span data-line="221">        <span class="p">)</span>
-</span><span data-line="222">
-</span><span data-line="223">        <span class="n">samples</span><span class="o">.</span><span class="n">apply_cg_mapping</span><span class="p">(</span>
-</span><span data-line="224">            <span class="n">cg_atoms</span><span class="o">=</span><span class="n">cg_atoms</span><span class="p">,</span>
-</span><span data-line="225">            <span class="n">embedding_function</span><span class="o">=</span><span class="n">embedding_func</span><span class="p">,</span>
-</span><span data-line="226">            <span class="n">embedding_dict</span><span class="o">=</span><span class="n">embedding_map</span><span class="p">,</span>
-</span><span data-line="227">            <span class="n">skip_residues</span><span class="o">=</span><span class="n">skip_residues</span><span class="p">,</span>
-</span><span data-line="228">        <span class="p">)</span>
-</span><span data-line="229">
-</span><span data-line="230">        <span class="n">prior_nls</span> <span class="o">=</span> <span class="n">samples</span><span class="o">.</span><span class="n">get_prior_nls</span><span class="p">(</span>
-</span><span data-line="231">            <span class="n">prior_builders</span><span class="p">,</span> <span class="n">save_nls</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">save_dir</span><span class="o">=</span><span class="n">save_dir</span><span class="p">,</span> <span class="n">prior_tag</span><span class="o">=</span><span class="n">prior_tag</span>
-</span><span data-line="232">        <span class="p">)</span></div>
+</span><span data-line="144"><span class="k">def</span><span class="w"> </span><span class="nf">build_neighborlists</span><span class="p">(</span>
+</span><span data-line="145">    <span class="n">dataset_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="146">    <span class="n">names</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+</span><span data-line="147">    <span class="n">sample_loader</span><span class="p">:</span> <span class="n">DatasetLoader</span><span class="p">,</span>
+</span><span data-line="148">    <span class="n">tag</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="149">    <span class="n">pdb_template_fn</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="150">    <span class="n">save_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="151">    <span class="n">cg_atoms</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+</span><span data-line="152">    <span class="n">embedding_map</span><span class="p">:</span> <span class="n">CGEmbeddingMap</span><span class="p">,</span>
+</span><span data-line="153">    <span class="n">embedding_func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
+</span><span data-line="154">    <span class="n">skip_residues</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+</span><span data-line="155">    <span class="n">prior_tag</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="156">    <span class="n">prior_builders</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">PriorBuilder</span><span class="p">],</span>
+</span><span data-line="157">    <span class="n">raw_data_dir</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="158">    <span class="n">cg_mapping_strategy</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="159">    <span class="n">stride</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+</span><span data-line="160">    <span class="n">force_stride</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+</span><span data-line="161">    <span class="n">filter_cis</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+</span><span data-line="162">    <span class="n">batch_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="163">    <span class="n">mol_num_batches</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+</span><span data-line="164">    <span class="n">atoms_batch_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="165">    <span class="n">collection_cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">SampleCollection</span><span class="p">]</span> <span class="o">=</span> <span class="n">SampleCollection</span><span class="p">,</span>
+</span><span data-line="166"><span class="p">):</span>
+</span><span data-line="167"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="168"><span class="sd">    Generates neighbour lists for all samples in dataset using prior term information</span>
+</span><span data-line="169">
+</span><span data-line="170"><span class="sd">    Parameters</span>
+</span><span data-line="171"><span class="sd">    ----------</span>
+</span><span data-line="172"><span class="sd">    dataset_name : str</span>
+</span><span data-line="173"><span class="sd">        Name given to specific dataset</span>
+</span><span data-line="174"><span class="sd">    names : List[str]</span>
+</span><span data-line="175"><span class="sd">        List of sample names</span>
+</span><span data-line="176"><span class="sd">    sample_loader : DatasetLoader</span>
+</span><span data-line="177"><span class="sd">        Loader object defined for specific dataset</span>
+</span><span data-line="178"><span class="sd">    tag : str</span>
+</span><span data-line="179"><span class="sd">        Label given to all output files produced from dataset</span>
+</span><span data-line="180"><span class="sd">    pdb_template_fn : str</span>
+</span><span data-line="181"><span class="sd">        Template file location of atomistic structure to be used for topology</span>
+</span><span data-line="182"><span class="sd">    save_dir : str</span>
+</span><span data-line="183"><span class="sd">        Path to directory in which output will be saved</span>
+</span><span data-line="184"><span class="sd">    cg_atoms : List[str]</span>
+</span><span data-line="185"><span class="sd">        List of atom names to preserve in coarse-grained resolution</span>
+</span><span data-line="186"><span class="sd">    embedding_map : CGEmbeddingMap</span>
+</span><span data-line="187"><span class="sd">        Mapping object</span>
+</span><span data-line="188"><span class="sd">    embedding_func : Callable</span>
+</span><span data-line="189"><span class="sd">        Function which will be used to apply CG mapping</span>
+</span><span data-line="190"><span class="sd">    skip_residues : List[str]</span>
+</span><span data-line="191"><span class="sd">        List of residues to skip, can be None</span>
+</span><span data-line="192"><span class="sd">    prior_tag : str</span>
+</span><span data-line="193"><span class="sd">        String identifying the specific combination of prior terms</span>
+</span><span data-line="194"><span class="sd">    prior_builders : List[PriorBuilder]</span>
+</span><span data-line="195"><span class="sd">        List of PriorBuilder objects and their corresponding parameters</span>
+</span><span data-line="196">
+</span><span data-line="197"><span class="sd">    stride : int</span>
+</span><span data-line="198"><span class="sd">        unused in this function</span>
+</span><span data-line="199"><span class="sd">        present to allow the use of the same .yaml config for process_raw_dataset and build_neighborlists</span>
+</span><span data-line="200"><span class="sd">    force_stride : int</span>
+</span><span data-line="201"><span class="sd">        unused in this function</span>
+</span><span data-line="202"><span class="sd">        present to allow the use of the same .yaml config for process_raw_dataset and build_neighborlists</span>
+</span><span data-line="203"><span class="sd">    filter_cis : bool</span>
+</span><span data-line="204"><span class="sd">        unused in this function</span>
+</span><span data-line="205"><span class="sd">        present to allow the use of the same .yaml config for process_raw_dataset and build_neighborlists</span>
+</span><span data-line="206"><span class="sd">    batch_size : bool</span>
+</span><span data-line="207"><span class="sd">        unused in this function</span>
+</span><span data-line="208"><span class="sd">        present to allow the use of the same .yaml config for process_raw_dataset and build_neighborlists</span>
+</span><span data-line="209"><span class="sd">    mol_num_batches : int</span>
+</span><span data-line="210"><span class="sd">        unused in this function</span>
+</span><span data-line="211"><span class="sd">        present to allow the use of the same .yaml config for process_raw_dataset and build_neighborlists</span>
+</span><span data-line="212"><span class="sd">    atoms_batch_size : int</span>
+</span><span data-line="213"><span class="sd">        unused in this function</span>
+</span><span data-line="214"><span class="sd">        present to allow the use of the same .yaml config for process_raw_dataset and build_neighborlists</span>
+</span><span data-line="215"><span class="sd">    collection_cls : Type[SampleCollection]</span>
+</span><span data-line="216"><span class="sd">        Class type for sample collection</span>
+</span><span data-line="217"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="218">    <span class="n">dataset</span> <span class="o">=</span> <span class="n">RawDataset</span><span class="p">(</span><span class="n">dataset_name</span><span class="p">,</span> <span class="n">names</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">collection_cls</span><span class="o">=</span><span class="n">collection_cls</span><span class="p">)</span>
+</span><span data-line="219">    <span class="k">for</span> <span class="n">samples</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Building NL for </span><span class="si">{</span><span class="n">dataset_name</span><span class="si">}</span><span class="s2"> dataset...&quot;</span><span class="p">):</span>
+</span><span data-line="220">        <span class="n">samples</span><span class="o">.</span><span class="n">input_traj</span><span class="p">,</span> <span class="n">samples</span><span class="o">.</span><span class="n">top_dataframe</span> <span class="o">=</span> <span class="n">sample_loader</span><span class="o">.</span><span class="n">get_traj_top</span><span class="p">(</span>
+</span><span data-line="221">            <span class="n">samples</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">pdb_template_fn</span>
+</span><span data-line="222">        <span class="p">)</span>
+</span><span data-line="223">
+</span><span data-line="224">        <span class="n">samples</span><span class="o">.</span><span class="n">apply_cg_mapping</span><span class="p">(</span>
+</span><span data-line="225">            <span class="n">cg_atoms</span><span class="o">=</span><span class="n">cg_atoms</span><span class="p">,</span>
+</span><span data-line="226">            <span class="n">embedding_function</span><span class="o">=</span><span class="n">embedding_func</span><span class="p">,</span>
+</span><span data-line="227">            <span class="n">embedding_dict</span><span class="o">=</span><span class="n">embedding_map</span><span class="p">,</span>
+</span><span data-line="228">            <span class="n">skip_residues</span><span class="o">=</span><span class="n">skip_residues</span><span class="p">,</span>
+</span><span data-line="229">        <span class="p">)</span>
+</span><span data-line="230">
+</span><span data-line="231">        <span class="n">prior_nls</span> <span class="o">=</span> <span class="n">samples</span><span class="o">.</span><span class="n">get_prior_nls</span><span class="p">(</span>
+</span><span data-line="232">            <span class="n">prior_builders</span><span class="p">,</span> <span class="n">save_nls</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">save_dir</span><span class="o">=</span><span class="n">save_dir</span><span class="p">,</span> <span class="n">prior_tag</span><span class="o">=</span><span class="n">prior_tag</span>
+</span><span data-line="233">        <span class="p">)</span></div>
 
-</span><span data-line="233">
 </span><span data-line="234">
-</span><span data-line="235"><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
-</span><span data-line="236">    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Start gen_input_data.py: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ctime</span><span class="p">()))</span>
-</span><span data-line="237">    <span class="n">CLI</span><span class="p">([</span><span class="n">process_raw_dataset</span><span class="p">,</span> <span class="n">build_neighborlists</span><span class="p">])</span>
-</span><span data-line="238">    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Finish gen_input_data.py: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ctime</span><span class="p">()))</span>
-</span><span data-line="239">
+</span><span data-line="235">
+</span><span data-line="236"><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+</span><span data-line="237">    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Start gen_input_data.py: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ctime</span><span class="p">()))</span>
+</span><span data-line="238">    <span class="n">CLI</span><span class="p">([</span><span class="n">process_raw_dataset</span><span class="p">,</span> <span class="n">build_neighborlists</span><span class="p">])</span>
+</span><span data-line="239">    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Finish gen_input_data.py: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ctime</span><span class="p">()))</span>
 </span><span data-line="240">
-</span><span data-line="241"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-</span><span data-line="242">    <span class="n">main</span><span class="p">()</span>
+</span><span data-line="241">
+</span><span data-line="242"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+</span><span data-line="243">    <span class="n">main</span><span class="p">()</span>
 </span></pre></div>
         </article><button class="back-to-top" type="button">
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">

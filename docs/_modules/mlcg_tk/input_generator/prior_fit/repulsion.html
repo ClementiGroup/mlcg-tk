@@ -181,9 +181,9 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="23"><span class="sd">        through logarithmic inversion of the associated Boltzmann factor</span>
 </span><span data-line="24"><span class="sd">    dG_nz:</span>
 </span><span data-line="25"><span class="sd">        The value of the energy :math:`U` as a function of the bin</span>
-</span><span data-line="26"><span class="sd">        centers, as retrieved via: </span>
-</span><span data-line="27"><span class="sd">        </span>
-</span><span data-line="28"><span class="sd">        :math:`U(x) = -\frac{1}{\beta}\log{ \left( p(x)\right)}`  </span>
+</span><span data-line="26"><span class="sd">        centers, as retrieved via:</span>
+</span><span data-line="27">
+</span><span data-line="28"><span class="sd">        :math:`U(x) = -\frac{1}{\beta}\log{ \left( p(x)\right)}`</span>
 </span><span data-line="29">
 </span><span data-line="30"><span class="sd">        where :math:`\beta` is the inverse thermodynamic temperature and</span>
 </span><span data-line="31"><span class="sd">        :math:`p(x)` is the normalized probability distribution of</span>
@@ -211,7 +211,7 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="50">    <span class="n">ncounts_nz</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
 </span><span data-line="51">    <span class="n">percentile</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
 </span><span data-line="52">    <span class="n">cutoff</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span data-line="53">    <span class="o">**</span><span class="n">kwargs</span>
+</span><span data-line="53">    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 </span><span data-line="54"><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
 </span><span data-line="55"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Method for fitting interaction parameters directly from input features</span>
 </span><span data-line="56">

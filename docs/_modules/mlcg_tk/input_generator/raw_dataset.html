@@ -1130,28 +1130,29 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="927"><span class="sd">        List of SampleCollection objects for all structures</span>
 </span><span data-line="928"><span class="sd">    &quot;&quot;&quot;</span>
 </span><span data-line="929">
-</span><span data-line="930">    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
-</span><span data-line="931">                 <span class="n">dataset_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> 
-</span><span data-line="932">                 <span class="n">tag</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> 
-</span><span data-line="933">                 <span class="n">pdb_fns</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
-</span><span data-line="934">                 <span class="n">collection_cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">SampleCollection</span><span class="p">]</span> <span class="o">=</span> <span class="n">SampleCollection</span>
-</span><span data-line="935">            <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="936">        <span class="bp">self</span><span class="o">.</span><span class="n">dataset_name</span> <span class="o">=</span> <span class="n">dataset_name</span>
-</span><span data-line="937">        <span class="bp">self</span><span class="o">.</span><span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="n">fn</span><span class="p">[:</span><span class="o">-</span><span class="mi">4</span><span class="p">]</span> <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="n">pdb_fns</span><span class="p">]</span>
-</span><span data-line="938">        <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span data-line="939">
-</span><span data-line="940">        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">names</span><span class="p">:</span>
-</span><span data-line="941">            <span class="n">data_samples</span> <span class="o">=</span> <span class="n">collection_cls</span><span class="p">(</span>
-</span><span data-line="942">                <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
-</span><span data-line="943">                <span class="n">tag</span><span class="o">=</span><span class="n">tag</span><span class="p">,</span>
-</span><span data-line="944">            <span class="p">)</span>
-</span><span data-line="945">            <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data_samples</span><span class="p">)</span>
-</span><span data-line="946">
-</span><span data-line="947">    <span class="k">def</span><span class="w"> </span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
-</span><span data-line="948">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
-</span><span data-line="949">
-</span><span data-line="950">    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span data-line="951">        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="p">)</span></div>
+</span><span data-line="930">    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+</span><span data-line="931">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="932">        <span class="n">dataset_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="933">        <span class="n">tag</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="934">        <span class="n">pdb_fns</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+</span><span data-line="935">        <span class="n">collection_cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">SampleCollection</span><span class="p">]</span> <span class="o">=</span> <span class="n">SampleCollection</span><span class="p">,</span>
+</span><span data-line="936">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="937">        <span class="bp">self</span><span class="o">.</span><span class="n">dataset_name</span> <span class="o">=</span> <span class="n">dataset_name</span>
+</span><span data-line="938">        <span class="bp">self</span><span class="o">.</span><span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="n">fn</span><span class="p">[:</span><span class="o">-</span><span class="mi">4</span><span class="p">]</span> <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="n">pdb_fns</span><span class="p">]</span>
+</span><span data-line="939">        <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span data-line="940">
+</span><span data-line="941">        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">names</span><span class="p">:</span>
+</span><span data-line="942">            <span class="n">data_samples</span> <span class="o">=</span> <span class="n">collection_cls</span><span class="p">(</span>
+</span><span data-line="943">                <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+</span><span data-line="944">                <span class="n">tag</span><span class="o">=</span><span class="n">tag</span><span class="p">,</span>
+</span><span data-line="945">            <span class="p">)</span>
+</span><span data-line="946">            <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data_samples</span><span class="p">)</span>
+</span><span data-line="947">
+</span><span data-line="948">    <span class="k">def</span><span class="w"> </span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
+</span><span data-line="949">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+</span><span data-line="950">
+</span><span data-line="951">    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span data-line="952">        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="p">)</span></div>
 
 </span></pre></div>
         </article><button class="back-to-top" type="button">
