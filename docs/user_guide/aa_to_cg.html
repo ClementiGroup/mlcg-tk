@@ -62,8 +62,7 @@ data-aria-dark="Switch to auto color mode">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">1) Loading and processing all-atom simulation data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stats_priors.html">2) Computing statistics and fitting priors</a></li>
 <li class="toctree-l2"><a class="reference internal" href="delta_forces.html">3) Producing delta forces</a></li>
-<li class="toctree-l2"><a class="reference internal" href="packaging.html">4) Package Training Data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="packaging.html#add-decoys-to-training-data">4.1) Add Decoys To Training Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="packaging.html">4) Package training data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sim_input.html">5) Generate simulation input</a></li>
 </ul>
 </li>
@@ -118,7 +117,7 @@ data-aria-dark="Switch to auto color mode">
       <i class="i-lucide close"></i>
     </button>
     <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div class="localtoc"><h3>On this page</h3><ul>
-<li><a class="reference internal" href="#note-if-you-are-using-a-custom-dataset">Note if you are using a custom dataset:</a></li>
+<li><a class="reference internal" href="#matrix-multiplication-batching-for-large-molecules">Matrix multiplication batching for large molecules</a></li>
 <li><a class="reference internal" href="#batch-processing-for-large-molecules">Batch processing for large molecules</a></li>
 <li><a class="reference internal" href="#batch-processing-for-large-datasets">Batch processing for large datasets</a></li>
 </ul>
@@ -175,8 +174,14 @@ builders are implemented in <code class="docutils literal notranslate"><span cla
 <p>Keep in mind that the priors are assumed to be in <code class="docutils literal notranslate"><span class="pre">[kcal/mol]</span></code> at the fitting stage so
 raw forces should be transformed to <code class="docutils literal notranslate"><span class="pre">[kcal/mol/angstrom]</span></code>.</p>
 </div>
-<section id="note-if-you-are-using-a-custom-dataset">
-<h2>Note if you are using a custom dataset:<a class="headerlink" href="#note-if-you-are-using-a-custom-dataset" title="Link to this heading">¶</a></h2>
+<div class="admonition attention">
+<p class="admonition-title">Attention</p>
+<p>When dealing with large molecules, several memory problems can arise due
+to handling the multi-dimensional time series. We provide several fixes for
+these problems which are described in the following subsections.</p>
+</div>
+<section id="matrix-multiplication-batching-for-large-molecules">
+<h2>Matrix multiplication batching for large molecules<a class="headerlink" href="#matrix-multiplication-batching-for-large-molecules" title="Link to this heading">¶</a></h2>
 <p>If your program gets killed after the loading of the all-atom data succeeded (tqdm bar
 finished) but before <code class="docutils literal notranslate"><span class="pre">process_raw_dataset</span></code> saved the CG output, try to set
 <code class="docutils literal notranslate"><span class="pre">batch_size</span></code> in your <code class="docutils literal notranslate"><span class="pre">trpcage.yaml</span></code> file. This will batch the matrix multiplication
@@ -200,13 +205,17 @@ atoms will be processed at once (the default behavior).</p>
 <p>Should your dataset be too big to be loaded into memory at once (the tqdm bar doesn’t
 finish before it fails), you can set the <code class="docutils literal notranslate"><span class="pre">mol_num_batches</span></code> in your <code class="docutils literal notranslate"><span class="pre">trpcage.yaml</span></code> file as
 well as your <code class="docutils literal notranslate"><span class="pre">trpcage_stats.yaml</span></code>, <code class="docutils literal notranslate"><span class="pre">trpcage_delta_forces.yaml</span></code> and
-<code class="docutils literal notranslate"><span class="pre">trpcage_packaging.yaml</span></code> file. This will seperate the trajectories in your dataset into
+<code class="docutils literal notranslate"><span class="pre">trpcage_packaging.yaml</span></code> file. This will separate the trajectories in your dataset into
 <code class="docutils literal notranslate"><span class="pre">mol_num_batches</span></code> chunks that will be treated as separate molecules for the
-coarse-graining and statistics computing stages (see 2 below) and the statistics of the
+coarse-graining and statistics computing stages (see step 2) and the statistics of the
 different batches will be automatically accumulated to get only one prior object in the
-end. Note that in this case, the force map will be only computed on the first batch and
-re-used for all subsequent batches to ensure consistency in the case of optimized force
-maps</p>
+end.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When setting the <code class="docutils literal notranslate"><span class="pre">mol_num_batches</span></code> parameter, the force map will be only computed on the
+first batch and re-used for all subsequent batches to ensure consistency in the case of
+optimized force maps.</p>
+</div>
 </section>
 </section>
 

@@ -62,8 +62,7 @@ data-aria-dark="Switch to auto color mode">
 <li class="toctree-l2"><a class="reference internal" href="aa_to_cg.html">1) Loading and processing all-atom simulation data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stats_priors.html">2) Computing statistics and fitting priors</a></li>
 <li class="toctree-l2"><a class="reference internal" href="delta_forces.html">3) Producing delta forces</a></li>
-<li class="toctree-l2"><a class="reference internal" href="packaging.html">4) Package Training Data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="packaging.html#add-decoys-to-training-data">4.1) Add Decoys To Training Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="packaging.html">4) Package training data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sim_input.html">5) Generate simulation input</a></li>
 </ul>
 </li>
@@ -185,9 +184,12 @@ can be fitted to produce new prior models, if needed.</p>
 <h2>Example: 1LY2 toy dataset<a class="headerlink" href="#example-1ly2-toy-dataset" title="Link to this heading">¶</a></h2>
 <p>To exemplify the usage of this code, we provide an example on how to load a tiny dataset
 of All-Atom (AA) simulations of a trpcage-variant, 1L2Y.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
 <p>This example is just to demonstrate the usage of the package to transport from AA
-simulations to the input for training an MLCG model. This dataset does not contain enough
-points, nor is it in the right distribution, so that it would create a good CG model.</p>
+simulations to the input for training an MLCG model. <strong>This dataset does not contain enough
+data, nor is it in the right distribution, so that it would create a good CG model.</strong></p>
+</div>
 <p>The dataset is provided under the folder <code class="docutils literal notranslate"><span class="pre">./demo_raw_data/</span></code>. It contains a readme with
 details of the simulation.</p>
 </section>

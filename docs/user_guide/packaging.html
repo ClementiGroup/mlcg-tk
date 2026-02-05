@@ -2,7 +2,7 @@
 <html lang="en" data-accent-color="teal" data-content_root="../">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>4) Package Training Data - mlcg-tk 0.0.0 documentation</title><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="5) Generate simulation input" href="sim_input.html" /><link rel="prev" title="3) Producing delta forces" href="delta_forces.html" /><script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>4) Package training data - mlcg-tk 0.0.0 documentation</title><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="5) Generate simulation input" href="sim_input.html" /><link rel="prev" title="3) Producing delta forces" href="delta_forces.html" /><script>
     function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
     setColorMode(localStorage._theme||"auto");
   </script><link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=e1a1ceaf" />
@@ -17,7 +17,7 @@
   --sy-f-heading: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
 }
 </style>
-    <meta property="og:type" content="website"/><meta property="og:title" content="4) Package Training Data"/>
+    <meta property="og:type" content="website"/><meta property="og:title" content="4) Package training data"/>
     <meta name="twitter:card" content="summary"/>
   </head>
 <body><div class="sy-head">
@@ -62,8 +62,7 @@ data-aria-dark="Switch to auto color mode">
 <li class="toctree-l2"><a class="reference internal" href="aa_to_cg.html">1) Loading and processing all-atom simulation data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stats_priors.html">2) Computing statistics and fitting priors</a></li>
 <li class="toctree-l2"><a class="reference internal" href="delta_forces.html">3) Producing delta forces</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">4) Package Training Data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#add-decoys-to-training-data">4.1) Add Decoys To Training Data</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">4) Package training data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sim_input.html">5) Generate simulation input</a></li>
 </ul>
 </li>
@@ -118,8 +117,7 @@ data-aria-dark="Switch to auto color mode">
       <i class="i-lucide close"></i>
     </button>
     <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div class="localtoc"><h3>On this page</h3><ul>
-<li><a class="reference internal" href="#">4) Package Training Data</a></li>
-<li><a class="reference internal" href="#add-decoys-to-training-data">4.1) Add Decoys To Training Data</a></li>
+<li><a class="reference internal" href="#add-decoys-to-training-data">4.1*) Add decoys to training data</a></li>
 </ul>
 </div><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
   </aside>
@@ -141,7 +139,7 @@ data-aria-dark="Switch to auto color mode">
         <span>/</span>
         <meta itemprop="position" content="2" />
       </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-        <strong itemprop="name">4) Package Training Data</strong>
+        <strong itemprop="name">4) Package training data</strong>
         <meta itemprop="position" content="3" />
       </li></ol>
     <div class="xl:hidden ml-1">
@@ -155,7 +153,7 @@ data-aria-dark="Switch to auto color mode">
       <div class="relative min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
   <article class="yue" role="main">
           <section id="package-training-data">
-<h1>4) Package Training Data<a class="headerlink" href="#package-training-data" title="Link to this heading">¶</a></h1>
+<h1>4) Package training data<a class="headerlink" href="#package-training-data" title="Link to this heading">¶</a></h1>
 <p>Command:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="n">mlcg</span><span class="o">-</span><span class="n">tk</span><span class="o">-</span><span class="n">package_training_data</span> <span class="n">package_training_data</span> <span class="o">--</span><span class="n">config</span> <span class="n">configuration_files</span><span class="o">/</span><span class="n">trpcage_packaging</span><span class="o">.</span><span class="n">yaml</span>
 </span></pre></div>
@@ -174,9 +172,8 @@ combined HDF5 and partition files using the following:</p>
 </div>
 <p>The optional force tag specifies a label given to produced delta forces and saved packaged
 data.</p>
-</section>
 <section id="add-decoys-to-training-data">
-<h1>4.1) Add Decoys To Training Data<a class="headerlink" href="#add-decoys-to-training-data" title="Link to this heading">¶</a></h1>
+<h2>4.1*) Add decoys to training data<a class="headerlink" href="#add-decoys-to-training-data" title="Link to this heading">¶</a></h2>
 <p>It is possible to add so-called decoys to the training data, distorted (unphysical)
 configurations with a zero delta-force label, such that the network has examples of
 configurations on which it should rely on the prior.</p>
@@ -197,6 +194,7 @@ order to incorporate them during training:</p>
 <p>Note that an arbitrary number of decoys with different noise levels and strides can be
 appended to a dataset; only the decoys present in the partition file will effectively be
 taken into account for training.</p>
+</section>
 </section>
 
         </article><button class="back-to-top" type="button">
