@@ -9,6 +9,7 @@ from .raw_data_loader import (
     Trpcage_loader,
     Cln_loader,
     BBA_loader,
+    WWdomain_loader,
     ProteinG_loader,
     A3D_loader,
     OPEP_loader,
