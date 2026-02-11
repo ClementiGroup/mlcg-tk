@@ -1,0 +1,28 @@
+name: Lint
+
+on:
+  push:
+    branches: [ main ]
+  pull_request_target: # Run on fork PRs
+    branches: [ main ]
+    types: [opened, reopened, synchronize]
+
+jobs:
+  run-linters:
+    name: Run linters
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.12
+      - name: Install Python dependencies
+        run: pip install black
+      - name: Run linters
+        uses: wearerequired/lint-action@v1.10.0
+        with:
+          github_token: ${{ secrets.github_token }}
+          # Enable your linters here
+          black: true

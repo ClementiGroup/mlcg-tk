@@ -6,8 +6,8 @@ save_dir: ./demo_processed_data/
 tag: model_tag
 cg_atoms:
 - CA
-embedding_map: input_generator.CGEmbeddingMapCA
-embedding_func: input_generator.embedding_ca
+embedding_map: mlcg_tk.input_generator.CGEmbeddingMapCA
+embedding_func: mlcg_tk.input_generator.embedding_ca
 skip_residues:
 - ACE
 - NME

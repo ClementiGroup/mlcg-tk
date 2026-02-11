@@ -1,0 +1,8 @@
+dataset_name: 1L2Y
+names: [1L2Y]
+training_data_dir: ./demo_processed_data/
+force_tag: "ca_priors"
+dataset_tag: ""
+save_dir: ./demo_processed_data/
+single_protein: True
+train_size: 0.8

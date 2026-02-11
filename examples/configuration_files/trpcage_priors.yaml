@@ -1,24 +1,24 @@
 prior_tag: prior_tag
 prior_builders:
-  - class_path: input_generator.Bonds
+  - class_path: mlcg_tk.input_generator.Bonds
     init_args:
       name: bonds
       separate_termini: true
-      nl_builder: input_generator.StandardBonds
-      prior_fit_fn: input_generator.fit_harmonic_from_potential_estimates
+      nl_builder: mlcg_tk.input_generator.StandardBonds
+      prior_fit_fn: mlcg_tk.input_generator.fit_harmonic_from_potential_estimates
       n_bins: 100
       bmin: 0
       bmax: 5
-  - class_path: input_generator.Angles
+  - class_path: mlcg_tk.input_generator.Angles
     init_args:
       name: angles
       separate_termini: true
-      nl_builder: input_generator.StandardAngles
-      prior_fit_fn: input_generator.fit_harmonic_from_potential_estimates
+      nl_builder: mlcg_tk.input_generator.StandardAngles
+      prior_fit_fn: mlcg_tk.input_generator.fit_harmonic_from_potential_estimates
       n_bins: 500
       bmin: -3.14
       bmax: 3.15
-  - class_path: input_generator.NonBonded
+  - class_path: mlcg_tk.input_generator.NonBonded
     init_args:
       name: non_bonded
       min_pair: 6
@@ -26,48 +26,48 @@ prior_builders:
       percentile: 0
       cutoff: 10
       separate_termini: false
-      nl_builder: input_generator.Non_Bonded
-      prior_fit_fn: input_generator.fit_repulsion_from_values
+      nl_builder: mlcg_tk.input_generator.Non_Bonded
+      prior_fit_fn: mlcg_tk.input_generator.fit_repulsion_from_values
       n_bins: 500
       bmin: 0
       bmax: 10
-  - class_path: input_generator.Dihedrals
+  - class_path: mlcg_tk.input_generator.Dihedrals
     init_args:
       name: phi
-      nl_builder: input_generator.Phi
-      prior_fit_fn: input_generator.fit_dihedral_from_potential_estimates
+      nl_builder: mlcg_tk.input_generator.Phi
+      prior_fit_fn: mlcg_tk.input_generator.fit_dihedral_from_potential_estimates
       n_bins: 100
       bmin: -3.14
       bmax: 3.15
-  - class_path: input_generator.Dihedrals
+  - class_path: mlcg_tk.input_generator.Dihedrals
     init_args:
       name: psi
-      nl_builder: input_generator.Psi
-      prior_fit_fn: input_generator.fit_dihedral_from_potential_estimates
+      nl_builder: mlcg_tk.input_generator.Psi
+      prior_fit_fn: mlcg_tk.input_generator.fit_dihedral_from_potential_estimates
       n_bins: 100
       bmin: -3.14
       bmax: 3.15
-  - class_path: input_generator.Dihedrals
+  - class_path: mlcg_tk.input_generator.Dihedrals
     init_args:
       name: omega
-      nl_builder: input_generator.Omega
-      prior_fit_fn: input_generator.fit_dihedral_from_potential_estimates
+      nl_builder: mlcg_tk.input_generator.Omega
+      prior_fit_fn: mlcg_tk.input_generator.fit_dihedral_from_potential_estimates
       n_bins: 100
       bmin: -3.14
       bmax: 3.15
-  - class_path: input_generator.Dihedrals
+  - class_path: mlcg_tk.input_generator.Dihedrals
     init_args:
       name: gamma_1
-      nl_builder: input_generator.Gamma1
-      prior_fit_fn: input_generator.fit_dihedral_from_potential_estimates
+      nl_builder: mlcg_tk.input_generator.Gamma1
+      prior_fit_fn: mlcg_tk.input_generator.fit_dihedral_from_potential_estimates
       n_bins: 100
       bmin: -3.14
       bmax: 3.15
-  - class_path: input_generator.Dihedrals
+  - class_path: mlcg_tk.input_generator.Dihedrals
     init_args:
       name: gamma_2
-      nl_builder: input_generator.Gamma2
-      prior_fit_fn: input_generator.fit_dihedral_from_potential_estimates
+      nl_builder: mlcg_tk.input_generator.Gamma2
+      prior_fit_fn: mlcg_tk.input_generator.fit_dihedral_from_potential_estimates
       n_bins: 100
       bmin: -3.14
       bmax: 3.15
