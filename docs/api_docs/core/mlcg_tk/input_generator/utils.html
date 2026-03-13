@@ -201,8 +201,8 @@ data-aria-dark="Switch to auto color mode">
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>map_arr</strong> (<em>Union</em><em>[</em><em>np.ndarray</em><em>,</em><em>sparray</em><em>]</em>) – array of shape (n_beads,n_atoms) representing a linear CG mapping</p></li>
-<li><p><strong>timeseries_arr</strong> (<em>np.ndarray</em>) – array of shape (n_frames,n_atoms,3) holding coordinate or force information</p></li>
+<li><p><strong>map_arr</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">sparray</span></code>]</span>) – array of shape (n_beads,n_atoms) representing a linear CG mapping</p></li>
+<li><p><strong>timeseries_arr</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – array of shape (n_frames,n_atoms,3) holding coordinate or force information</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -267,14 +267,14 @@ batched_array: List</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>coords</strong> (<em>[</em><em>n_frames</em><em>, </em><em>n_atoms</em><em>, </em><em>3</em><em>]</em>) – Non-filtered atomistic coordinates</p></li>
-<li><p><strong>forces</strong> (<em>[</em><em>n_frames</em><em>, </em><em>n_atoms</em><em>, </em><em>3</em><em>]</em>) – Non-filtered atomistic forces</p></li>
+<li><p><strong>coords</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – Non-filtered atomistic coordinates</p></li>
+<li><p><strong>forces</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – Non-filtered atomistic forces</p></li>
 <li><p><strong>topology</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Topology</span></code></span>) – mdtraj topology to load the coordinates with</p></li>
 <li><p><strong>verbose</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – If True, will print a warning containing the number of discarded frames for this sample</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>Tuple of np.ndarray’s for filtered coarse grained coordinates and forces</p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]</span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -286,13 +286,13 @@ batched_array: List</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>top</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Topology</span></code></span>) – MDTraj topology object.</p></li>
-<li><p><strong>atoms_needed</strong> (<em>[</em><em>4</em><em>]</em>) – Names of atoms forming dihedrals, should correspond to existing atom name in topology.</p></li>
-<li><p><strong>offset</strong> (<em>[</em><em>4</em><em>]</em>) – Residue offset of each atom in atoms_needed from starting point.</p></li>
+<li><p><strong>atoms_needed</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span>) – Names of atoms forming dihedrals, should correspond to existing atom name in topology.</p></li>
+<li><p><strong>offset</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]</span>) – Residue offset of each atom in atoms_needed from starting point.</p></li>
 <li><p><strong>tag</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span>) – Dihedral prior tag.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>Dictionary of atom groups for each residue corresponding to dihedrals.</p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></span></p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
@@ -318,7 +318,7 @@ batched_array: List</p>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>List of edges, orders, and tag for each prior term specified in prior_dict.</p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -331,8 +331,8 @@ Fixes issues of connecting/preceding ‘_’ being included in some labels but n
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>tag_label</strong> (<em>List</em><em>, </em><em>str</em>) – Either a list of labels to include (ex: for datasets, delta force computation) or individual label item.</p></li>
-<li><p><strong>placement</strong> (<em>str</em>) – Placement of tag in output name. One of: ‘before’, ‘after’.</p></li>
+<li><p><strong>tag_label</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span>) – Either a list of labels to include (ex: for datasets, delta force computation) or individual label item.</p></li>
+<li><p><strong>placement</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Placement of tag in output name. One of: ‘before’, ‘after’.</p></li>
 </ul>
 </dd>
 </dl>
@@ -346,8 +346,8 @@ Fixes issues of connecting/preceding ‘_’ being included in some labels but n
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>prior_builder</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="prior_gen.html#mlcg_tk.input_generator.prior_gen.PriorBuilder" title="mlcg_tk.input_generator.prior_gen.PriorBuilder"><code class="xref py py-class docutils literal notranslate"><span class="pre">PriorBuilder</span></code></a></span>)</p></li>
 <li><p><strong>cg_dataframe</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></span>) – Dataframe of CG topology (from MDTraj topology object).</p></li>
-<li><p><strong>N_term</strong> (<em>(</em><em>Optional</em><em>)</em>) – Atom used in definition of N-terminus embedding.</p></li>
-<li><p><strong>C_term</strong> (<em>(</em><em>Optional</em><em>)</em>) – Atom used in definition of C-terminus embedding.</p></li>
+<li><p><strong>N_term</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span>) – Atom used in definition of N-terminus embedding.</p></li>
+<li><p><strong>C_term</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span>) – Atom used in definition of C-terminus embedding.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -371,7 +371,7 @@ As of now, this skips all instances of a given residue.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>New DataFrame columns indicating atom involvement in CG mapping and type assignment.</p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></span></p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
@@ -404,7 +404,7 @@ to CG ones</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>Coarse-grained coordinates and forces</p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -421,7 +421,7 @@ to CG ones</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>Separated edges for bulk and terminal groups</p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>

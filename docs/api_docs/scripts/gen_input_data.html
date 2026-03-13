@@ -166,31 +166,31 @@ data-aria-dark="Switch to auto color mode">
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dataset_name</strong> (<em>str</em>) – Name given to specific dataset</p></li>
-<li><p><strong>names</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – List of sample names</p></li>
-<li><p><strong>sample_loader</strong> (<a class="reference internal" href="../core/mlcg_tk/input_generator/raw_data_loader.html#mlcg_tk.input_generator.raw_data_loader.DatasetLoader" title="mlcg_tk.input_generator.raw_data_loader.DatasetLoader"><em>DatasetLoader</em></a>) – Loader object defined for specific dataset</p></li>
-<li><p><strong>tag</strong> (<em>str</em>) – Label given to all output files produced from dataset</p></li>
-<li><p><strong>pdb_template_fn</strong> (<em>str</em>) – Template file location of atomistic structure to be used for topology</p></li>
-<li><p><strong>save_dir</strong> (<em>str</em>) – Path to directory in which output will be saved</p></li>
-<li><p><strong>cg_atoms</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – List of atom names to preserve in coarse-grained resolution</p></li>
-<li><p><strong>embedding_map</strong> (<a class="reference internal" href="../core/mlcg_tk/input_generator/embedding_maps.html#mlcg_tk.input_generator.embedding_maps.CGEmbeddingMap" title="mlcg_tk.input_generator.embedding_maps.CGEmbeddingMap"><em>CGEmbeddingMap</em></a>) – Mapping object</p></li>
-<li><p><strong>embedding_func</strong> (<em>Callable</em>) – Function which will be used to apply CG mapping</p></li>
-<li><p><strong>skip_residues</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – List of residues to skip, can be None</p></li>
-<li><p><strong>prior_tag</strong> (<em>str</em>) – String identifying the specific combination of prior terms</p></li>
-<li><p><strong>prior_builders</strong> (<em>List</em><em>[</em><a class="reference internal" href="../core/mlcg_tk/input_generator/prior_gen.html#mlcg_tk.input_generator.prior_gen.PriorBuilder" title="mlcg_tk.input_generator.prior_gen.PriorBuilder"><em>PriorBuilder</em></a><em>]</em>) – List of PriorBuilder objects and their corresponding parameters</p></li>
-<li><p><strong>stride</strong> (<em>int</em>) – unused in this function
+<li><p><strong>dataset_name</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Name given to specific dataset</p></li>
+<li><p><strong>names</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span>) – List of sample names</p></li>
+<li><p><strong>sample_loader</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="../core/mlcg_tk/input_generator/raw_data_loader.html#mlcg_tk.input_generator.raw_data_loader.DatasetLoader" title="mlcg_tk.input_generator.raw_data_loader.DatasetLoader"><code class="xref py py-class docutils literal notranslate"><span class="pre">DatasetLoader</span></code></a></span>) – Loader object defined for specific dataset</p></li>
+<li><p><strong>tag</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Label given to all output files produced from dataset</p></li>
+<li><p><strong>pdb_template_fn</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Template file location of atomistic structure to be used for topology</p></li>
+<li><p><strong>save_dir</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Path to directory in which output will be saved</p></li>
+<li><p><strong>cg_atoms</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span>) – List of atom names to preserve in coarse-grained resolution</p></li>
+<li><p><strong>embedding_map</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="../core/mlcg_tk/input_generator/embedding_maps.html#mlcg_tk.input_generator.embedding_maps.CGEmbeddingMap" title="mlcg_tk.input_generator.embedding_maps.CGEmbeddingMap"><code class="xref py py-class docutils literal notranslate"><span class="pre">CGEmbeddingMap</span></code></a></span>) – Mapping object</p></li>
+<li><p><strong>embedding_func</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></span>) – Function which will be used to apply CG mapping</p></li>
+<li><p><strong>skip_residues</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span>) – List of residues to skip, can be None</p></li>
+<li><p><strong>prior_tag</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – String identifying the specific combination of prior terms</p></li>
+<li><p><strong>prior_builders</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="../core/mlcg_tk/input_generator/prior_gen.html#mlcg_tk.input_generator.prior_gen.PriorBuilder" title="mlcg_tk.input_generator.prior_gen.PriorBuilder"><code class="xref py py-class docutils literal notranslate"><span class="pre">PriorBuilder</span></code></a>]</span>) – List of PriorBuilder objects and their corresponding parameters</p></li>
+<li><p><strong>stride</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – unused in this function
 present to allow the use of the same .yaml config for process_raw_dataset and build_neighborlists</p></li>
-<li><p><strong>force_stride</strong> (<em>int</em>) – unused in this function
+<li><p><strong>force_stride</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – unused in this function
 present to allow the use of the same .yaml config for process_raw_dataset and build_neighborlists</p></li>
-<li><p><strong>filter_cis</strong> (<em>bool</em>) – unused in this function
+<li><p><strong>filter_cis</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – unused in this function
 present to allow the use of the same .yaml config for process_raw_dataset and build_neighborlists</p></li>
-<li><p><strong>batch_size</strong> (<em>bool</em>) – unused in this function
+<li><p><strong>batch_size</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]</span>) – unused in this function
 present to allow the use of the same .yaml config for process_raw_dataset and build_neighborlists</p></li>
-<li><p><strong>mol_num_batches</strong> (<em>int</em>) – unused in this function
+<li><p><strong>mol_num_batches</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]</span>) – unused in this function
 present to allow the use of the same .yaml config for process_raw_dataset and build_neighborlists</p></li>
-<li><p><strong>atoms_batch_size</strong> (<em>int</em>) – unused in this function
+<li><p><strong>atoms_batch_size</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]</span>) – unused in this function
 present to allow the use of the same .yaml config for process_raw_dataset and build_neighborlists</p></li>
-<li><p><strong>collection_cls</strong> (<em>Type</em><em>[</em><a class="reference internal" href="../core/mlcg_tk/input_generator/raw_dataset.html#mlcg_tk.input_generator.raw_dataset.SampleCollection" title="mlcg_tk.input_generator.raw_dataset.SampleCollection"><em>SampleCollection</em></a><em>]</em>) – Class type for sample collection</p></li>
+<li><p><strong>collection_cls</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Type</span></code>[<a class="reference internal" href="../core/mlcg_tk/input_generator/raw_dataset.html#mlcg_tk.input_generator.raw_dataset.SampleCollection" title="mlcg_tk.input_generator.raw_dataset.SampleCollection"><code class="xref py py-class docutils literal notranslate"><span class="pre">SampleCollection</span></code></a>]</span>) – Class type for sample collection</p></li>
 </ul>
 </dd>
 </dl>
@@ -204,31 +204,31 @@ topology and specified mapping strategies</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dataset_name</strong> (<em>str</em>) – Name given to specific dataset</p></li>
-<li><p><strong>names</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – List of sample names</p></li>
-<li><p><strong>sample_loader</strong> (<a class="reference internal" href="../core/mlcg_tk/input_generator/raw_data_loader.html#mlcg_tk.input_generator.raw_data_loader.DatasetLoader" title="mlcg_tk.input_generator.raw_data_loader.DatasetLoader"><em>DatasetLoader</em></a>) – Loader object defined for specific dataset</p></li>
-<li><p><strong>raw_data_dir</strong> (<em>str</em>) – Path to coordinate and force files</p></li>
-<li><p><strong>tag</strong> (<em>str</em>) – Label given to all output files produced from dataset</p></li>
-<li><p><strong>pdb_template_fn</strong> (<em>str</em>) – Template file location of atomistic structure to be used for topology</p></li>
-<li><p><strong>save_dir</strong> (<em>str</em>) – Path to directory in which output will be saved</p></li>
-<li><p><strong>cg_atoms</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – List of atom names to preserve in coarse-grained resolution</p></li>
-<li><p><strong>embedding_map</strong> (<a class="reference internal" href="../core/mlcg_tk/input_generator/embedding_maps.html#mlcg_tk.input_generator.embedding_maps.CGEmbeddingMap" title="mlcg_tk.input_generator.embedding_maps.CGEmbeddingMap"><em>CGEmbeddingMap</em></a>) – Mapping object</p></li>
-<li><p><strong>embedding_func</strong> (<em>Callable</em>) – Function which will be used to apply CG mapping</p></li>
-<li><p><strong>skip_residues</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – List of residues to skip, can be None</p></li>
-<li><p><strong>cg_mapping_strategy</strong> (<em>str</em>) – Strategy to use for coordinate and force mappings;
+<li><p><strong>dataset_name</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Name given to specific dataset</p></li>
+<li><p><strong>names</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span>) – List of sample names</p></li>
+<li><p><strong>sample_loader</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="../core/mlcg_tk/input_generator/raw_data_loader.html#mlcg_tk.input_generator.raw_data_loader.DatasetLoader" title="mlcg_tk.input_generator.raw_data_loader.DatasetLoader"><code class="xref py py-class docutils literal notranslate"><span class="pre">DatasetLoader</span></code></a></span>) – Loader object defined for specific dataset</p></li>
+<li><p><strong>raw_data_dir</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Path to coordinate and force files</p></li>
+<li><p><strong>tag</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Label given to all output files produced from dataset</p></li>
+<li><p><strong>pdb_template_fn</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Template file location of atomistic structure to be used for topology</p></li>
+<li><p><strong>save_dir</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Path to directory in which output will be saved</p></li>
+<li><p><strong>cg_atoms</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span>) – List of atom names to preserve in coarse-grained resolution</p></li>
+<li><p><strong>embedding_map</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="../core/mlcg_tk/input_generator/embedding_maps.html#mlcg_tk.input_generator.embedding_maps.CGEmbeddingMap" title="mlcg_tk.input_generator.embedding_maps.CGEmbeddingMap"><code class="xref py py-class docutils literal notranslate"><span class="pre">CGEmbeddingMap</span></code></a></span>) – Mapping object</p></li>
+<li><p><strong>embedding_func</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></span>) – Function which will be used to apply CG mapping</p></li>
+<li><p><strong>skip_residues</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span>) – List of residues to skip, can be None</p></li>
+<li><p><strong>cg_mapping_strategy</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Strategy to use for coordinate and force mappings;
 currently only “slice_aggregate” and “slice_optimize” are implemented</p></li>
-<li><p><strong>stride</strong> (<em>int</em>) – Interval by which to stride loaded data</p></li>
-<li><p><strong>force_stride</strong> (<em>int</em>) – stride for inferring the force maps in aggforce</p></li>
-<li><p><strong>filter_cis</strong> (<em>bool</em>) – if True, frames with cis-configurations will be filtered out from the dataset</p></li>
-<li><p><strong>batch_size</strong> (<em>int</em>) – Optional size in which performing batches of AA mapping to CG, to avoid
+<li><p><strong>stride</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Interval by which to stride loaded data</p></li>
+<li><p><strong>force_stride</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – stride for inferring the force maps in aggforce</p></li>
+<li><p><strong>filter_cis</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>]</span>) – if True, frames with cis-configurations will be filtered out from the dataset</p></li>
+<li><p><strong>batch_size</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]</span>) – Optional size in which performing batches of AA mapping to CG, to avoid
 memory overhead in large AA dataset</p></li>
-<li><p><strong>mol_num_batches</strong> (<em>int</em>) – If greater than 1, will save each molecule data into the specified number of batches
+<li><p><strong>mol_num_batches</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]</span>) – If greater than 1, will save each molecule data into the specified number of batches
 that will be treated as different samples</p></li>
-<li><p><strong>atoms_batch_size</strong> (<em>int</em><em>, </em><em>optional</em>) – Optional batch size for processing atoms in large molecules (default: None). If specified, constraints among atoms for coordinate and
+<li><p><strong>atoms_batch_size</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]</span>) – Optional batch size for processing atoms in large molecules (default: None). If specified, constraints among atoms for coordinate and
 force mappings (as defined by <cite>cg_mapping_strategy</cite>) will be computed in batches of this size. To significantly improve
 computational efficiency, it is assumed that structures have ordered residues. If <cite>atoms_batch_size</cite> exceeds the total number of atoms
 in the molecule, all atoms will be processed at once (default behavior).</p></li>
-<li><p><strong>collection_cls</strong> (<em>Type</em><em>[</em><a class="reference internal" href="../core/mlcg_tk/input_generator/raw_dataset.html#mlcg_tk.input_generator.raw_dataset.SampleCollection" title="mlcg_tk.input_generator.raw_dataset.SampleCollection"><em>SampleCollection</em></a><em>]</em>) – Class type for sample collection</p></li>
+<li><p><strong>collection_cls</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Type</span></code>[<a class="reference internal" href="../core/mlcg_tk/input_generator/raw_dataset.html#mlcg_tk.input_generator.raw_dataset.SampleCollection" title="mlcg_tk.input_generator.raw_dataset.SampleCollection"><code class="xref py py-class docutils literal notranslate"><span class="pre">SampleCollection</span></code></a>]</span>) – Class type for sample collection</p></li>
 </ul>
 </dd>
 </dl>

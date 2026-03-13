@@ -167,16 +167,16 @@ for training</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dataset_name</strong> (<em>str</em>) – Name given to specific dataset</p></li>
-<li><p><strong>names</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – List of sample names</p></li>
-<li><p><strong>tag</strong> (<em>str</em>) – Label given to all output files produced from dataset</p></li>
-<li><p><strong>save_dir</strong> (<em>str</em>) – Path to directory from which input will be loaded and to which output will be saved</p></li>
-<li><p><strong>prior_tag</strong> (<em>str</em>) – String identifying the specific combination of prior terms</p></li>
-<li><p><strong>prior_fn</strong> (<em>str</em>) – Path to filename in which prior model is saved</p></li>
-<li><p><strong>device</strong> (<em>str</em>) – Device on which to run delta force calculations</p></li>
-<li><p><strong>batch_size</strong> (<em>int</em>) – Number of frames to take per batch</p></li>
-<li><p><strong>force_tag</strong> (<em>str</em>) – Optional tag to identify input for a particular run of delta force calculation</p></li>
-<li><p><strong>mol_num_batches</strong> (<em>int</em>) – If greater than 1, will load each molecule data from the specified number of batches
+<li><p><strong>dataset_name</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Name given to specific dataset</p></li>
+<li><p><strong>names</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span>) – List of sample names</p></li>
+<li><p><strong>tag</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Label given to all output files produced from dataset</p></li>
+<li><p><strong>save_dir</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Path to directory from which input will be loaded and to which output will be saved</p></li>
+<li><p><strong>prior_tag</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – String identifying the specific combination of prior terms</p></li>
+<li><p><strong>prior_fn</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Path to filename in which prior model is saved</p></li>
+<li><p><strong>device</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Device on which to run delta force calculations</p></li>
+<li><p><strong>batch_size</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Number of frames to take per batch</p></li>
+<li><p><strong>force_tag</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span>) – Optional tag to identify input for a particular run of delta force calculation</p></li>
+<li><p><strong>mol_num_batches</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]</span>) – If greater than 1, will load each molecule data from the specified number of batches
 that were be treated as different samples</p></li>
 </ul>
 </dd>
@@ -206,7 +206,7 @@ the baseline/prior forces). An additional field ‘baseline’ forces
 is added, whose value is equal to the baseline/prior forces</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>List[AtomicData]</p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomicData</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>

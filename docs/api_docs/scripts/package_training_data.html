@@ -166,11 +166,11 @@ data-aria-dark="Switch to auto color mode">
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dataset_names</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – List of dataset name to combine</p></li>
-<li><p><strong>save_dir</strong> (<em>str</em>) – Path to directory from which datasets will be loaded and to which output will be saved</p></li>
-<li><p><strong>force_tag</strong> (<em>str</em>) – Label given to produced delta forces and saved packaged data</p></li>
-<li><p><strong>save_h5</strong> (<em>bool</em>) – Whether to save dataset h5 file(s)</p></li>
-<li><p><strong>save_partition</strong> (<em>bool</em>) – Whether to save dataset partition file(s)</p></li>
+<li><p><strong>dataset_names</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span>) – List of dataset name to combine</p></li>
+<li><p><strong>save_dir</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Path to directory from which datasets will be loaded and to which output will be saved</p></li>
+<li><p><strong>force_tag</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span>) – Label given to produced delta forces and saved packaged data</p></li>
+<li><p><strong>save_h5</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>]</span>) – Whether to save dataset h5 file(s)</p></li>
+<li><p><strong>save_partition</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>]</span>) – Whether to save dataset partition file(s)</p></li>
 </ul>
 </dd>
 </dl>
@@ -183,26 +183,26 @@ data-aria-dark="Switch to auto color mode">
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dataset_name</strong> (<em>str</em>) – Name given to specific dataset</p></li>
-<li><p><strong>dataset_tag</strong> (<em>str</em>) – Label given to all output files produced from dataset</p></li>
-<li><p><strong>names</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – List of sample names</p></li>
-<li><p><strong>force_tag</strong> (<em>str</em>) – Label given to produced delta forces and saved packaged data</p></li>
-<li><p><strong>training_data_dir</strong> (<em>str</em>) – Path to directory from which input will be loaded</p></li>
-<li><p><strong>save_dir</strong> (<em>str</em>) – Path to directory to which output will be saved</p></li>
-<li><p><strong>save_h5</strong> (<em>bool</em>) – Whether to save dataset h5 file(s)</p></li>
-<li><p><strong>save_partition</strong> (<em>bool</em>) – Whether to save dataset partition file(s)</p></li>
-<li><p><strong>single_protein</strong> (<em>bool</em>) – Whether the produced partition file should be for a single-molecule model
+<li><p><strong>dataset_name</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Name given to specific dataset</p></li>
+<li><p><strong>dataset_tag</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Label given to all output files produced from dataset</p></li>
+<li><p><strong>names</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span>) – List of sample names</p></li>
+<li><p><strong>force_tag</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Label given to produced delta forces and saved packaged data</p></li>
+<li><p><strong>training_data_dir</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Path to directory from which input will be loaded</p></li>
+<li><p><strong>save_dir</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Path to directory to which output will be saved</p></li>
+<li><p><strong>save_h5</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>]</span>) – Whether to save dataset h5 file(s)</p></li>
+<li><p><strong>save_partition</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>]</span>) – Whether to save dataset partition file(s)</p></li>
+<li><p><strong>single_protein</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>]</span>) – Whether the produced partition file should be for a single-molecule model
 Will be ignored if save_partition is False</p></li>
-<li><p><strong>batch_size</strong> (<em>int</em>) – Number of samples of dataset to include in each training batch</p></li>
-<li><p><strong>stride</strong> (<em>int</em>) – Integer by which to stride frames</p></li>
-<li><p><strong>train_size</strong> (<em>Union</em><em>[</em><em>float</em><em>, </em><em>int</em><em>]</em>) – Either the proportion (if float) or number of samples (if int) of molecules in training data
+<li><p><strong>batch_size</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Number of samples of dataset to include in each training batch</p></li>
+<li><p><strong>stride</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Integer by which to stride frames</p></li>
+<li><p><strong>train_size</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]</span>) – Either the proportion (if float) or number of samples (if int) of molecules in training data
 If None, lists should be supplied for training and validation samples</p></li>
-<li><p><strong>train_mols</strong> (<em>Optional</em><em>[</em><em>List</em><em>]</em>) – Molecules to be used for training set</p></li>
-<li><p><strong>val_mols</strong> (<em>Optional</em><em>[</em><em>List</em><em>]</em>) – Molecules to be used for validation set</p></li>
-<li><p><strong>random_state</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) – Controls shuffling applied to the data before applying the split</p></li>
-<li><p><strong>mol_num_batches</strong> (<em>int</em>) – If greater than 1, will load each molecule data from the specified number of batches
+<li><p><strong>train_mols</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]</span>) – Molecules to be used for training set</p></li>
+<li><p><strong>val_mols</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]</span>) – Molecules to be used for validation set</p></li>
+<li><p><strong>random_state</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span>) – Controls shuffling applied to the data before applying the split</p></li>
+<li><p><strong>mol_num_batches</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]</span>) – If greater than 1, will load each molecule data from the specified number of batches
 that were be treated as different samples</p></li>
-<li><p><strong>keep_batches</strong> (<em>bool</em>) – If set to True, batches will be put as individual molecules in the h5 dataset and
+<li><p><strong>keep_batches</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>]</span>) – If set to True, batches will be put as individual molecules in the h5 dataset and
 the partition file will be built accordingly. Otherwise, if batches exist, they will be
 accumulated into one single molecule.</p></li>
 </ul>

@@ -166,21 +166,21 @@ data-aria-dark="Switch to auto color mode">
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dataset_name</strong> (<em>str</em>) – Name given to specific dataset</p></li>
-<li><p><strong>names</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – List of sample names</p></li>
-<li><p><strong>tag</strong> (<em>str</em>) – Label given to all output files produced from dataset</p></li>
-<li><p><strong>save_dir</strong> (<em>str</em>) – Path to directory from which input will be loaded and to which output will be saved</p></li>
-<li><p><strong>stride</strong> (<em>int</em>) – Integer by which to stride frames</p></li>
-<li><p><strong>batch_size</strong> (<em>int</em>) – Number of frames to take per batch</p></li>
-<li><p><strong>prior_tag</strong> (<em>str</em>) – String identifying the specific combination of prior terms</p></li>
-<li><p><strong>prior_builders</strong> (<em>List</em><em>[</em><a class="reference internal" href="../core/mlcg_tk/input_generator/prior_gen.html#mlcg_tk.input_generator.prior_gen.PriorBuilder" title="mlcg_tk.input_generator.prior_gen.PriorBuilder"><em>PriorBuilder</em></a><em>]</em>) – List of PriorBuilder objects and their corresponding parameters</p></li>
-<li><p><strong>embedding_map</strong> (<a class="reference internal" href="../core/mlcg_tk/input_generator/embedding_maps.html#mlcg_tk.input_generator.embedding_maps.CGEmbeddingMap" title="mlcg_tk.input_generator.embedding_maps.CGEmbeddingMap"><em>CGEmbeddingMap</em></a>) – Mapping object</p></li>
-<li><p><strong>statistics_tag</strong> (<em>str</em>) – String differentiating parameters used for statistics computation</p></li>
-<li><p><strong>device</strong> (<em>str</em>) – Device on which to run delta force calculations</p></li>
+<li><p><strong>dataset_name</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Name given to specific dataset</p></li>
+<li><p><strong>names</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span>) – List of sample names</p></li>
+<li><p><strong>tag</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Label given to all output files produced from dataset</p></li>
+<li><p><strong>save_dir</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Path to directory from which input will be loaded and to which output will be saved</p></li>
+<li><p><strong>stride</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Integer by which to stride frames</p></li>
+<li><p><strong>batch_size</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Number of frames to take per batch</p></li>
+<li><p><strong>prior_tag</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – String identifying the specific combination of prior terms</p></li>
+<li><p><strong>prior_builders</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="../core/mlcg_tk/input_generator/prior_gen.html#mlcg_tk.input_generator.prior_gen.PriorBuilder" title="mlcg_tk.input_generator.prior_gen.PriorBuilder"><code class="xref py py-class docutils literal notranslate"><span class="pre">PriorBuilder</span></code></a>]</span>) – List of PriorBuilder objects and their corresponding parameters</p></li>
+<li><p><strong>embedding_map</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="../core/mlcg_tk/input_generator/embedding_maps.html#mlcg_tk.input_generator.embedding_maps.CGEmbeddingMap" title="mlcg_tk.input_generator.embedding_maps.CGEmbeddingMap"><code class="xref py py-class docutils literal notranslate"><span class="pre">CGEmbeddingMap</span></code></a></span>) – Mapping object</p></li>
+<li><p><strong>statistics_tag</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span>) – String differentiating parameters used for statistics computation</p></li>
+<li><p><strong>device</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Device on which to run delta force calculations</p></li>
 <li><p><strong>save_sample_statistics</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – If true, will save individual list of prior builders with accumulated statistics of one molecule</p></li>
-<li><p><strong>save_figs</strong> (<em>bool</em>) – Whether to plot histograms of computed statistics</p></li>
-<li><p><strong>weights_template_fn</strong> (<em>str</em>) – Template file location of weights to use for accumulating statistics</p></li>
-<li><p><strong>mol_num_batches</strong> (<em>int</em>) – If greater than 1, will save each molecule data into the specified number of batches
+<li><p><strong>save_figs</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – Whether to plot histograms of computed statistics</p></li>
+<li><p><strong>weights_template_fn</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span>) – Template file location of weights to use for accumulating statistics</p></li>
+<li><p><strong>mol_num_batches</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]</span>) – If greater than 1, will save each molecule data into the specified number of batches
 that will be treated as different samples</p></li>
 </ul>
 </dd>
@@ -194,10 +194,10 @@ that will be treated as different samples</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>save_dir</strong> (<em>str</em>) – Path to directory from which input will be loaded and to which output will be saved</p></li>
-<li><p><strong>prior_tag</strong> (<em>str</em>) – String identifying the specific combination of prior terms</p></li>
-<li><p><strong>embedding_map</strong> (<a class="reference internal" href="../core/mlcg_tk/input_generator/embedding_maps.html#mlcg_tk.input_generator.embedding_maps.CGEmbeddingMap" title="mlcg_tk.input_generator.embedding_maps.CGEmbeddingMap"><em>CGEmbeddingMap</em></a>) – Mapping object</p></li>
-<li><p><strong>temperature</strong> (<em>float</em>) – Temperature from which beta value will be computed</p></li>
+<li><p><strong>save_dir</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Path to directory from which input will be loaded and to which output will be saved</p></li>
+<li><p><strong>prior_tag</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – String identifying the specific combination of prior terms</p></li>
+<li><p><strong>embedding_map</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="../core/mlcg_tk/input_generator/embedding_maps.html#mlcg_tk.input_generator.embedding_maps.CGEmbeddingMap" title="mlcg_tk.input_generator.embedding_maps.CGEmbeddingMap"><code class="xref py py-class docutils literal notranslate"><span class="pre">CGEmbeddingMap</span></code></a></span>) – Mapping object</p></li>
+<li><p><strong>temperature</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – Temperature from which beta value will be computed</p></li>
 </ul>
 </dd>
 </dl>
