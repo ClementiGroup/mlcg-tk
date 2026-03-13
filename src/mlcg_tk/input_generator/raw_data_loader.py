@@ -1145,6 +1145,98 @@ class WWdomain_loader(DatasetLoader):
         return aa_coords, aa_forces
 
 
+class LambdaRepressor_loader(DatasetLoader):
+    """
+    Loader object for CHARMM22* Lambda Repressor simulation dataset
+    """
+
+    def get_traj_top(self, name: str, pdb_fn: str):
+        """
+        For a given name, returns a loaded MDTraj object at the input resolution
+        (generally atomistic) as well as the dataframe associated with its topology.
+
+        Parameters
+        ----------
+        name:
+            Name of input sample
+        pdb_fn:
+            Path to pdb structure file
+        """
+        pdb = md.load(pdb_fn.format(name))
+        aa_traj = pdb.atom_slice(
+            [a.index for a in pdb.topology.atoms if a.residue.is_protein]
+        )
+        top_dataframe = aa_traj.topology.to_dataframe()[0]
+        return aa_traj, top_dataframe
+
+    def load_coords_forces(
+        self,
+        base_dir: str,
+        name: str,
+        stride: int = 1,
+        batch: Optional[int] = None,
+        n_batches: Optional[int] = 1,
+    ) -> Tuple[np.ndarray, np.ndarray]:
+        """
+        For a given name, returns np.ndarray's of its coordinates and forces at
+        the input resolution (generally atomistic)
+
+        Parameters
+        ----------
+        base_dir:
+            Path to coordinate and force files
+        name:
+            Name of input sample
+        stride : int
+            Interval by which to stride loaded data
+        batch: int or None
+            if trajectories are loaded by batch, indicates the batch index to load
+            must be set if n_batches > 1
+        n_batches: int
+            if greater than 1, divide the total trajectories to load into n_batches chunks
+        """
+        coords_fns = natsorted(
+            glob(
+                os.path.join(
+                    base_dir, f"coords_nowater/lambda_coor_folding-lambda_*.npy"
+                )
+            )
+        )
+
+        forces_fns = [
+            fn.replace(
+                "coords_nowater/lambda_coor_folding",
+                "forces_nowater/lambda_force_folding",
+            )
+            for fn in coords_fns
+        ]
+
+        coords_fns = np.array(coords_fns)
+        forces_fns = np.array(forces_fns)
+
+        if n_batches > 1:
+            assert batch is not None, "batch id must be set if more than 1 batch"
+            chunk_ids = chunker(
+                [i for i in range(len(coords_fns))], n_batches=n_batches
+            )
+            coords_fns = coords_fns[np.array(chunk_ids[batch])]
+            forces_fns = forces_fns[np.array(chunk_ids[batch])]
+
+        aa_coord_list = []
+        aa_force_list = []
+        # load the files, checking against the mol dictionary
+        for cfn, ffn in tqdm(zip(coords_fns, forces_fns), total=len(coords_fns)):
+            force = np.load(ffn)  # in AA
+            coord = np.load(cfn)  # in kcal/mol/AA
+
+            assert coord.shape == force.shape
+            aa_coord_list.append(coord[::stride])
+            aa_force_list.append(force[::stride])
+        aa_coords = np.concatenate(aa_coord_list)
+        aa_forces = np.concatenate(aa_force_list)
+        return aa_coords, aa_forces
+
+
 class HDF5_loader(DatasetLoader):
     r"""
     Base class for loading data stored in an HDF5 data format.
@@ -1318,3 +1410,143 @@ class MHC_loader(DatasetLoader):
         coords_all = np.concatenate(coords_all)
         forces_all = np.concatenate(forces_all)
         return coords_all, forces_all
+
+
+class BBA_amber_loader(DatasetLoader):
+    """
+    Loader object for dataset of BBA simulations run with the AMBER99SB-ILDNP force field
+    """
+
+    def get_traj_top(self, name: str, pdb_fn: str):
+        """
+        For a given CATH domain name, returns a loaded MDTraj object at the input resolution
+        (generally atomistic) as well as the dataframe associated with its topology.
+
+        Parameters
+        ----------
+        name:
+            Name of input sample
+        pdb_fn:
+            Path to pdb structure file
+        """
+        pdb_fns = pdb_fn.format(name, name.split("_")[0])
+        pdb = md.load(pdb_fns)
+        aa_traj = pdb.atom_slice(
+            [a.index for a in pdb.topology.atoms if a.residue.is_protein]
+        )
+        top_dataframe = aa_traj.topology.to_dataframe()[0]
+        return aa_traj, top_dataframe
+
+    def load_coords_forces(
+        self,
+        base_dir: str,
+        name: str,
+        stride: int = 1,
+        batch: Optional[int] = None,
+        n_batches: Optional[int] = 1,
+    ) -> Tuple[np.ndarray, np.ndarray]:
+        """
+        For a given starting structure and trajectory, returns np.ndarray's of its coordinates
+        and forces at the input resolution (generally atomistic)
+
+        Parameters
+        ----------
+        base_dir:
+            Path to coordinate and force files
+        name:
+            Name of input sample
+        stride : int
+            Interval by which to stride loaded data
+        """
+        output_fns = sorted(
+            glob(
+                os.path.join(
+                    base_dir, f"group_0/bba_{name}/prod_out_full_output/prod_out_*.npz"
+                )
+            )
+        )
+
+        traj_coords = []
+        traj_forces = []
+
+        for fn in output_fns:
+            output = np.load(fn, allow_pickle=True)
+            coords, forces = output["coords"], output["Fs"]
+            traj_coords.append(coords)
+            traj_forces.append(forces)
+
+        traj_full_coords = np.concatenate(traj_coords)
+        traj_full_forces = np.concatenate(traj_forces)
+
+        return traj_full_coords, traj_full_forces
+
+
+class WaterMethaneLoader(DatasetLoader):
+    r"""
+    Loader for Water/Methane simulation data
+    """
+
+    def get_traj_top(self, name: str, pdb_fn: str):
+        pdb_path = pdb_fn.format(name)
+        pdb_files = glob(pdb_path)
+        if not pdb_files:
+            raise FileNotFoundError(f"No PDB file found at {pdb_path}")
+        pdb = md.load(pdb_files[0])
+        aa_traj = pdb
+        top_dataframe = aa_traj.topology.to_dataframe()[0]
+        return aa_traj, top_dataframe
+
+    def load_coords_forces(
+        self,
+        base_dir: str,
+        name: str,
+        stride: int = 1,
+        batch: Optional[int] = None,
+        n_batches: Optional[int] = 1,
+    ) -> Tuple[np.ndarray, np.ndarray]:
+        """
+        For a given name, returns np.ndarray's of its coordinates and forces at
+        the input resolution (generally atomistic)
+
+        Parameters
+        ----------
+        base_dir:
+            Path to coordinate and force files
+        name:
+            Name of input sample
+        stride : int
+            Interval by which to stride loaded data
+        batch: int or None
+            if trajectories are loaded by batch, indicates the batch index to load
+            must be set if n_batches > 1
+        n_batches: int
+            if greater than 1, divide the total trajectories to load into n_batches chunks
+        """
+        coords_fns = natsorted(glob(os.path.join(base_dir, f"coords-*.npy")))
+
+        forces_fns = [fn.replace("coords", "forces") for fn in coords_fns]
+
+        coords_fns = np.array(coords_fns)
+        forces_fns = np.array(forces_fns)
+
+        if n_batches > 1:
+            assert batch is not None, "batch id must be set if more than 1 batch"
+            chunk_ids = chunker(
+                [i for i in range(len(coords_fns))], n_batches=n_batches
+            )
+            coords_fns = coords_fns[np.array(chunk_ids[batch])]
+            forces_fns = forces_fns[np.array(chunk_ids[batch])]
+
+        aa_coord_list = []
+        aa_force_list = []
+        # load the files, checking against the mol dictionary
+        for cfn, ffn in tqdm(zip(coords_fns, forces_fns), total=len(coords_fns)):
+            force = np.load(ffn)  # in AA
+            coord = np.load(cfn)  # in kcal/mol/AA
+
+            assert coord.shape == force.shape
+            aa_coord_list.append(coord[::stride])
+            aa_force_list.append(force[::stride])
+        aa_coords = np.concatenate(aa_coord_list)
+        aa_forces = np.concatenate(aa_force_list)
+        return aa_coords, aa_forces

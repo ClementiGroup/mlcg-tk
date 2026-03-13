@@ -38,7 +38,7 @@ def process_sim_input(
     prior_builders: List[PriorBuilder],
     mass_scale: Optional[float] = 418.4,
     collection_cls: Type[SampleCollection] = SampleCollection,
-    smpl_loader: Type[DatasetLoader] = SimInput_loader,
+    sample_loader: Type[DatasetLoader] = SimInput_loader,
 ):
     r"""
     Generates input AtomicData objects for coarse-grained simulations
@@ -83,11 +83,10 @@ def process_sim_input(
 
     dataset = SimInput(dataset_name, tag, pdb_fns, collection_cls=collection_cls)
     for samples in tqdm(dataset, f"Processing CG data for {dataset_name} dataset..."):
-        sample_loader = smpl_loader()
+        sample_loader = sample_loader()
         samples.input_traj, samples.top_dataframe = sample_loader.get_traj_top(
             name=samples.name, raw_data_dir=raw_data_dir
         )
-
         samples.apply_cg_mapping(
             cg_atoms=cg_atoms,
             embedding_function=embedding_func,
