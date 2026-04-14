@@ -656,7 +656,11 @@ class SampleCollection:
             return True
 
     def has_delta_forces_output(
-        self, training_data_dir: str, force_tag: str = "", mol_num_batches: int = 1
+        self,
+        training_data_dir: str,
+        force_tag: str = "",
+        mol_num_batches: int = 1,
+        keep_batches: bool = False,
     ) -> bool:
         """
         Returns True if cg data exists for this SampleCollection
@@ -667,7 +671,7 @@ class SampleCollection:
         ----------
         training_data_dir:
             Location of saved cg data
-        prior_tag:
+        force_tag:
             String identifying the specific combination of prior terms
         mol_num_batches : int
             number of batches in which the molecule is suposed to be saved
@@ -677,16 +681,16 @@ class SampleCollection:
         True if cg output for the sample corresponding to prior_tag is present in training_data_dir
         False otherwise
         """
-        if mol_num_batches == 1:
-            pos_names_lists = [[self.tag, self.name]]
-        elif mol_num_batches > 1:
+
+        pos_names_lists = [
+            [self.tag, self.name]
+        ]  # Check only the presence of that specific batch or molecule
+        if (
+            mol_num_batches > 1 and not keep_batches
+        ):  # Then, check for the presence of all the batches
             pos_names_lists = [
-                [self.tag, self.name, f"batch_{b}"] for b in range(mol_num_batches)
+                [self.tag, f"{self.mol_name}_batch_{i}"] for i in range(mol_num_batches)
             ]
-        else:
-            raise ValueError(
-                f"`n_mol_batch` should be a positive integer, not {mol_num_batches}"
-            )
         for bat_list in pos_names_lists:
             save_templ = os.path.join(
                 training_data_dir,
@@ -789,7 +793,12 @@ class SampleCollection:
         return batch_list
 
     def load_training_inputs(
-        self, training_data_dir: str, force_tag: str = "", stride: int = 1
+        self,
+        training_data_dir: str,
+        force_tag: str = "",
+        mol_num_batches: int = 1,
+        keep_batches: bool = False,
+        stride: int = 1,
     ) -> Tuple:
         """
         Loads all cg data produced by `save_cg_output` and `get_prior_nls`
@@ -813,47 +822,38 @@ class SampleCollection:
             training_data_dir, get_output_tag([self.tag, self.name], placement="before")
         )
         cg_embeds = np.load(f"{mol_save_templ}cg_embeds.npy")
-        coord_file_path = f"{save_templ}cg_coords.npy"
-        cg_coords = np.load(coord_file_path)[::stride]
-        save_templ_forces = os.path.join(
-            training_data_dir,
-            get_output_tag([self.tag, self.name, force_tag], placement="before"),
-        )
-        force_file_path = f"{save_templ_forces}delta_forces.npy"
-        cg_forces = np.load(force_file_path)[::stride]
-        return cg_coords, cg_forces, cg_embeds
+        if mol_num_batches > 1 and not keep_batches:
+            cg_coords = []
+            cg_forces = []
+            for b in range(mol_num_batches):
+                save_templ = os.path.join(
+                    training_data_dir,
+                    get_output_tag(
+                        [self.tag, self.mol_name, f"batch_{b}"], placement="before"
+                    ),
+                )
+                save_templ_forces = os.path.join(
+                    training_data_dir,
+                    get_output_tag(
+                        [self.tag, self.mol_name, f"batch_{b}", force_tag],
+                        placement="before",
+                    ),
+                )
 
-    def load_all_batches_training_inputs(
-        self,
-        training_data_dir: str,
-        force_tag: str = "",
-        mol_num_batches: int = 1,
-        stride: int = 1,
-    ):
-        mol_save_templ = os.path.join(
-            training_data_dir, get_output_tag([self.tag, self.name], placement="before")
-        )
-        cg_embeds = np.load(f"{mol_save_templ}cg_embeds.npy")
-        cg_coords = []
-        cg_forces = []
-        for b in range(mol_num_batches):
-            save_templ = os.path.join(
-                training_data_dir,
-                get_output_tag([self.tag, self.name, f"batch_{b}"], placement="before"),
-            )
+                cg_coords.append(np.load(f"{save_templ}cg_coords.npy"))
+                cg_forces.append(np.load(f"{save_templ_forces}delta_forces.npy"))
+
+            cg_coords = np.concatenate(cg_coords)[::stride]
+            cg_forces = np.concatenate(cg_forces)[::stride]
+        else:
+            coord_file_path = f"{save_templ}cg_coords.npy"
+            cg_coords = np.load(coord_file_path)[::stride]
             save_templ_forces = os.path.join(
                 training_data_dir,
-                get_output_tag(
-                    [self.tag, self.name, f"batch_{b}", force_tag], placement="before"
-                ),
+                get_output_tag([self.tag, self.name, force_tag], placement="before"),
             )
-
-            cg_coords.append(np.load(f"{save_templ}cg_coords.npy"))
-            cg_forces.append(np.load(f"{save_templ_forces}delta_forces.npy"))
-
-        cg_coords = np.concatenate(cg_coords)[::stride]
-        cg_forces = np.concatenate(cg_forces)[::stride]
-
+            force_file_path = f"{save_templ_forces}delta_forces.npy"
+            cg_forces = np.load(force_file_path)[::stride]
         return cg_coords, cg_forces, cg_embeds
 
 

@@ -99,32 +99,30 @@ def package_training_data(
                     training_data_dir=training_data_dir,
                     force_tag=force_tag,
                     mol_num_batches=mol_num_batches,
+                    keep_batches=keep_batches,
                 ):
                     continue
                 else:
-                    non_empty_names.append(samples.mol_name)
+                    if mol_num_batches > 1 and not keep_batches:
+                        non_empty_names.append(samples.mol_name)
+                    else:
+                        non_empty_names.append(samples.name)
+
+                (
+                    cg_coords,
+                    cg_delta_forces,
+                    cg_embeds,
+                ) = samples.load_training_inputs(
+                    training_data_dir=training_data_dir,
+                    force_tag=force_tag,
+                    mol_num_batches=mol_num_batches,
+                    keep_batches=keep_batches,
+                )
 
                 if mol_num_batches > 1 and not keep_batches:
-                    (
-                        cg_coords,
-                        cg_delta_forces,
-                        cg_embeds,
-                    ) = samples.load_all_batches_training_inputs(
-                        training_data_dir=training_data_dir,
-                        force_tag=force_tag,
-                        mol_num_batches=mol_num_batches,
-                    )
+                    name = f"{samples.tag}{samples.mol_name}"
                 else:
-                    (
-                        cg_coords,
-                        cg_delta_forces,
-                        cg_embeds,
-                    ) = samples.load_training_inputs(
-                        training_data_dir=training_data_dir,
-                        force_tag=force_tag,
-                    )
-
-                name = f"{samples.tag}{samples.name}"
+                    name = f"{samples.tag}{samples.name}"
                 hdf_group = metaset.create_group(name)
 
                 hdf_group.create_dataset("cg_coords", data=cg_coords.astype(np.float32))
@@ -133,25 +131,16 @@ def package_training_data(
                 )
                 hdf_group.attrs["cg_embeds"] = cg_embeds
                 hdf_group.attrs["N_frames"] = cg_coords.shape[0]
+                if mol_num_batches > 1 and not keep_batches:
+                    print("All batches saved in one molecule - exit batch loop")
+                    break
 
     if save_partition:
         # Create partition file
         fnout_part = osp.join(save_dir, f"partition{output_tag}.yaml")
         if single_protein:
-            if keep_batches and mol_num_batches > 1:
-                train_mols = [
-                    f"{dataset_tag}{name}_batch_{b}"
-                    for b in range(mol_num_batches)
-                    for name in non_empty_names
-                ]
-                val_mols = [
-                    f"{dataset_tag}{name}_batch_{b}"
-                    for b in range(mol_num_batches)
-                    for name in non_empty_names
-                ]
-            else:
-                train_mols = [f"{dataset_tag}{name}" for name in non_empty_names]
-                val_mols = [f"{dataset_tag}{name}" for name in non_empty_names]
+            train_mols = [f"{dataset_tag}{name}" for name in non_empty_names]
+            val_mols = [f"{dataset_tag}{name}" for name in non_empty_names]
             if train_size == None:
                 raise ValueError(
                     "For single-protein partitions, a train size has to be specified"
