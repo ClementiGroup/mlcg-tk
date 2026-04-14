@@ -192,7 +192,7 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="38">    <span class="n">prior_builders</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">PriorBuilder</span><span class="p">],</span>
 </span><span data-line="39">    <span class="n">mass_scale</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">418.4</span><span class="p">,</span>
 </span><span data-line="40">    <span class="n">collection_cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">SampleCollection</span><span class="p">]</span> <span class="o">=</span> <span class="n">SampleCollection</span><span class="p">,</span>
-</span><span data-line="41">    <span class="n">smpl_loader</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">DatasetLoader</span><span class="p">]</span> <span class="o">=</span> <span class="n">SimInput_loader</span><span class="p">,</span>
+</span><span data-line="41">    <span class="n">sample_loader</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">DatasetLoader</span><span class="p">]</span> <span class="o">=</span> <span class="n">SimInput_loader</span><span class="p">,</span>
 </span><span data-line="42"><span class="p">):</span>
 </span><span data-line="43"><span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 </span><span data-line="44"><span class="sd">    Generates input AtomicData objects for coarse-grained simulations</span>
@@ -237,66 +237,65 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="83">
 </span><span data-line="84">    <span class="n">dataset</span> <span class="o">=</span> <span class="n">SimInput</span><span class="p">(</span><span class="n">dataset_name</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">pdb_fns</span><span class="p">,</span> <span class="n">collection_cls</span><span class="o">=</span><span class="n">collection_cls</span><span class="p">)</span>
 </span><span data-line="85">    <span class="k">for</span> <span class="n">samples</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Processing CG data for </span><span class="si">{</span><span class="n">dataset_name</span><span class="si">}</span><span class="s2"> dataset...&quot;</span><span class="p">):</span>
-</span><span data-line="86">        <span class="n">sample_loader</span> <span class="o">=</span> <span class="n">smpl_loader</span><span class="p">()</span>
+</span><span data-line="86">        <span class="n">sample_loader</span> <span class="o">=</span> <span class="n">sample_loader</span><span class="p">()</span>
 </span><span data-line="87">        <span class="n">samples</span><span class="o">.</span><span class="n">input_traj</span><span class="p">,</span> <span class="n">samples</span><span class="o">.</span><span class="n">top_dataframe</span> <span class="o">=</span> <span class="n">sample_loader</span><span class="o">.</span><span class="n">get_traj_top</span><span class="p">(</span>
 </span><span data-line="88">            <span class="n">name</span><span class="o">=</span><span class="n">samples</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">raw_data_dir</span><span class="o">=</span><span class="n">raw_data_dir</span>
 </span><span data-line="89">        <span class="p">)</span>
-</span><span data-line="90">
-</span><span data-line="91">        <span class="n">samples</span><span class="o">.</span><span class="n">apply_cg_mapping</span><span class="p">(</span>
-</span><span data-line="92">            <span class="n">cg_atoms</span><span class="o">=</span><span class="n">cg_atoms</span><span class="p">,</span>
-</span><span data-line="93">            <span class="n">embedding_function</span><span class="o">=</span><span class="n">embedding_func</span><span class="p">,</span>
-</span><span data-line="94">            <span class="n">embedding_dict</span><span class="o">=</span><span class="n">embedding_map</span><span class="p">,</span>
-</span><span data-line="95">            <span class="n">skip_residues</span><span class="o">=</span><span class="n">skip_residues</span><span class="p">,</span>
-</span><span data-line="96">        <span class="p">)</span>
-</span><span data-line="97">
-</span><span data-line="98">        <span class="n">cg_trajs</span> <span class="o">=</span> <span class="n">samples</span><span class="o">.</span><span class="n">input_traj</span><span class="o">.</span><span class="n">atom_slice</span><span class="p">(</span><span class="n">samples</span><span class="o">.</span><span class="n">cg_atom_indices</span><span class="p">)</span>
-</span><span data-line="99">        <span class="n">cg_masses</span> <span class="o">=</span> <span class="p">(</span>
-</span><span data-line="100">            <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">atom</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">mass</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">cg_trajs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">topology</span><span class="o">.</span><span class="n">atoms</span><span class="p">])</span>
-</span><span data-line="101">            <span class="o">/</span> <span class="n">mass_scale</span>
-</span><span data-line="102">        <span class="p">)</span>
-</span><span data-line="103">        <span class="n">prior_nls</span> <span class="o">=</span> <span class="n">samples</span><span class="o">.</span><span class="n">get_prior_nls</span><span class="p">(</span>
-</span><span data-line="104">            <span class="n">prior_builders</span><span class="o">=</span><span class="n">prior_builders</span><span class="p">,</span>
-</span><span data-line="105">            <span class="n">save_nls</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-</span><span data-line="106">            <span class="n">save_dir</span><span class="o">=</span><span class="n">save_dir</span><span class="p">,</span>
-</span><span data-line="107">            <span class="n">prior_tag</span><span class="o">=</span><span class="n">prior_tag</span><span class="p">,</span>
-</span><span data-line="108">        <span class="p">)</span>
-</span><span data-line="109">        <span class="n">cg_types</span> <span class="o">=</span> <span class="n">samples</span><span class="o">.</span><span class="n">cg_dataframe</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
-</span><span data-line="110">        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">cg_trajs</span><span class="o">.</span><span class="n">n_frames</span><span class="p">):</span>
-</span><span data-line="111">            <span class="n">cg_traj</span> <span class="o">=</span> <span class="n">cg_trajs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-</span><span data-line="112">            <span class="n">cg_coords</span> <span class="o">=</span> <span class="n">cg_traj</span><span class="o">.</span><span class="n">xyz</span> <span class="o">*</span> <span class="mi">10</span>
-</span><span data-line="113">            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">copies</span><span class="p">):</span>
-</span><span data-line="114">                <span class="n">cg_coord_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cg_coords</span><span class="p">)</span>
-</span><span data-line="115">                <span class="n">cg_type_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cg_types</span><span class="p">)</span>
-</span><span data-line="116">                <span class="n">cg_mass_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cg_masses</span><span class="p">)</span>
-</span><span data-line="117">                <span class="n">cg_nls_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prior_nls</span><span class="p">)</span>
-</span><span data-line="118">
-</span><span data-line="119">    <span class="n">data_list</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span data-line="120">    <span class="k">for</span> <span class="n">coords</span><span class="p">,</span> <span class="n">types</span><span class="p">,</span> <span class="n">masses</span><span class="p">,</span> <span class="n">nls</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
-</span><span data-line="121">        <span class="n">cg_coord_list</span><span class="p">,</span> <span class="n">cg_type_list</span><span class="p">,</span> <span class="n">cg_mass_list</span><span class="p">,</span> <span class="n">cg_nls_list</span>
-</span><span data-line="122">    <span class="p">):</span>
-</span><span data-line="123">        <span class="n">data</span> <span class="o">=</span> <span class="n">AtomicData</span><span class="o">.</span><span class="n">from_points</span><span class="p">(</span>
-</span><span data-line="124">            <span class="n">pos</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">coords</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
-</span><span data-line="125">            <span class="n">atom_types</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">types</span><span class="p">),</span>
-</span><span data-line="126">            <span class="n">masses</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">masses</span><span class="p">),</span>
-</span><span data-line="127">        <span class="p">)</span>
-</span><span data-line="128">        <span class="n">data</span><span class="o">.</span><span class="n">neighbor_list</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">nls</span><span class="p">)</span>
-</span><span data-line="129">        <span class="n">data_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-</span><span data-line="130">
-</span><span data-line="131">    <span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span>
-</span><span data-line="132">        <span class="n">data_list</span><span class="p">,</span>
-</span><span data-line="133">        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">save_dir</span><span class="si">}{</span><span class="n">get_output_tag</span><span class="p">([</span><span class="n">dataset_name</span><span class="p">,</span><span class="w"> </span><span class="n">tag</span><span class="p">],</span><span class="w"> </span><span class="n">placement</span><span class="o">=</span><span class="s1">&#39;before&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">configurations.pt&quot;</span><span class="p">,</span>
-</span><span data-line="134">    <span class="p">)</span></div>
+</span><span data-line="90">        <span class="n">samples</span><span class="o">.</span><span class="n">apply_cg_mapping</span><span class="p">(</span>
+</span><span data-line="91">            <span class="n">cg_atoms</span><span class="o">=</span><span class="n">cg_atoms</span><span class="p">,</span>
+</span><span data-line="92">            <span class="n">embedding_function</span><span class="o">=</span><span class="n">embedding_func</span><span class="p">,</span>
+</span><span data-line="93">            <span class="n">embedding_dict</span><span class="o">=</span><span class="n">embedding_map</span><span class="p">,</span>
+</span><span data-line="94">            <span class="n">skip_residues</span><span class="o">=</span><span class="n">skip_residues</span><span class="p">,</span>
+</span><span data-line="95">        <span class="p">)</span>
+</span><span data-line="96">
+</span><span data-line="97">        <span class="n">cg_trajs</span> <span class="o">=</span> <span class="n">samples</span><span class="o">.</span><span class="n">input_traj</span><span class="o">.</span><span class="n">atom_slice</span><span class="p">(</span><span class="n">samples</span><span class="o">.</span><span class="n">cg_atom_indices</span><span class="p">)</span>
+</span><span data-line="98">        <span class="n">cg_masses</span> <span class="o">=</span> <span class="p">(</span>
+</span><span data-line="99">            <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">atom</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">mass</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">cg_trajs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">topology</span><span class="o">.</span><span class="n">atoms</span><span class="p">])</span>
+</span><span data-line="100">            <span class="o">/</span> <span class="n">mass_scale</span>
+</span><span data-line="101">        <span class="p">)</span>
+</span><span data-line="102">        <span class="n">prior_nls</span> <span class="o">=</span> <span class="n">samples</span><span class="o">.</span><span class="n">get_prior_nls</span><span class="p">(</span>
+</span><span data-line="103">            <span class="n">prior_builders</span><span class="o">=</span><span class="n">prior_builders</span><span class="p">,</span>
+</span><span data-line="104">            <span class="n">save_nls</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+</span><span data-line="105">            <span class="n">save_dir</span><span class="o">=</span><span class="n">save_dir</span><span class="p">,</span>
+</span><span data-line="106">            <span class="n">prior_tag</span><span class="o">=</span><span class="n">prior_tag</span><span class="p">,</span>
+</span><span data-line="107">        <span class="p">)</span>
+</span><span data-line="108">        <span class="n">cg_types</span> <span class="o">=</span> <span class="n">samples</span><span class="o">.</span><span class="n">cg_dataframe</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
+</span><span data-line="109">        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">cg_trajs</span><span class="o">.</span><span class="n">n_frames</span><span class="p">):</span>
+</span><span data-line="110">            <span class="n">cg_traj</span> <span class="o">=</span> <span class="n">cg_trajs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+</span><span data-line="111">            <span class="n">cg_coords</span> <span class="o">=</span> <span class="n">cg_traj</span><span class="o">.</span><span class="n">xyz</span> <span class="o">*</span> <span class="mi">10</span>
+</span><span data-line="112">            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">copies</span><span class="p">):</span>
+</span><span data-line="113">                <span class="n">cg_coord_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cg_coords</span><span class="p">)</span>
+</span><span data-line="114">                <span class="n">cg_type_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cg_types</span><span class="p">)</span>
+</span><span data-line="115">                <span class="n">cg_mass_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cg_masses</span><span class="p">)</span>
+</span><span data-line="116">                <span class="n">cg_nls_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prior_nls</span><span class="p">)</span>
+</span><span data-line="117">
+</span><span data-line="118">    <span class="n">data_list</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span data-line="119">    <span class="k">for</span> <span class="n">coords</span><span class="p">,</span> <span class="n">types</span><span class="p">,</span> <span class="n">masses</span><span class="p">,</span> <span class="n">nls</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+</span><span data-line="120">        <span class="n">cg_coord_list</span><span class="p">,</span> <span class="n">cg_type_list</span><span class="p">,</span> <span class="n">cg_mass_list</span><span class="p">,</span> <span class="n">cg_nls_list</span>
+</span><span data-line="121">    <span class="p">):</span>
+</span><span data-line="122">        <span class="n">data</span> <span class="o">=</span> <span class="n">AtomicData</span><span class="o">.</span><span class="n">from_points</span><span class="p">(</span>
+</span><span data-line="123">            <span class="n">pos</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">coords</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+</span><span data-line="124">            <span class="n">atom_types</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">types</span><span class="p">),</span>
+</span><span data-line="125">            <span class="n">masses</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">masses</span><span class="p">),</span>
+</span><span data-line="126">        <span class="p">)</span>
+</span><span data-line="127">        <span class="n">data</span><span class="o">.</span><span class="n">neighbor_list</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">nls</span><span class="p">)</span>
+</span><span data-line="128">        <span class="n">data_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span data-line="129">
+</span><span data-line="130">    <span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span>
+</span><span data-line="131">        <span class="n">data_list</span><span class="p">,</span>
+</span><span data-line="132">        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">save_dir</span><span class="si">}{</span><span class="n">get_output_tag</span><span class="p">([</span><span class="n">dataset_name</span><span class="p">,</span><span class="w"> </span><span class="n">tag</span><span class="p">],</span><span class="w"> </span><span class="n">placement</span><span class="o">=</span><span class="s1">&#39;before&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">configurations.pt&quot;</span><span class="p">,</span>
+</span><span data-line="133">    <span class="p">)</span></div>
 
+</span><span data-line="134">
 </span><span data-line="135">
-</span><span data-line="136">
-</span><span data-line="137"><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
-</span><span data-line="138">    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Start gen_sim_input.py: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ctime</span><span class="p">()))</span>
-</span><span data-line="139">    <span class="n">CLI</span><span class="p">([</span><span class="n">process_sim_input</span><span class="p">])</span>
-</span><span data-line="140">    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Finish gen_sim_input.py: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ctime</span><span class="p">()))</span>
+</span><span data-line="136"><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+</span><span data-line="137">    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Start gen_sim_input.py: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ctime</span><span class="p">()))</span>
+</span><span data-line="138">    <span class="n">CLI</span><span class="p">([</span><span class="n">process_sim_input</span><span class="p">])</span>
+</span><span data-line="139">    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Finish gen_sim_input.py: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ctime</span><span class="p">()))</span>
+</span><span data-line="140">
 </span><span data-line="141">
-</span><span data-line="142">
-</span><span data-line="143"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-</span><span data-line="144">    <span class="n">main</span><span class="p">()</span>
+</span><span data-line="142"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+</span><span data-line="143">    <span class="n">main</span><span class="p">()</span>
 </span></pre></div>
         </article><button class="back-to-top" type="button">
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">

@@ -122,6 +122,11 @@ data-aria-dark="Switch to auto color mode">
 <li><a class="reference internal" href="#mlcg_tk.input_generator.raw_data_loader.A3D_loader.load_coords_forces"><code class="docutils literal notranslate">load_coords_forces()</span></code></a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.raw_data_loader.BBA_amber_loader"><code class="docutils literal notranslate"><span class="pre">BBA_amber_loader</span></code></a><ul>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.raw_data_loader.BBA_amber_loader.get_traj_top"><code class="docutils literal notranslate">get_traj_top()</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.raw_data_loader.BBA_amber_loader.load_coords_forces"><code class="docutils literal notranslate">load_coords_forces()</span></code></a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#mlcg_tk.input_generator.raw_data_loader.BBA_loader"><code class="docutils literal notranslate"><span class="pre">BBA_loader</span></code></a><ul>
 <li><a class="reference internal" href="#mlcg_tk.input_generator.raw_data_loader.BBA_loader.get_traj_top"><code class="docutils literal notranslate">get_traj_top()</span></code></a></li>
 <li><a class="reference internal" href="#mlcg_tk.input_generator.raw_data_loader.BBA_loader.load_coords_forces"><code class="docutils literal notranslate">load_coords_forces()</span></code></a></li>
@@ -163,6 +168,11 @@ data-aria-dark="Switch to auto color mode">
 <li><a class="reference internal" href="#mlcg_tk.input_generator.raw_data_loader.HDF5_loader.load_coords_forces"><code class="docutils literal notranslate">load_coords_forces()</span></code></a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.raw_data_loader.LambdaRepressor_loader"><code class="docutils literal notranslate"><span class="pre">LambdaRepressor_loader</span></code></a><ul>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.raw_data_loader.LambdaRepressor_loader.get_traj_top"><code class="docutils literal notranslate">get_traj_top()</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.raw_data_loader.LambdaRepressor_loader.load_coords_forces"><code class="docutils literal notranslate">load_coords_forces()</span></code></a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#mlcg_tk.input_generator.raw_data_loader.MHC_loader"><code class="docutils literal notranslate"><span class="pre">MHC_loader</span></code></a><ul>
 <li><a class="reference internal" href="#mlcg_tk.input_generator.raw_data_loader.MHC_loader.get_traj_top"><code class="docutils literal notranslate">get_traj_top()</span></code></a></li>
 <li><a class="reference internal" href="#mlcg_tk.input_generator.raw_data_loader.MHC_loader.load_coords_forces"><code class="docutils literal notranslate">load_coords_forces()</span></code></a></li>
@@ -200,6 +210,11 @@ data-aria-dark="Switch to auto color mode">
 <li><a class="reference internal" href="#mlcg_tk.input_generator.raw_data_loader.WWdomain_loader"><code class="docutils literal notranslate"><span class="pre">WWdomain_loader</span></code></a><ul>
 <li><a class="reference internal" href="#mlcg_tk.input_generator.raw_data_loader.WWdomain_loader.get_traj_top"><code class="docutils literal notranslate">get_traj_top()</span></code></a></li>
 <li><a class="reference internal" href="#mlcg_tk.input_generator.raw_data_loader.WWdomain_loader.load_coords_forces"><code class="docutils literal notranslate">load_coords_forces()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.raw_data_loader.WaterMethaneLoader"><code class="docutils literal notranslate"><span class="pre">WaterMethaneLoader</span></code></a><ul>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.raw_data_loader.WaterMethaneLoader.get_traj_top"><code class="docutils literal notranslate">get_traj_top()</span></code></a></li>
+<li><a class="reference internal" href="#mlcg_tk.input_generator.raw_data_loader.WaterMethaneLoader.load_coords_forces"><code class="docutils literal notranslate">load_coords_forces()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -280,6 +295,47 @@ the input resolution (generally atomistic)</p>
 <li><p><strong>batch</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]</span>) – if trajectories are loaded by batch, indicates the batch index to load
 must be set if n_batches &gt; 1</p></li>
 <li><p><strong>n_batches</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]</span>) – if greater than 1, divide the total trajectories to load into n_batches chunks</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.raw_data_loader.BBA_amber_loader">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mlcg_tk.input_generator.raw_data_loader.</span></span><span class="sig-name descname"><span class="pre">BBA_amber_loader</span></span><a class="reference internal" href="../../../../_modules/mlcg_tk/input_generator/raw_data_loader.html#BBA_amber_loader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.raw_data_loader.BBA_amber_loader" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mlcg_tk.input_generator.raw_data_loader.DatasetLoader" title="mlcg_tk.input_generator.raw_data_loader.DatasetLoader"><code class="xref py py-class docutils literal notranslate"><span class="pre">DatasetLoader</span></code></a></p>
+<p>Loader object for dataset of BBA simulations run with the AMBER99SB-ILDNP force field</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.raw_data_loader.BBA_amber_loader.get_traj_top">
+<span class="sig-name descname"><span class="pre">get_traj_top</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pdb_fn</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/mlcg_tk/input_generator/raw_data_loader.html#BBA_amber_loader.get_traj_top"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.raw_data_loader.BBA_amber_loader.get_traj_top" title="Link to this definition">¶</a></dt>
+<dd><p>For a given CATH domain name, returns a loaded MDTraj object at the input resolution
+(generally atomistic) as well as the dataframe associated with its topology.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Name of input sample</p></li>
+<li><p><strong>pdb_fn</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Path to pdb structure file</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.raw_data_loader.BBA_amber_loader.load_coords_forces">
+<span class="sig-name descname"><span class="pre">load_coords_forces</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_batches</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/mlcg_tk/input_generator/raw_data_loader.html#BBA_amber_loader.load_coords_forces"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.raw_data_loader.BBA_amber_loader.load_coords_forces" title="Link to this definition">¶</a></dt>
+<dd><p>For a given starting structure and trajectory, returns np.ndarray’s of its coordinates
+and forces at the input resolution (generally atomistic)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>base_dir</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Path to coordinate and force files</p></li>
+<li><p><strong>name</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Name of input sample</p></li>
+<li><p><strong>stride</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Interval by which to stride loaded data</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -669,6 +725,50 @@ must be set if n_batches &gt; 1</p></li>
 </dd></dl>
 
 <dl class="py class">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.raw_data_loader.LambdaRepressor_loader">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mlcg_tk.input_generator.raw_data_loader.</span></span><span class="sig-name descname"><span class="pre">LambdaRepressor_loader</span></span><a class="reference internal" href="../../../../_modules/mlcg_tk/input_generator/raw_data_loader.html#LambdaRepressor_loader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.raw_data_loader.LambdaRepressor_loader" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mlcg_tk.input_generator.raw_data_loader.DatasetLoader" title="mlcg_tk.input_generator.raw_data_loader.DatasetLoader"><code class="xref py py-class docutils literal notranslate"><span class="pre">DatasetLoader</span></code></a></p>
+<p>Loader object for CHARMM22* Lambda Repressor simulation dataset</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.raw_data_loader.LambdaRepressor_loader.get_traj_top">
+<span class="sig-name descname"><span class="pre">get_traj_top</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pdb_fn</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/mlcg_tk/input_generator/raw_data_loader.html#LambdaRepressor_loader.get_traj_top"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.raw_data_loader.LambdaRepressor_loader.get_traj_top" title="Link to this definition">¶</a></dt>
+<dd><p>For a given name, returns a loaded MDTraj object at the input resolution
+(generally atomistic) as well as the dataframe associated with its topology.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Name of input sample</p></li>
+<li><p><strong>pdb_fn</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Path to pdb structure file</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.raw_data_loader.LambdaRepressor_loader.load_coords_forces">
+<span class="sig-name descname"><span class="pre">load_coords_forces</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_batches</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/mlcg_tk/input_generator/raw_data_loader.html#LambdaRepressor_loader.load_coords_forces"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.raw_data_loader.LambdaRepressor_loader.load_coords_forces" title="Link to this definition">¶</a></dt>
+<dd><p>For a given name, returns np.ndarray’s of its coordinates and forces at
+the input resolution (generally atomistic)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>base_dir</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Path to coordinate and force files</p></li>
+<li><p><strong>name</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Name of input sample</p></li>
+<li><p><strong>stride</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Interval by which to stride loaded data</p></li>
+<li><p><strong>batch</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]</span>) – if trajectories are loaded by batch, indicates the batch index to load
+must be set if n_batches &gt; 1</p></li>
+<li><p><strong>n_batches</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]</span>) – if greater than 1, divide the total trajectories to load into n_batches chunks</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="mlcg_tk.input_generator.raw_data_loader.MHC_loader">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mlcg_tk.input_generator.raw_data_loader.</span></span><span class="sig-name descname"><span class="pre">MHC_loader</span></span><a class="reference internal" href="../../../../_modules/mlcg_tk/input_generator/raw_data_loader.html#MHC_loader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.raw_data_loader.MHC_loader" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#mlcg_tk.input_generator.raw_data_loader.DatasetLoader" title="mlcg_tk.input_generator.raw_data_loader.DatasetLoader"><code class="xref py py-class docutils literal notranslate"><span class="pre">DatasetLoader</span></code></a></p>
@@ -985,6 +1085,53 @@ must be set if n_batches &gt; 1</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="mlcg_tk.input_generator.raw_data_loader.WWdomain_loader.load_coords_forces">
 <span class="sig-name descname"><span class="pre">load_coords_forces</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_batches</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/mlcg_tk/input_generator/raw_data_loader.html#WWdomain_loader.load_coords_forces"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.raw_data_loader.WWdomain_loader.load_coords_forces" title="Link to this definition">¶</a></dt>
+<dd><p>For a given name, returns np.ndarray’s of its coordinates and forces at
+the input resolution (generally atomistic)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>base_dir</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Path to coordinate and force files</p></li>
+<li><p><strong>name</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Name of input sample</p></li>
+<li><p><strong>stride</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Interval by which to stride loaded data</p></li>
+<li><p><strong>batch</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]</span>) – if trajectories are loaded by batch, indicates the batch index to load
+must be set if n_batches &gt; 1</p></li>
+<li><p><strong>n_batches</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]</span>) – if greater than 1, divide the total trajectories to load into n_batches chunks</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.raw_data_loader.WaterMethaneLoader">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mlcg_tk.input_generator.raw_data_loader.</span></span><span class="sig-name descname"><span class="pre">WaterMethaneLoader</span></span><a class="reference internal" href="../../../../_modules/mlcg_tk/input_generator/raw_data_loader.html#WaterMethaneLoader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.raw_data_loader.WaterMethaneLoader" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mlcg_tk.input_generator.raw_data_loader.DatasetLoader" title="mlcg_tk.input_generator.raw_data_loader.DatasetLoader"><code class="xref py py-class docutils literal notranslate"><span class="pre">DatasetLoader</span></code></a></p>
+<p>Loader for Water/Methane simulation data</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.raw_data_loader.WaterMethaneLoader.get_traj_top">
+<span class="sig-name descname"><span class="pre">get_traj_top</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pdb_fn</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/mlcg_tk/input_generator/raw_data_loader.html#WaterMethaneLoader.get_traj_top"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.raw_data_loader.WaterMethaneLoader.get_traj_top" title="Link to this definition">¶</a></dt>
+<dd><p>Function to get the topology associated with a trajectory in the dataset.</p>
+<p>PDB files represent molecules by putting the position of every atom in cartesian space.
+From the distances between atoms, covalent bonds and other things can be deduced.</p>
+<p>Note that, by convention, raw PDB files use angstroms as the unit of the coordinates.
+Engines such as Pymol and mdtraj convert this values to nanometers</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Name of input sample (i.e. the molecule or object in the data)</p></li>
+<li><p><strong>pdb_fn</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – String representing a path to a PDB file which has the topolgy for</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mlcg_tk.input_generator.raw_data_loader.WaterMethaneLoader.load_coords_forces">
+<span class="sig-name descname"><span class="pre">load_coords_forces</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_batches</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/mlcg_tk/input_generator/raw_data_loader.html#WaterMethaneLoader.load_coords_forces"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.raw_data_loader.WaterMethaneLoader.load_coords_forces" title="Link to this definition">¶</a></dt>
 <dd><p>For a given name, returns np.ndarray’s of its coordinates and forces at
 the input resolution (generally atomistic)</p>
 <dl class="field-list simple">
