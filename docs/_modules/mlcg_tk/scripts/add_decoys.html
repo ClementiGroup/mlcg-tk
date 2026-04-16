@@ -342,7 +342,7 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="185">    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">h5_file</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">h5_files</span><span class="p">):</span>
 </span><span data-line="186">        <span class="k">if</span> <span class="ow">not</span> <span class="n">append</span><span class="p">:</span>  <span class="c1"># copy h5 datasets</span>
 </span><span data-line="187">            <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span>
-</span><span data-line="188">                <span class="sa">f</span><span class="s2">&quot;cp </span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">h5_file</span><span class="p">)</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">h5_file</span><span class="p">),</span><span class="w"> </span><span class="sa">f</span><span class="s1">&#39;DECOY_</span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">h5_dataset</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span data-line="188">                <span class="sa">f</span><span class="s2">&quot;cp </span><span class="si">{</span><span class="n">h5_file</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">h5_file</span><span class="p">),</span><span class="w"> </span><span class="sa">f</span><span class="s1">&#39;DECOY_</span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">h5_file</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
 </span><span data-line="189">            <span class="p">)</span>
 </span><span data-line="190">            <span class="n">decoy_h5_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
 </span><span data-line="191">                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">h5_file</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;DECOY_</span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">h5_file</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
@@ -356,142 +356,143 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="199">                <span class="n">add_noise_decoy_molecule</span><span class="p">(</span>
 </span><span data-line="200">                    <span class="n">source_molecule</span><span class="o">=</span><span class="n">f</span><span class="p">[</span><span class="n">datasets</span><span class="p">[</span><span class="n">i</span><span class="p">]][</span><span class="n">mol</span><span class="p">],</span>
 </span><span data-line="201">                    <span class="n">location</span><span class="o">=</span><span class="n">f</span><span class="p">[</span><span class="n">datasets</span><span class="p">[</span><span class="n">i</span><span class="p">]],</span>
-</span><span data-line="202">                    <span class="n">scale</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span>
+</span><span data-line="202">                    <span class="n">scale</span><span class="o">=</span><span class="n">scale</span><span class="p">,</span>
 </span><span data-line="203">                    <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">mol_name_prefix</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">mol</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-</span><span data-line="204">                <span class="p">)</span></div>
+</span><span data-line="204">                    <span class="n">stride</span><span class="o">=</span><span class="n">stride</span>
+</span><span data-line="205">                <span class="p">)</span></div>
 
-</span><span data-line="205">
 </span><span data-line="206">
+</span><span data-line="207">
 <div class="viewcode-block" id="update_partition_file">
 <a class="viewcode-back" href="../../../api_docs/scripts/add_decoys.html#mlcg_tk.scripts.add_decoys.update_partition_file">[docs]</a>
-</span><span data-line="207"><span class="k">def</span><span class="w"> </span><span class="nf">update_partition_file</span><span class="p">(</span>
-</span><span data-line="208">    <span class="n">partition_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-</span><span data-line="209">    <span class="n">decoy_h5_files</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
-</span><span data-line="210">    <span class="n">mol_name_prefixes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
-</span><span data-line="211">    <span class="n">partition_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-</span><span data-line="212"><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="213"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span data-line="214"><span class="sd">    Updates a partition file by adding new molecules with specified prefixes to the &quot;molecules&quot; list of existing datasets.</span>
-</span><span data-line="215">
-</span><span data-line="216"><span class="sd">    This function loads a YAML partition file, updates it by appending molecule names with specified prefixes, and then</span>
-</span><span data-line="217"><span class="sd">    saves the updated partition back to a new YAML file. It is typically used in scenarios where new decoy molecules,</span>
-</span><span data-line="218"><span class="sd">    generated with a prefix (such as a decoy identifier), need to be added to the partition file.</span>
-</span><span data-line="219">
-</span><span data-line="220"><span class="sd">    Arguments:</span>
-</span><span data-line="221"><span class="sd">    ----------</span>
-</span><span data-line="222"><span class="sd">    partition_file: str</span>
-</span><span data-line="223"><span class="sd">        Path to the original partition YAML file that contains metadata about the datasets and molecules. The function will</span>
-</span><span data-line="224"><span class="sd">        read this file and modify the &quot;molecules&quot; list within the &quot;metasets&quot; section of the partition.</span>
-</span><span data-line="225">
-</span><span data-line="226"><span class="sd">    decoy_h5_files: List[str]</span>
-</span><span data-line="227"><span class="sd">        A list of paths to HDF5 files that contain the decoy molecules. Each file corresponds to a dataset in the partition file.</span>
-</span><span data-line="228"><span class="sd">        The number and ordering of files should match the number and ordering of datasets in the partition file.</span>
-</span><span data-line="229">
-</span><span data-line="230"><span class="sd">    mol_name_prefixes: List[str]</span>
-</span><span data-line="231"><span class="sd">        A list of prefixes to be added to the names of existing molecules in the partition file. Each prefix will be prepended</span>
-</span><span data-line="232"><span class="sd">        to the names of the molecules in the partition&#39;s &quot;molecules&quot; list, essentially creating new &quot;decoy&quot; molecules with</span>
-</span><span data-line="233"><span class="sd">        the prefixed names.</span>
-</span><span data-line="234">
-</span><span data-line="235"><span class="sd">    partition_name: str</span>
-</span><span data-line="236"><span class="sd">        The path where the updated partition YAML file will be saved. This will overwrite the existing file at that location.</span>
-</span><span data-line="237">
-</span><span data-line="238"><span class="sd">    Notes:</span>
-</span><span data-line="239"><span class="sd">    -----</span>
-</span><span data-line="240"><span class="sd">    - The function assumes that the partition YAML file follows a specific structure, where molecule names are listed under</span>
-</span><span data-line="241"><span class="sd">      the &quot;train&quot; section in the &quot;metasets&quot; -&gt; &quot;molecules&quot; key.</span>
-</span><span data-line="242"><span class="sd">    - The function does not add decoy molecules to the validation dataset provided in the partition file</span>
-</span><span data-line="243">
-</span><span data-line="244"><span class="sd">    Example:</span>
-</span><span data-line="245"><span class="sd">    --------</span>
-</span><span data-line="246"><span class="sd">    If the partition file contains the following:</span>
-</span><span data-line="247"><span class="sd">    ```yaml</span>
-</span><span data-line="248"><span class="sd">    train:</span>
-</span><span data-line="249"><span class="sd">      metasets:</span>
-</span><span data-line="250"><span class="sd">        my_dataset:</span>
-</span><span data-line="251"><span class="sd">          molecules:</span>
-</span><span data-line="252"><span class="sd">            - mol1</span>
-</span><span data-line="253"><span class="sd">            - mol2</span>
-</span><span data-line="254"><span class="sd">    ```</span>
-</span><span data-line="255"><span class="sd">    and mol_name_prefixes = [&quot;DECOY_5&quot;, &quot;DECOY_05&quot;]</span>
-</span><span data-line="256"><span class="sd">    The updated partition file will contain:</span>
-</span><span data-line="257"><span class="sd">    ```yaml</span>
-</span><span data-line="258"><span class="sd">    train:</span>
-</span><span data-line="259"><span class="sd">      metasets:</span>
-</span><span data-line="260"><span class="sd">        my_dataset:</span>
-</span><span data-line="261"><span class="sd">          molecules:</span>
-</span><span data-line="262"><span class="sd">            - mol1</span>
-</span><span data-line="263"><span class="sd">            - mol2</span>
-</span><span data-line="264"><span class="sd">            - DECOY_5_mol1</span>
-</span><span data-line="265"><span class="sd">            - DECOY_5_mol2</span>
-</span><span data-line="266"><span class="sd">            - DECOY_05_mol1</span>
-</span><span data-line="267"><span class="sd">            - DECOY_05_mol2</span>
-</span><span data-line="268"><span class="sd">    ```</span>
-</span><span data-line="269"><span class="sd">    &quot;&quot;&quot;</span>
-</span><span data-line="270">    <span class="n">partition</span> <span class="o">=</span> <span class="n">load_yaml</span><span class="p">(</span><span class="n">partition_file</span><span class="p">)</span>
-</span><span data-line="271">
-</span><span data-line="272">    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">decoy_h5_files</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span>
-</span><span data-line="273">        <span class="n">partition</span><span class="p">[</span><span class="s2">&quot;train&quot;</span><span class="p">][</span><span class="s2">&quot;metasets&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-</span><span data-line="274">    <span class="p">),</span> <span class="s2">&quot;Currently the number of decoy HDF5 files must match the number of datasets in the partition file.&quot;</span>
-</span><span data-line="275">
-</span><span data-line="276">    <span class="k">for</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">decoy_h5_file</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
-</span><span data-line="277">        <span class="n">partition</span><span class="p">[</span><span class="s2">&quot;train&quot;</span><span class="p">][</span><span class="s2">&quot;metasets&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">decoy_h5_files</span>
-</span><span data-line="278">    <span class="p">):</span>
-</span><span data-line="279">        <span class="n">mols</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">partition</span><span class="p">[</span><span class="s2">&quot;train&quot;</span><span class="p">][</span><span class="s2">&quot;metasets&quot;</span><span class="p">][</span><span class="n">dataset</span><span class="p">][</span><span class="s2">&quot;molecules&quot;</span><span class="p">])</span>
-</span><span data-line="280">        <span class="n">detailed_indices</span> <span class="o">=</span> <span class="n">partition</span><span class="p">[</span><span class="s2">&quot;train&quot;</span><span class="p">][</span><span class="s2">&quot;metasets&quot;</span><span class="p">][</span><span class="n">dataset</span><span class="p">][</span><span class="s2">&quot;detailed_indices&quot;</span><span class="p">]</span>
-</span><span data-line="281">
-</span><span data-line="282">        <span class="k">with</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">decoy_h5_file</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-</span><span data-line="283">            <span class="k">if</span> <span class="n">dataset</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
-</span><span data-line="284">                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-</span><span data-line="285">                    <span class="sa">f</span><span class="s2">&quot;Dataset </span><span class="si">{</span><span class="n">dataset</span><span class="si">}</span><span class="s2"> not found in HDF5 file </span><span class="si">{</span><span class="n">decoy_h5_file</span><span class="si">}</span><span class="s2">.&quot;</span>
-</span><span data-line="286">                <span class="p">)</span>
-</span><span data-line="287">
-</span><span data-line="288">        <span class="k">for</span> <span class="n">mol</span> <span class="ow">in</span> <span class="n">mols</span><span class="p">:</span>
-</span><span data-line="289">            <span class="k">for</span> <span class="n">prefix</span> <span class="ow">in</span> <span class="n">mol_name_prefixes</span><span class="p">:</span>
-</span><span data-line="290">                <span class="n">partition</span><span class="p">[</span><span class="s2">&quot;train&quot;</span><span class="p">][</span><span class="s2">&quot;metasets&quot;</span><span class="p">][</span><span class="n">dataset</span><span class="p">][</span><span class="s2">&quot;molecules&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-</span><span data-line="291">                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">mol</span><span class="si">}</span><span class="s2">&quot;</span>
-</span><span data-line="292">                <span class="p">)</span>
-</span><span data-line="293">                <span class="n">decoy_mol</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">mol</span><span class="si">}</span><span class="s2">&quot;</span>
-</span><span data-line="294">                <span class="k">with</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">decoy_h5_file</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-</span><span data-line="295">                    <span class="k">if</span> <span class="n">decoy_mol</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">f</span><span class="p">[</span><span class="n">dataset</span><span class="p">]:</span>
-</span><span data-line="296">                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-</span><span data-line="297">                            <span class="sa">f</span><span class="s2">&quot;Molecule </span><span class="si">{</span><span class="n">decoy_mol</span><span class="si">}</span><span class="s2"> not found in dataset </span><span class="si">{</span><span class="n">dataset</span><span class="si">}</span><span class="s2"> of HDF5 file </span><span class="si">{</span><span class="n">decoy_h5_file</span><span class="si">}</span><span class="s2">.&quot;</span>
-</span><span data-line="298">                        <span class="p">)</span>
-</span><span data-line="299">                    <span class="k">if</span> <span class="s2">&quot;cg_coords&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">f</span><span class="p">[</span><span class="n">dataset</span><span class="p">][</span><span class="n">decoy_mol</span><span class="p">]:</span>
-</span><span data-line="300">                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-</span><span data-line="301">                            <span class="sa">f</span><span class="s2">&quot;&#39;cg_coords&#39; dataset not found for molecule </span><span class="si">{</span><span class="n">decoy_mol</span><span class="si">}</span><span class="s2"> in dataset </span><span class="si">{</span><span class="n">dataset</span><span class="si">}</span><span class="s2"> of HDF5 file </span><span class="si">{</span><span class="n">decoy_h5_file</span><span class="si">}</span><span class="s2">.&quot;</span>
-</span><span data-line="302">                        <span class="p">)</span>
-</span><span data-line="303">
-</span><span data-line="304">                    <span class="n">idx_decoy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="n">dataset</span><span class="p">][</span><span class="n">decoy_mol</span><span class="p">][</span><span class="s2">&quot;cg_coords&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-</span><span data-line="305">
-</span><span data-line="306">                <span class="n">original_path</span> <span class="o">=</span> <span class="n">detailed_indices</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
-</span><span data-line="307">                <span class="n">prior_tag</span> <span class="o">=</span> <span class="p">(</span>
-</span><span data-line="308">                    <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">original_path</span><span class="p">)</span>
-</span><span data-line="309">                    <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.npy&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
-</span><span data-line="310">                    <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;train_idx_&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
-</span><span data-line="311">                    <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">mol</span><span class="si">}</span><span class="s2">_&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
-</span><span data-line="312">                <span class="p">)</span>
-</span><span data-line="313">
-</span><span data-line="314">                <span class="k">if</span> <span class="n">original_path</span><span class="p">:</span>
-</span><span data-line="315">                    <span class="n">dir_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">original_path</span><span class="p">)</span>
-</span><span data-line="316">                    <span class="n">new_filename</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;train_idx_</span><span class="si">{</span><span class="n">decoy_mol</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">prior_tag</span><span class="si">}</span><span class="s2">.npy&quot;</span>
-</span><span data-line="317">                    <span class="n">new_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dir_path</span><span class="p">,</span> <span class="n">new_filename</span><span class="p">)</span>
-</span><span data-line="318">
-</span><span data-line="319">                    <span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">new_path</span><span class="p">,</span> <span class="n">idx_decoy</span><span class="p">)</span>
-</span><span data-line="320">
-</span><span data-line="321">                    <span class="n">detailed_indices</span><span class="p">[</span><span class="n">decoy_mol</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_path</span>
-</span><span data-line="322">
-</span><span data-line="323">    <span class="n">dump_yaml</span><span class="p">(</span><span class="n">partition_name</span><span class="p">,</span> <span class="n">partition</span><span class="p">)</span></div>
+</span><span data-line="208"><span class="k">def</span><span class="w"> </span><span class="nf">update_partition_file</span><span class="p">(</span>
+</span><span data-line="209">    <span class="n">partition_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="210">    <span class="n">decoy_h5_files</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+</span><span data-line="211">    <span class="n">mol_name_prefixes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+</span><span data-line="212">    <span class="n">partition_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="213"><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="214"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="215"><span class="sd">    Updates a partition file by adding new molecules with specified prefixes to the &quot;molecules&quot; list of existing datasets.</span>
+</span><span data-line="216">
+</span><span data-line="217"><span class="sd">    This function loads a YAML partition file, updates it by appending molecule names with specified prefixes, and then</span>
+</span><span data-line="218"><span class="sd">    saves the updated partition back to a new YAML file. It is typically used in scenarios where new decoy molecules,</span>
+</span><span data-line="219"><span class="sd">    generated with a prefix (such as a decoy identifier), need to be added to the partition file.</span>
+</span><span data-line="220">
+</span><span data-line="221"><span class="sd">    Arguments:</span>
+</span><span data-line="222"><span class="sd">    ----------</span>
+</span><span data-line="223"><span class="sd">    partition_file: str</span>
+</span><span data-line="224"><span class="sd">        Path to the original partition YAML file that contains metadata about the datasets and molecules. The function will</span>
+</span><span data-line="225"><span class="sd">        read this file and modify the &quot;molecules&quot; list within the &quot;metasets&quot; section of the partition.</span>
+</span><span data-line="226">
+</span><span data-line="227"><span class="sd">    decoy_h5_files: List[str]</span>
+</span><span data-line="228"><span class="sd">        A list of paths to HDF5 files that contain the decoy molecules. Each file corresponds to a dataset in the partition file.</span>
+</span><span data-line="229"><span class="sd">        The number and ordering of files should match the number and ordering of datasets in the partition file.</span>
+</span><span data-line="230">
+</span><span data-line="231"><span class="sd">    mol_name_prefixes: List[str]</span>
+</span><span data-line="232"><span class="sd">        A list of prefixes to be added to the names of existing molecules in the partition file. Each prefix will be prepended</span>
+</span><span data-line="233"><span class="sd">        to the names of the molecules in the partition&#39;s &quot;molecules&quot; list, essentially creating new &quot;decoy&quot; molecules with</span>
+</span><span data-line="234"><span class="sd">        the prefixed names.</span>
+</span><span data-line="235">
+</span><span data-line="236"><span class="sd">    partition_name: str</span>
+</span><span data-line="237"><span class="sd">        The path where the updated partition YAML file will be saved. This will overwrite the existing file at that location.</span>
+</span><span data-line="238">
+</span><span data-line="239"><span class="sd">    Notes:</span>
+</span><span data-line="240"><span class="sd">    -----</span>
+</span><span data-line="241"><span class="sd">    - The function assumes that the partition YAML file follows a specific structure, where molecule names are listed under</span>
+</span><span data-line="242"><span class="sd">      the &quot;train&quot; section in the &quot;metasets&quot; -&gt; &quot;molecules&quot; key.</span>
+</span><span data-line="243"><span class="sd">    - The function does not add decoy molecules to the validation dataset provided in the partition file</span>
+</span><span data-line="244">
+</span><span data-line="245"><span class="sd">    Example:</span>
+</span><span data-line="246"><span class="sd">    --------</span>
+</span><span data-line="247"><span class="sd">    If the partition file contains the following:</span>
+</span><span data-line="248"><span class="sd">    ```yaml</span>
+</span><span data-line="249"><span class="sd">    train:</span>
+</span><span data-line="250"><span class="sd">      metasets:</span>
+</span><span data-line="251"><span class="sd">        my_dataset:</span>
+</span><span data-line="252"><span class="sd">          molecules:</span>
+</span><span data-line="253"><span class="sd">            - mol1</span>
+</span><span data-line="254"><span class="sd">            - mol2</span>
+</span><span data-line="255"><span class="sd">    ```</span>
+</span><span data-line="256"><span class="sd">    and mol_name_prefixes = [&quot;DECOY_5&quot;, &quot;DECOY_05&quot;]</span>
+</span><span data-line="257"><span class="sd">    The updated partition file will contain:</span>
+</span><span data-line="258"><span class="sd">    ```yaml</span>
+</span><span data-line="259"><span class="sd">    train:</span>
+</span><span data-line="260"><span class="sd">      metasets:</span>
+</span><span data-line="261"><span class="sd">        my_dataset:</span>
+</span><span data-line="262"><span class="sd">          molecules:</span>
+</span><span data-line="263"><span class="sd">            - mol1</span>
+</span><span data-line="264"><span class="sd">            - mol2</span>
+</span><span data-line="265"><span class="sd">            - DECOY_5_mol1</span>
+</span><span data-line="266"><span class="sd">            - DECOY_5_mol2</span>
+</span><span data-line="267"><span class="sd">            - DECOY_05_mol1</span>
+</span><span data-line="268"><span class="sd">            - DECOY_05_mol2</span>
+</span><span data-line="269"><span class="sd">    ```</span>
+</span><span data-line="270"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="271">    <span class="n">partition</span> <span class="o">=</span> <span class="n">load_yaml</span><span class="p">(</span><span class="n">partition_file</span><span class="p">)</span>
+</span><span data-line="272">
+</span><span data-line="273">    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">decoy_h5_files</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span>
+</span><span data-line="274">        <span class="n">partition</span><span class="p">[</span><span class="s2">&quot;train&quot;</span><span class="p">][</span><span class="s2">&quot;metasets&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+</span><span data-line="275">    <span class="p">),</span> <span class="s2">&quot;Currently the number of decoy HDF5 files must match the number of datasets in the partition file.&quot;</span>
+</span><span data-line="276">
+</span><span data-line="277">    <span class="k">for</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">decoy_h5_file</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+</span><span data-line="278">        <span class="n">partition</span><span class="p">[</span><span class="s2">&quot;train&quot;</span><span class="p">][</span><span class="s2">&quot;metasets&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">decoy_h5_files</span>
+</span><span data-line="279">    <span class="p">):</span>
+</span><span data-line="280">        <span class="n">mols</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">partition</span><span class="p">[</span><span class="s2">&quot;train&quot;</span><span class="p">][</span><span class="s2">&quot;metasets&quot;</span><span class="p">][</span><span class="n">dataset</span><span class="p">][</span><span class="s2">&quot;molecules&quot;</span><span class="p">])</span>
+</span><span data-line="281">        <span class="n">detailed_indices</span> <span class="o">=</span> <span class="n">partition</span><span class="p">[</span><span class="s2">&quot;train&quot;</span><span class="p">][</span><span class="s2">&quot;metasets&quot;</span><span class="p">][</span><span class="n">dataset</span><span class="p">][</span><span class="s2">&quot;detailed_indices&quot;</span><span class="p">]</span>
+</span><span data-line="282">
+</span><span data-line="283">        <span class="k">with</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">decoy_h5_file</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span><span data-line="284">            <span class="k">if</span> <span class="n">dataset</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+</span><span data-line="285">                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+</span><span data-line="286">                    <span class="sa">f</span><span class="s2">&quot;Dataset </span><span class="si">{</span><span class="n">dataset</span><span class="si">}</span><span class="s2"> not found in HDF5 file </span><span class="si">{</span><span class="n">decoy_h5_file</span><span class="si">}</span><span class="s2">.&quot;</span>
+</span><span data-line="287">                <span class="p">)</span>
+</span><span data-line="288">
+</span><span data-line="289">        <span class="k">for</span> <span class="n">mol</span> <span class="ow">in</span> <span class="n">mols</span><span class="p">:</span>
+</span><span data-line="290">            <span class="k">for</span> <span class="n">prefix</span> <span class="ow">in</span> <span class="n">mol_name_prefixes</span><span class="p">:</span>
+</span><span data-line="291">                <span class="n">partition</span><span class="p">[</span><span class="s2">&quot;train&quot;</span><span class="p">][</span><span class="s2">&quot;metasets&quot;</span><span class="p">][</span><span class="n">dataset</span><span class="p">][</span><span class="s2">&quot;molecules&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+</span><span data-line="292">                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">mol</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span data-line="293">                <span class="p">)</span>
+</span><span data-line="294">                <span class="n">decoy_mol</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">mol</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span data-line="295">                <span class="k">with</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">decoy_h5_file</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span><span data-line="296">                    <span class="k">if</span> <span class="n">decoy_mol</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">f</span><span class="p">[</span><span class="n">dataset</span><span class="p">]:</span>
+</span><span data-line="297">                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+</span><span data-line="298">                            <span class="sa">f</span><span class="s2">&quot;Molecule </span><span class="si">{</span><span class="n">decoy_mol</span><span class="si">}</span><span class="s2"> not found in dataset </span><span class="si">{</span><span class="n">dataset</span><span class="si">}</span><span class="s2"> of HDF5 file </span><span class="si">{</span><span class="n">decoy_h5_file</span><span class="si">}</span><span class="s2">.&quot;</span>
+</span><span data-line="299">                        <span class="p">)</span>
+</span><span data-line="300">                    <span class="k">if</span> <span class="s2">&quot;cg_coords&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">f</span><span class="p">[</span><span class="n">dataset</span><span class="p">][</span><span class="n">decoy_mol</span><span class="p">]:</span>
+</span><span data-line="301">                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+</span><span data-line="302">                            <span class="sa">f</span><span class="s2">&quot;&#39;cg_coords&#39; dataset not found for molecule </span><span class="si">{</span><span class="n">decoy_mol</span><span class="si">}</span><span class="s2"> in dataset </span><span class="si">{</span><span class="n">dataset</span><span class="si">}</span><span class="s2"> of HDF5 file </span><span class="si">{</span><span class="n">decoy_h5_file</span><span class="si">}</span><span class="s2">.&quot;</span>
+</span><span data-line="303">                        <span class="p">)</span>
+</span><span data-line="304">
+</span><span data-line="305">                    <span class="n">idx_decoy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="n">dataset</span><span class="p">][</span><span class="n">decoy_mol</span><span class="p">][</span><span class="s2">&quot;cg_coords&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</span><span data-line="306">
+</span><span data-line="307">                <span class="n">original_path</span> <span class="o">=</span> <span class="n">detailed_indices</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+</span><span data-line="308">                <span class="n">prior_tag</span> <span class="o">=</span> <span class="p">(</span>
+</span><span data-line="309">                    <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">original_path</span><span class="p">)</span>
+</span><span data-line="310">                    <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.npy&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+</span><span data-line="311">                    <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;train_idx_&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+</span><span data-line="312">                    <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">mol</span><span class="si">}</span><span class="s2">_&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+</span><span data-line="313">                <span class="p">)</span>
+</span><span data-line="314">
+</span><span data-line="315">                <span class="k">if</span> <span class="n">original_path</span><span class="p">:</span>
+</span><span data-line="316">                    <span class="n">dir_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">original_path</span><span class="p">)</span>
+</span><span data-line="317">                    <span class="n">new_filename</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;train_idx_</span><span class="si">{</span><span class="n">decoy_mol</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">prior_tag</span><span class="si">}</span><span class="s2">.npy&quot;</span>
+</span><span data-line="318">                    <span class="n">new_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dir_path</span><span class="p">,</span> <span class="n">new_filename</span><span class="p">)</span>
+</span><span data-line="319">
+</span><span data-line="320">                    <span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">new_path</span><span class="p">,</span> <span class="n">idx_decoy</span><span class="p">)</span>
+</span><span data-line="321">
+</span><span data-line="322">                    <span class="n">detailed_indices</span><span class="p">[</span><span class="n">decoy_mol</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_path</span>
+</span><span data-line="323">
+</span><span data-line="324">    <span class="n">dump_yaml</span><span class="p">(</span><span class="n">partition_name</span><span class="p">,</span> <span class="n">partition</span><span class="p">)</span></div>
 
-</span><span data-line="324">
 </span><span data-line="325">
-</span><span data-line="326"><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
-</span><span data-line="327">    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Start add_decoys.py: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ctime</span><span class="p">()))</span>
-</span><span data-line="328">    <span class="n">CLI</span><span class="p">([</span><span class="n">add_decoy</span><span class="p">,</span> <span class="n">update_partition_file</span><span class="p">])</span>
-</span><span data-line="329">    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Finish add_decoys.py: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ctime</span><span class="p">()))</span>
-</span><span data-line="330">
+</span><span data-line="326">
+</span><span data-line="327"><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+</span><span data-line="328">    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Start add_decoys.py: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ctime</span><span class="p">()))</span>
+</span><span data-line="329">    <span class="n">CLI</span><span class="p">([</span><span class="n">add_decoy</span><span class="p">,</span> <span class="n">update_partition_file</span><span class="p">])</span>
+</span><span data-line="330">    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Finish add_decoys.py: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ctime</span><span class="p">()))</span>
 </span><span data-line="331">
-</span><span data-line="332"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-</span><span data-line="333">    <span class="n">main</span><span class="p">()</span>
+</span><span data-line="332">
+</span><span data-line="333"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+</span><span data-line="334">    <span class="n">main</span><span class="p">()</span>
 </span></pre></div>
         </article><button class="back-to-top" type="button">
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
