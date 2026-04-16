@@ -201,7 +201,7 @@ def add_decoy(
                     location=f[datasets[i]],
                     scale=scale,
                     name=f"{mol_name_prefix}_{mol}",
-                    stride=stride
+                    stride=stride,
                 )
 
 
