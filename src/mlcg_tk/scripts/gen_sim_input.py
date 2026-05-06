@@ -115,6 +115,8 @@ def process_sim_input(
                 cg_mass_list.append(cg_masses)
                 cg_nls_list.append(prior_nls)
 
+        samples.save_cg_output(save_dir, save_coord_force=False, save_cg_maps=False)
+
     data_list = []
     for coords, types, masses, nls in zip(
         cg_coord_list, cg_type_list, cg_mass_list, cg_nls_list
