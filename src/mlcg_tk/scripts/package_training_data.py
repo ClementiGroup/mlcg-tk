@@ -34,6 +34,8 @@ def package_training_data(
     random_state: Optional[str] = None,
     mol_num_batches: Optional[int] = 1,
     keep_batches: Optional[bool] = False,
+    pbc_active: Optional[bool] = False,
+    cell_active: Optional[bool] = False,
 ):
     """
     Computes structural features and accumulates statistics on dataset samples
@@ -133,6 +135,18 @@ def package_training_data(
                 )
                 hdf_group.attrs["cg_embeds"] = cg_embeds
                 hdf_group.attrs["N_frames"] = cg_coords.shape[0]
+
+                if pbc_active and cell_active:
+                    print(samples.mol_name)
+                    cells = np.load(f'{training_data_dir}{samples.mol_name}_cells.npy')
+                    cells = cells
+                    #TODO: check which dimensions are PBC active
+                    pbcs  = np.tile(True, (cells.shape[0], 3))
+                    hdf_group.create_dataset("pbc", data = pbcs)
+                    hdf_group.create_dataset("cell", data = cells.astype(np.float32))
+                    print(pbcs.shape,cells.shape)
+                else:
+                    print('h5 dataset will not include PBC and cell information')                
 
     if save_partition:
         # Create partition file

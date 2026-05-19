@@ -169,6 +169,9 @@ def process_sim_input(
                 cg_type_list.append(cg_types)
                 cg_mass_list.append(cg_masses)
                 cg_nls_list.append(prior_nls)
+                if use_pbc:
+                    cg_pbc_list.append(pbc)
+                    cg_cell_list.append(cell)
 
     data_list = []
     if not use_pbc:
