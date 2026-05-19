@@ -1,0 +1,43 @@
+version: 2.1
+jobs:
+  test:
+    docker:
+      - image: jacopoventurin/mlcg_prebuilt_cpu_python_312:v0.1
+    parallelism: 2   # run tests across 2 parallel containers
+    steps:
+      - checkout
+      - run:
+          name: "Install repo"
+          command: |
+            pip --version
+            pip install .
+      - run:
+          name: "Run unit tests"
+          command: |
+            set -e
+            TEST_FILES=$(circleci tests glob "tests/unit/**/test_*.py" | circleci tests split --split-by=timings)
+            echo "$TEST_FILES"
+            mkdir -p test-results
+            pytest --verbose --junitxml=test-results/unit.xml $TEST_FILES
+          no_output_timeout: 5m
+      - run:
+          name: "Run integration tests"
+          command: |
+            if [ -n "$CIRCLE_PULL_REQUEST" ]; then
+              set -e
+              mkdir -p test-results
+              pytest --verbose --junitxml=test-results/integration.xml -m integration --runner_idx=${CIRCLE_NODE_INDEX} --num_containers=${CIRCLE_NODE_TOTAL}
+            else
+              echo "Skipping examples test: not a PR"
+            fi
+          no_output_timeout: 80m
+      - store_test_results:
+          path: test-results
+      - store_artifacts:
+          path: test-results
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - test

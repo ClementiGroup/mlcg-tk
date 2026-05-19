@@ -100,8 +100,8 @@ def compute_statistics(
     nl_names_key_list = {}
     atom_types = tmp_batch.atom_types
     for nl_name in nl_names:
-            mapping = tmp_batch.neighbor_list[nl_name]["index_mapping"]
-            nl_names_key_list[nl_name] = compute_nl_unique_keys(atom_types, mapping)
+        mapping = tmp_batch.neighbor_list[nl_name]["index_mapping"]
+        nl_names_key_list[nl_name] = compute_nl_unique_keys(atom_types, mapping)
 
     for samples in tqdm(
         dataset, f"Compute histograms of CG data for {dataset_name} dataset..."
@@ -161,14 +161,14 @@ def compute_statistics(
                 pck.dump(sample_prior_builders, f)
 
             continue  # does not save accumulated statistics if sample statistics saved
-        
+
         for batch in tqdm(batch_list, f"molecule name: {samples.name}", leave=False):
             batch = batch.to(device)
             for nl_name in nl_names:
-                    prior_builder = nl_name2prior_builder[nl_name]
-                    prior_builder.accumulate_statistics(
-                        nl_name, batch, nl_names_key_list[nl_name]
-                    )
+                prior_builder = nl_name2prior_builder[nl_name]
+                prior_builder.accumulate_statistics(
+                    nl_name, batch, nl_names_key_list[nl_name]
+                )
 
     key_map = {v: k for k, v in embedding_map.items()}
     if save_figs:
@@ -227,7 +227,7 @@ def fit_priors(
     prior_models = {}
     pbar = tqdm(nl_names)
     for nl_name in pbar:
-        pbar.set_description(f"Fiting prior {nl_name}")
+        pbar.set_description(f"Fitting prior {nl_name}")
         prior_builder = nl_name2prior_builder[nl_name]
         prior_model = fit_potentials(
             nl_name=nl_name,
@@ -240,6 +240,7 @@ def fit_priors(
     modules = torch.nn.ModuleDict(prior_models)
     full_prior_model = SumOut(modules, targets=["energy", "forces"])
     torch.save(full_prior_model, fnout)
+
 
 def main():
     print("Start fit_priors.py: {}".format(ctime()))

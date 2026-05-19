@@ -1,0 +1,9 @@
+h5_files:
+- ./demo_processed_data/1L2Y_ca_priors.h5
+datasets:
+- 1L2Y
+mol_name_prefix: DECOY_05
+scale: 0.5
+stride: 50
+append: true
+

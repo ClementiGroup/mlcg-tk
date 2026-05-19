@@ -119,11 +119,11 @@ def _polynomial_fit(
         dev = [idx * popt[idx] for idx in range(1, n_degs + 1)]
         dev_val_at_min_1 = polynomial_wrapper_fit_func(torch.tensor(-1), dev)
         dev_val_at_plus_1 = polynomial_wrapper_fit_func(torch.tensor(1), dev)
-        if dev_val_at_min_1 * dev_val_at_plus_1 < 0:
-            # relaunch the fit making sure that the second largest degree has no coefficient
-            low_bounds[-2] = -1e-2
-            high_bounds[-2] = 1e-2
-            popt = _scipy_fit(xs, ys, n_degs, bounds=(low_bounds, high_bounds))
+#        if dev_val_at_min_1 * dev_val_at_plus_1 > 0:
+#            # relaunch the fit making sure that the second largest degree has no coefficient
+#            low_bounds[-2] = -1e-2
+#            high_bounds[-2] = 1e-2
+#            popt = _scipy_fit(xs, ys, n_degs, bounds=(low_bounds, high_bounds))
     else:
         raise ValueError(
             f"regression method {regression_method} is not in {_valid_regression_methods} "

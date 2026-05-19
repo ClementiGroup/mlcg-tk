@@ -58,13 +58,19 @@ from mlcg_tk.input_generator.prior_nls import (
     CA_pseudo_dihedral,
 )
 
-from mlcg_tk.input_generator.prior_fit import fit_harmonic_from_potential_estimates, harmonic
+from mlcg_tk.input_generator.prior_fit import (
+    fit_harmonic_from_potential_estimates,
+    harmonic,
+)
 from mlcg_tk.input_generator.prior_fit import (
     fit_repulsion_from_potential_estimates,
     fit_repulsion_from_values,
     repulsion,
 )
 from mlcg_tk.input_generator.prior_fit.fit_potentials import fit_potentials
-from mlcg_tk.input_generator.prior_fit import fit_dihedral_from_potential_estimates, dihedral
+from mlcg_tk.input_generator.prior_fit import (
+    fit_dihedral_from_potential_estimates,
+    dihedral,
+)
 
 from mlcg_tk.input_generator.prior_gen import Bonds, Angles, NonBonded, Dihedrals

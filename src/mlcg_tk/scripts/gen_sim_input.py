@@ -46,7 +46,7 @@ def process_sim_input(
     cell2: Optional[Union[List[float], np.ndarray]] = None,
     cell3: Optional[Union[List[float], np.ndarray]] = None,
 ):
-    """
+    r"""
     Generates input AtomicData objects for coarse-grained simulations
 
     Parameters
@@ -135,7 +135,6 @@ def process_sim_input(
         samples.input_traj, samples.top_dataframe = sample_loader.get_input_top(
             name=samples.name, raw_data_dir=raw_data_dir
         )
-
         samples.apply_cg_mapping(
             cg_atoms=cg_atoms,
             embedding_function=embedding_func,
@@ -173,6 +172,8 @@ def process_sim_input(
                     cg_pbc_list.append(pbc)
                     cg_cell_list.append(cell)
 
+        samples.save_cg_output(save_dir, save_coord_force=False, save_cg_maps=False)
+
     data_list = []
     if not use_pbc:
         # Non-periodic case
@@ -206,11 +207,11 @@ def process_sim_input(
         f"{save_dir}{get_output_tag([dataset_name, tag], placement='before')}configurations.pt",
     )
 
+
 def main():
     print("Start gen_sim_input.py: {}".format(ctime()))
     CLI([process_sim_input])
     print("Finish gen_sim_input.py: {}".format(ctime()))
-
 
 
 if __name__ == "__main__":

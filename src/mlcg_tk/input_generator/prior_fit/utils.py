@@ -40,7 +40,7 @@ def compute_nl_unique_keys(
         [atom_types[mapping[ii]] for ii in range(order)], dim=0
     )
     interaction_types_sym = _symmetrise_map[order](interaction_types)
-    if interaction_types_sym.numel() >0 :
+    if interaction_types_sym.numel() > 0:
         max_type = interaction_types_sym.max().item() + 1
         multipliers = torch.tensor(
             [max_type**i for i in range(order)],
@@ -52,7 +52,9 @@ def compute_nl_unique_keys(
         unique_hashes, inverse_indices = torch.unique(hashed, return_inverse=True)
         n_unique = len(unique_hashes)
 
-        first_occurrences = torch.zeros(n_unique, dtype=torch.long, device=hashed.device)
+        first_occurrences = torch.zeros(
+            n_unique, dtype=torch.long, device=hashed.device
+        )
         for i, h in enumerate(unique_hashes):
             first_occurrences[i] = (hashed == h).nonzero(as_tuple=True)[0][0]
         unique_keys_in_data = interaction_types_sym[:, first_occurrences]

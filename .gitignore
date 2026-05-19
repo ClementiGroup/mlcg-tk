@@ -1,6 +1,6 @@
 # for demo reasons
 demo_processed_data
-
+temp_figs
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

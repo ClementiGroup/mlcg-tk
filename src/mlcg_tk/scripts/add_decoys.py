@@ -185,7 +185,7 @@ def add_decoy(
     for i, h5_file in enumerate(h5_files):
         if not append:  # copy h5 datasets
             os.system(
-                f"cp {os.path.dirname(h5_file)} {os.path.join(os.path.dirname(h5_file), f'DECOY_{os.path.basename(h5_dataset)}')}"
+                f"cp {h5_file} {os.path.join(os.path.dirname(h5_file), f'DECOY_{os.path.basename(h5_file)}')}"
             )
             decoy_h5_file = os.path.join(
                 os.path.dirname(h5_file), f"DECOY_{os.path.basename(h5_file)}"
@@ -199,8 +199,9 @@ def add_decoy(
                 add_noise_decoy_molecule(
                     source_molecule=f[datasets[i]][mol],
                     location=f[datasets[i]],
-                    scale=5.0,
+                    scale=scale,
                     name=f"{mol_name_prefix}_{mol}",
+                    stride=stride,
                 )
 
 

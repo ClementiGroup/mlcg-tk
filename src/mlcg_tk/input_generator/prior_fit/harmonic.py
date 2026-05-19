@@ -23,9 +23,7 @@ def fit_harmonic_from_potential_estimates(
         The value of the energy :math:`U` as a function of the bin
         centers, as retrived via:
 
-        ..math::
-
-            U(x) = -\frac{1}{\beta}\log{ \left( p(x)\right)}
+        :math:`U(x) = -\frac{1}{\beta}\log{ \left( p(x)\right)}`
 
         where :math:`\beta` is the inverse thermodynamic temperature and
         :math:`p(x)` is the normalized probability distribution of

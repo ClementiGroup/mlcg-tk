@@ -4,5 +4,5 @@ tag: ""
 save_dir: ./demo_processed_data/
 prior_tag: prior_tag
 prior_fn: ./demo_processed_data/prior_tag_prior_model.pt
-batch_size: 5000
+batch_size: 1000
 device: cpu

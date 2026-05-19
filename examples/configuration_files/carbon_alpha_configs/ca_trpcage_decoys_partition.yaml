@@ -1,0 +1,7 @@
+partition_file: ./demo_processed_data/partition_1L2Y_ca_priors.yaml
+decoy_h5_files: 
+- ./demo_processed_data/1L2Y_ca_priors.h5
+mol_name_prefixes: 
+- DECOY_05
+partition_name: ./demo_processed_data/DECOY_partition_1L2Y.yaml
+
