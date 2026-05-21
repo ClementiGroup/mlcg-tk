@@ -536,7 +536,9 @@ def get_edges_and_orders(
         edges_and_orders = prior_builder.build_nl(topology)
         if isinstance(edges_and_orders, list):
             all_edges_and_orders.extend(edges_and_orders)
-            all_bond_edges.extend([p[2] for p in edges_and_orders])
+            all_bond_edges.extend(
+                [p[2] for p in edges_and_orders if p[2].shape[1] != 0]
+            )
         else:
             all_edges_and_orders.append(edges_and_orders)
             all_bond_edges.append(edges_and_orders[2])
@@ -552,7 +554,9 @@ def get_edges_and_orders(
         edges_and_orders = prior_builder.build_nl(topology)
         if isinstance(edges_and_orders, list):
             all_edges_and_orders.extend(edges_and_orders)
-            all_angle_edges.extend([p[2] for p in edges_and_orders])
+            all_angle_edges.extend(
+                [p[2] for p in edges_and_orders if p[2].shape[1] != 0]
+            )
         else:
             all_edges_and_orders.append(edges_and_orders)
             all_angle_edges.append(edges_and_orders[2])

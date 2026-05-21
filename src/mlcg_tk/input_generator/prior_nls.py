@@ -5,9 +5,7 @@ from typing import Any, List, Union, Tuple, Optional
 import numpy as np
 
 from mlcg.geometry._symmetrize import _symmetrise_distance_interaction
-from networkx.algorithms.shortest_paths.unweighted import (
-    bidirectional_shortest_path,
-)
+from scipy.sparse.csgraph import shortest_path
 import networkx as nx
 from mlcg.geometry.topology import (
     Topology,
@@ -17,24 +15,6 @@ from mlcg.geometry.topology import (
 
 from .utils import get_dihedral_groups, split_bulk_termini
 from .embedding_maps import all_residues
-
-
-def check_graph_distance(
-    graph: nx.Graph, conn_comp: List[set], node_1: int, node_2: int, min_distance: int
-) -> bool:
-    """Function to check if the shortest path between to nodes in a graph is smaller than `min_distance`
-
-    This covers the case when the nodes are in different connected components before hand.
-    to save computation time.
-    """
-    con_1 = [i for i, comp in enumerate(conn_comp) if node_1 in comp][0]
-    con_2 = [i for i, comp in enumerate(conn_comp) if node_2 in comp][0]
-    if con_1 == con_2:
-        shortest_path = bidirectional_shortest_path(graph, node_1, node_2)
-        dist = len(shortest_path)
-        return dist >= min_distance
-    else:
-        return True
 
 
 class StandardBonds:
@@ -211,31 +191,55 @@ class Non_Bonded:
             in terminal residues
         """
         mlcg_top = Topology.from_mdtraj(topology)
-        fully_connected_edges = _symmetrise_distance_interaction(
-            mlcg_top.fully_connected2torch()
-        ).numpy()
         conn_mat = get_connectivity_matrix(mlcg_top).numpy()
         graph = nx.Graph(conn_mat)
-        conn_comps = list(nx.connected_components(graph))
-        pairs_parsed = np.array(
-            [
-                p
-                for p in fully_connected_edges.T
-                if (
-                    abs(
-                        topology.atom(p[0]).residue.index
-                        - topology.atom(p[1]).residue.index
-                    )
-                    >= res_exclusion
-                )
-                and (
-                    graph.has_edge(p[0], p[1]) == False
-                    and check_graph_distance(graph, conn_comps, p[0], p[1], min_pair)
-                )
-                and not np.all(bond_edges == p[:, None], axis=0).any()
-                and not np.all(angle_edges[[0, 2], :] == p[:, None], axis=0).any()
-            ]
+        csgraph = nx.to_scipy_sparse_array(graph, format="csr")
+
+        # Compute graph shortest distances and store them in a dense matrix.
+        # Diagonal values should be 0, and dists[i, j] is np.inf if i and j
+        # are in different connected components
+        dists = shortest_path(
+            csgraph,
+            method="auto",  # To be safe, but should always select Djikstra ('D')
+            directed=False,
+            unweighted=True,
         )
+
+        # No self-edges
+        mask = ~np.eye(conn_mat.shape[0], dtype=bool)
+
+        # No non-self edges (use out kwarg for memory efficiency)
+        np.logical_and(mask, conn_mat == 0, out=mask)
+
+        # Minimum graph distance
+        np.logical_and(mask, dists >= min_pair - 1, out=mask)
+
+        # Not among bond edges
+        bond_edges_mask = np.zeros_like(mask)
+        bond_edges_mask[bond_edges[0], bond_edges[1]] = True
+        np.logical_and(mask, ~bond_edges_mask, out=mask)
+
+        # Not among angle edges
+        angle_edges_mask = np.zeros_like(mask)
+        angle_edges_mask[angle_edges[0], angle_edges[2]] = True
+        np.logical_and(mask, ~angle_edges_mask, out=mask)
+
+        # From boolean mask to nonzero indices
+        edges_to_consider = torch.from_numpy(np.array(np.nonzero(mask)))
+        edges_to_consider = (
+            _symmetrise_distance_interaction(edges_to_consider).numpy().T
+        )
+        pairs_parsed = []
+        for p in edges_to_consider:
+            if (
+                abs(
+                    topology.atom(p[0]).residue.index
+                    - topology.atom(p[1]).residue.index
+                )
+                >= res_exclusion
+            ):
+                pairs_parsed.append(p)
+        pairs_parsed = np.array(pairs_parsed)
 
         non_bonded_edges = torch.tensor(pairs_parsed.T)
         non_bonded_edges = torch.unique(
