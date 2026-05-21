@@ -6,7 +6,7 @@
     function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
     setColorMode(localStorage._theme||"auto");
   </script><link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=e1a1ceaf" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/shibuya.css?v=44020203" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/shibuya.css?v=9454f7d5" />
     <link media="print" rel="stylesheet" type="text/css" href="../../../_static/print.css?v=20ff2c19" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,7 +17,8 @@
   --sy-f-heading: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
 }
 </style>
-    <meta property="og:type" content="website"/><meta property="og:title" content="mlcg_tk.scripts.gen_sim_input"/>
+    
+  <meta property="og:type" content="website"/><meta property="og:title" content="mlcg_tk.scripts.gen_sim_input"/>
     <meta name="twitter:card" content="summary"/>
   </head>
 <body><div class="sy-head">
@@ -269,33 +270,35 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="115">                <span class="n">cg_mass_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cg_masses</span><span class="p">)</span>
 </span><span data-line="116">                <span class="n">cg_nls_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prior_nls</span><span class="p">)</span>
 </span><span data-line="117">
-</span><span data-line="118">    <span class="n">data_list</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span data-line="119">    <span class="k">for</span> <span class="n">coords</span><span class="p">,</span> <span class="n">types</span><span class="p">,</span> <span class="n">masses</span><span class="p">,</span> <span class="n">nls</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
-</span><span data-line="120">        <span class="n">cg_coord_list</span><span class="p">,</span> <span class="n">cg_type_list</span><span class="p">,</span> <span class="n">cg_mass_list</span><span class="p">,</span> <span class="n">cg_nls_list</span>
-</span><span data-line="121">    <span class="p">):</span>
-</span><span data-line="122">        <span class="n">data</span> <span class="o">=</span> <span class="n">AtomicData</span><span class="o">.</span><span class="n">from_points</span><span class="p">(</span>
-</span><span data-line="123">            <span class="n">pos</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">coords</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
-</span><span data-line="124">            <span class="n">atom_types</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">types</span><span class="p">),</span>
-</span><span data-line="125">            <span class="n">masses</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">masses</span><span class="p">),</span>
-</span><span data-line="126">        <span class="p">)</span>
-</span><span data-line="127">        <span class="n">data</span><span class="o">.</span><span class="n">neighbor_list</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">nls</span><span class="p">)</span>
-</span><span data-line="128">        <span class="n">data_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-</span><span data-line="129">
-</span><span data-line="130">    <span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span>
-</span><span data-line="131">        <span class="n">data_list</span><span class="p">,</span>
-</span><span data-line="132">        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">save_dir</span><span class="si">}{</span><span class="n">get_output_tag</span><span class="p">([</span><span class="n">dataset_name</span><span class="p">,</span><span class="w"> </span><span class="n">tag</span><span class="p">],</span><span class="w"> </span><span class="n">placement</span><span class="o">=</span><span class="s1">&#39;before&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">configurations.pt&quot;</span><span class="p">,</span>
-</span><span data-line="133">    <span class="p">)</span></div>
+</span><span data-line="118">        <span class="n">samples</span><span class="o">.</span><span class="n">save_cg_output</span><span class="p">(</span><span class="n">save_dir</span><span class="p">,</span> <span class="n">save_coord_force</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">save_cg_maps</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span><span data-line="119">
+</span><span data-line="120">    <span class="n">data_list</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span data-line="121">    <span class="k">for</span> <span class="n">coords</span><span class="p">,</span> <span class="n">types</span><span class="p">,</span> <span class="n">masses</span><span class="p">,</span> <span class="n">nls</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+</span><span data-line="122">        <span class="n">cg_coord_list</span><span class="p">,</span> <span class="n">cg_type_list</span><span class="p">,</span> <span class="n">cg_mass_list</span><span class="p">,</span> <span class="n">cg_nls_list</span>
+</span><span data-line="123">    <span class="p">):</span>
+</span><span data-line="124">        <span class="n">data</span> <span class="o">=</span> <span class="n">AtomicData</span><span class="o">.</span><span class="n">from_points</span><span class="p">(</span>
+</span><span data-line="125">            <span class="n">pos</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">coords</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+</span><span data-line="126">            <span class="n">atom_types</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">types</span><span class="p">),</span>
+</span><span data-line="127">            <span class="n">masses</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">masses</span><span class="p">),</span>
+</span><span data-line="128">        <span class="p">)</span>
+</span><span data-line="129">        <span class="n">data</span><span class="o">.</span><span class="n">neighbor_list</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">nls</span><span class="p">)</span>
+</span><span data-line="130">        <span class="n">data_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span data-line="131">
+</span><span data-line="132">    <span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span>
+</span><span data-line="133">        <span class="n">data_list</span><span class="p">,</span>
+</span><span data-line="134">        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">save_dir</span><span class="si">}{</span><span class="n">get_output_tag</span><span class="p">([</span><span class="n">dataset_name</span><span class="p">,</span><span class="w"> </span><span class="n">tag</span><span class="p">],</span><span class="w"> </span><span class="n">placement</span><span class="o">=</span><span class="s1">&#39;before&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">configurations.pt&quot;</span><span class="p">,</span>
+</span><span data-line="135">    <span class="p">)</span></div>
 
-</span><span data-line="134">
-</span><span data-line="135">
-</span><span data-line="136"><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
-</span><span data-line="137">    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Start gen_sim_input.py: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ctime</span><span class="p">()))</span>
-</span><span data-line="138">    <span class="n">CLI</span><span class="p">([</span><span class="n">process_sim_input</span><span class="p">])</span>
-</span><span data-line="139">    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Finish gen_sim_input.py: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ctime</span><span class="p">()))</span>
-</span><span data-line="140">
-</span><span data-line="141">
-</span><span data-line="142"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-</span><span data-line="143">    <span class="n">main</span><span class="p">()</span>
+</span><span data-line="136">
+</span><span data-line="137">
+</span><span data-line="138"><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+</span><span data-line="139">    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Start gen_sim_input.py: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ctime</span><span class="p">()))</span>
+</span><span data-line="140">    <span class="n">CLI</span><span class="p">([</span><span class="n">process_sim_input</span><span class="p">])</span>
+</span><span data-line="141">    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Finish gen_sim_input.py: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ctime</span><span class="p">()))</span>
+</span><span data-line="142">
+</span><span data-line="143">
+</span><span data-line="144"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+</span><span data-line="145">    <span class="n">main</span><span class="p">()</span>
 </span></pre></div>
         </article><button class="back-to-top" type="button">
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -326,5 +329,5 @@ data-aria-dark="Switch to auto color mode">
       <script src="../../../_static/documentation_options.js?v=7026087e"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
-      <script src="../../../_static/shibuya.js?v=cac61aee"></script></body>
+      <script src="../../../_static/shibuya.js?v=50760d75"></script></body>
 </html>
