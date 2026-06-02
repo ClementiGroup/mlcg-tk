@@ -3,7 +3,7 @@ import numpy as np
 import torch
 from typing import List, Tuple
 
-from mlcg.nn.prior import _Prior, Harmonic, Repulsion, Dihedral
+from mlcg.nn.prior import _Prior, Harmonic, Repulsion, Dihedral, Polynomial
 
 
 def symmetrized_keys_generator(order: int, emb_max: int = 20) -> List[Tuple]:
@@ -37,7 +37,9 @@ def get_nonzero_keys(prior_module: _Prior) -> torch.Tensor:
         keys = prior_module.k.nonzero()
     elif isinstance(prior_module, Repulsion):
         keys = prior_module.sigma.nonzero()
-    elif issubclass(type(prior_module), Dihedral):
+    elif issubclass(type(prior_module), Dihedral) or issubclass(
+        type(prior_module), Polynomial
+    ):
         keys = prior_module.v_0.nonzero()
     else:
         raise ValueError(f"Prior of type {prior_module.__class__} not supported")
@@ -91,6 +93,15 @@ def prior_evaluator(prior_module: _Prior, key: Tuple, x: torch.Tensor) -> torch.
     elif isinstance(prior_module, Repulsion):
         sigma = prior_module.sigma[key[0], key[1]].item()
         res = prior_module.compute(x, sigma)
+    elif isinstance(prior_module, Polynomial):
+        prior_module.v_0[key]
+        V0s = prior_module.v_0[key].t()
+        ks = [prior_module.ks[idx][key] for idx in range(prior_module.n_degs)]
+        res = prior_module.compute(
+            x,
+            ks,
+            V0s,
+        )
     elif issubclass(type(prior_module), Dihedral):
         v_0 = prior_module.v_0[key]
         k1s = [prior_module.k1s[idx][key] for idx in range(prior_module.n_degs)]
