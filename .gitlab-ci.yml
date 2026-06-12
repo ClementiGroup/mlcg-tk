@@ -3,17 +3,13 @@ stages:
 
 test_job:
   stage: test
-  cache:
-    key:
-      files:
-        - env_with_hashes.in
-    paths:
-      - .venv
   before_script:
-    - "[[ ! -d .venv ]] && uv venv || :"
-    - uv pip install -r env_with_hashes.in
+    - uv venv
+    - git clone https://github.com/ClementiGroup/mlcg.git
+    - uv pip install -r mlcg/env_with_hashes.in
     - uv pip install --no-deps git+https://github.com/ACEsuit/mace.git@v0.3.13
     - uv pip install --no-deps nequip==0.12.1 nequip-allegro==0.7.0
+    - uv pip install ./mlcg
     - uv pip install .
     - uv pip install pytest-split
   script:
