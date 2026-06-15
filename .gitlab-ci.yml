@@ -16,7 +16,7 @@ test_job:
     - source .venv/bin/activate
     - pytest -m "unit" --verbose --junitxml="tests${CI_NODE_INDEX}.xml" --durations-path tests/.test_durations --splits "$CI_NODE_TOTAL" --group "$CI_NODE_INDEX" --splitting-algorithm least_duration
     - pytest -m "integration" --verbose --junitxml="tests${CI_NODE_INDEX}.xml" --durations-path tests/.test_durations --splits "$CI_NODE_TOTAL" --group "$CI_NODE_INDEX" --splitting-algorithm least_duration
-  parallel: 5
+  parallel: 2
   artifacts:
     when: always
     paths:
