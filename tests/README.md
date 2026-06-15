@@ -47,4 +47,4 @@ to update ``.test_durations`` by installing ``pytest-split`` via pip and running
 
    pytest --store-durations
 
-This will create a new ``.test_durations`` file automatically.
+This will create a new ``.test_durations`` file automatically that can be placed into `test` instead of the old one
