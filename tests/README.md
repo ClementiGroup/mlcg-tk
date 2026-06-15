@@ -45,6 +45,6 @@ The file ``.test_durations`` is used to split tests across different containers 
 to their execution time. When a new, consistent set of tests is added, it is recommended
 to update ``.test_durations`` by installing ``pytest-split`` via pip and running::
 
-   pytest --store-durations
+   pytest --store-durations --durations-path tests/.test_durations
 
-This will create a new ``.test_durations`` file automatically that can be placed into `test` instead of the old one
+This will create a new ``.test_durations`` file automatically.

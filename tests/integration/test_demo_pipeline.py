@@ -53,13 +53,12 @@ def test_dir(tmp_path):
         shutil.rmtree(dir_path)
 
 
-@pytest.mark.paramterize(
+@pytest.mark.parametrize(
     "pipeline_tag",
     [
         "5 beads",
         "CA",
     ],
-    ids=lambda p: p.stem,
 )
 def test_pipeline(pipeline_tag, test_dir):
 
