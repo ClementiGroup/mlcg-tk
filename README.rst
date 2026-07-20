@@ -21,10 +21,10 @@ transferable coarse grained (CG) forcefield, using the MLCG library.
 Installation
 ------------
 
-Before installing mlcg-tk, you must install the mlcg package by following the 
-instructions at:
+**Before installing mlcg-tk, you must install the `mlcg package <https://github.com/ClementiGroup/mlcg>`__**.
 
-https://github.com/ClementiGroup/mlcg
+Similar to mlcg, we encourage the use of the `uv <https://docs.astral.sh/uv/>`__ enviroment manager
+
 
 Once mlcg is installed, you can install mlcg-tk as follows
 
