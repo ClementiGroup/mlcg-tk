@@ -166,4 +166,3 @@ cython_debug/
 
 # uv 
 uv.lock
-.python-version
