@@ -1,0 +1,24 @@
+stages:
+  - test
+
+test_job:
+  stage: test
+  before_script:
+    - uv venv
+    - source .venv/bin/activate
+    - git clone https://github.com/ClementiGroup/mlcg.git
+    - cd mlcg
+    - uv pip install .[cu130]
+    - cd ..
+    - uv pip install . --group dev
+  script:
+    - source .venv/bin/activate
+    - pytest -m "unit" --verbose --junitxml="tests${CI_NODE_INDEX}.xml" --durations-path tests/.test_durations --splits "$CI_NODE_TOTAL" --group "$CI_NODE_INDEX" --splitting-algorithm least_duration
+    - pytest -m "integration" --verbose --junitxml="tests${CI_NODE_INDEX}.xml" --durations-path tests/.test_durations --splits "$CI_NODE_TOTAL" --group "$CI_NODE_INDEX" --splitting-algorithm least_duration
+  parallel: 1
+  artifacts:
+    when: always
+    paths:
+      - "tests${CI_NODE_INDEX}.xml"
+    reports:
+      junit: "tests${CI_NODE_INDEX}.xml"

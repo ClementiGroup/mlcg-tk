@@ -34,38 +34,13 @@ _command_dict = {
 }
 
 
-def run(cmd, cwd=None):
-    """Run a shell command and fail on error."""
-    return subprocess.run(
-        cmd,
-        cwd=cwd,
-        shell=True,
-        capture_output=True,
-        text=True,
-        encoding="utf-8",
-    )
-
-
 # All yield fixtures in pytest are executed untill the
 # yield in the order they are provided to the test function and
 # after the function is finished the code after the yeld is executed
 # for all the fixtures in reverse order
-
-
 @pytest.fixture
-def runner_idx(request):
-    return request.config.getoption("--runner_idx")
-
-
-@pytest.fixture
-def num_containers(request):
-    return request.config.getoption("--num_containers")
-
-
-@pytest.fixture
-def test_dir(runner_idx):
-    dir_path = Path(osp(_here, f"pytest_run_{runner_idx}"))
-    dir_path.mkdir()
+def test_dir(tmp_path):
+    dir_path = Path(tmp_path)
     # Copy configuration files folder in test folder
     shutil.copytree(
         osp(_examples_dir, "configuration_files"), osp(dir_path, "configuration_files")
@@ -78,20 +53,29 @@ def test_dir(runner_idx):
         shutil.rmtree(dir_path)
 
 
-def test_pipeline(runner_idx, num_containers, test_dir):
-    _keys = list(_command_dict.keys())
-    selected_keys = _keys[runner_idx::num_containers]
-    selected_command_dict = {k: _command_dict[k] for k in selected_keys}
+@pytest.mark.parametrize(
+    "pipeline_tag",
+    [
+        "5 beads",
+        "CA",
+    ],
+)
+def test_pipeline(pipeline_tag, test_dir):
 
-    for pipeline_tag, command_list in selected_command_dict.items():
-        print(f"\nTesting {pipeline_tag}")
-        for command in command_list:
-            result = run(command, test_dir)
+    for command in _command_dict[pipeline_tag]:
+        result = subprocess.run(
+            command,
+            cwd=test_dir,
+            shell=True,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+        )
 
-            assert result.returncode == 0, (
-                f"\nIn pipeline {pipeline_tag} command failed:\n"
-                f"{command}\n\n"
-                f"Return code: {result.returncode}\n"
-                f"STDOUT:\n{result.stdout}\n\n"
-                f"STDERR:\n{result.stderr}\n"
-            )
+        assert result.returncode == 0, (
+            f"\nIn pipeline {pipeline_tag} command failed:\n"
+            f"{command}\n\n"
+            f"Return code: {result.returncode}\n"
+            f"STDOUT:\n{result.stdout}\n\n"
+            f"STDERR:\n{result.stderr}\n"
+        )
