@@ -5,18 +5,17 @@ test_job:
   stage: test
   before_script:
     - uv venv
+    - source .venv/bin/activate
     - git clone https://github.com/ClementiGroup/mlcg.git
-    - uv pip install -r mlcg/env_with_hashes.in
-    - uv pip install --no-deps git+https://github.com/ACEsuit/mace.git@v0.3.13
-    - uv pip install --no-deps nequip==0.12.1 nequip-allegro==0.7.0
-    - uv pip install ./mlcg
-    - uv pip install .
-    - uv pip install pytest-split
+    - cd mlcg
+    - uv pip install .[cu130]
+    - cd ..
+    - uv pip install . --group dev
   script:
     - source .venv/bin/activate
     - pytest -m "unit" --verbose --junitxml="tests${CI_NODE_INDEX}.xml" --durations-path tests/.test_durations --splits "$CI_NODE_TOTAL" --group "$CI_NODE_INDEX" --splitting-algorithm least_duration
     - pytest -m "integration" --verbose --junitxml="tests${CI_NODE_INDEX}.xml" --durations-path tests/.test_durations --splits "$CI_NODE_TOTAL" --group "$CI_NODE_INDEX" --splitting-algorithm least_duration
-  parallel: 2
+  parallel: 1
   artifacts:
     when: always
     paths:
