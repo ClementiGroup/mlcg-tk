@@ -35,3 +35,16 @@ When contributing new tests:
 - Markers for integration and unit are automatically added to each test, so it is not necessary to explicitely add them.
 
 This ensures tests are correctly categorized and can be run selectively.
+
+
+Tests in CI/CD pipeline
+-----------------------
+
+Code within the ``range-mp`` package is tested using ``CircleCI`` for continuous integration.
+The file ``.test_durations`` is used to split tests across different containers according
+to their execution time. When a new, consistent set of tests is added, it is recommended
+to update ``.test_durations`` by installing ``pytest-split`` via pip and running::
+
+   pytest --store-durations --durations-path tests/.test_durations
+
+This will create a new ``.test_durations`` file automatically.

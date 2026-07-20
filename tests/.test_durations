@@ -1,0 +1,10 @@
+{
+    "tests/integration/test_demo_pipeline.py::test_pipeline[5 beads]": 115.98738563101506,
+    "tests/integration/test_demo_pipeline.py::test_pipeline[CA]": 83.55502645194065,
+    "tests/unit/input_generator/test_raw_dataset.py::test_get_strides[10-5-expected0]": 0.0007514890166930854,
+    "tests/unit/input_generator/test_raw_dataset.py::test_get_strides[12-5-expected1]": 0.00047326204366981983,
+    "tests/unit/input_generator/test_raw_dataset.py::test_get_strides[3-10-expected2]": 0.0004676790558733046,
+    "tests/unit/input_generator/test_utils.py::test_output_tag[tag_label0-before-prior_ca_-False]": 0.0004882640205323696,
+    "tests/unit/input_generator/test_utils.py::test_output_tag[tag_label1-after-_prior_ca-False]": 0.0004595380160026252,
+    "tests/unit/input_generator/test_utils.py::test_output_tag[tag_label2-later-_prior_ca-True]": 0.0005708829849027097
+}

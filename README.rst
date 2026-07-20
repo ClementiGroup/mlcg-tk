@@ -26,11 +26,22 @@ instructions at:
 
 https://github.com/ClementiGroup/mlcg
 
-Once mlcg is installed, you can install mlcg-tk as follows::
+Once mlcg is installed, you can install mlcg-tk as follows
+
+.. code:: bash
 
   git clone git@github.com:ClementiGroup/mlcg-tk.git
   cd mlcg-tk
-  pip install .
+  uv pip install .
+
+**For developers**
+
+Add ``--group dev`` to install additional development dependencies
+(``black``, ``pytest``, ``coverage``), e.g.
+
+.. code:: bash
+
+    uv pip install . --group dev
 
 .. end-readme
 
