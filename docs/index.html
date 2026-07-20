@@ -6,7 +6,7 @@
     function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
     setColorMode(localStorage._theme||"auto");
   </script><link rel="stylesheet" type="text/css" href="_static/pygments.css?v=e1a1ceaf" />
-    <link rel="stylesheet" type="text/css" href="_static/shibuya.css?v=9454f7d5" />
+    <link rel="stylesheet" type="text/css" href="_static/shibuya.css?v=2ceb65ce" />
     <link media="print" rel="stylesheet" type="text/css" href="_static/print.css?v=20ff2c19" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -150,21 +150,27 @@ data-aria-dark="Switch to auto color mode">
       <div class="relative min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
   <article class="yue" role="main">
           <section id="welcome-to-mlcg-tk-s-documentation">
-<h1>Welcome to mlcg-tk’s documentation!<a class="headerlink" href="#welcome-to-mlcg-tk-s-documentation" title="Link to this heading">¶</a></h1>
+<h1>Welcome to mlcg-tk’s documentation!<a class="headerlink" href="#welcome-to-mlcg-tk-s-documentation" title="Link to this heading">#</a></h1>
 <p>This is the base code to create training datasets for models
 such as the ones described in <a class="reference internal" href="bibliography.html#transcgschnet" id="id1"><span>[TransCGSchnet]</span></a> and <a class="reference internal" href="bibliography.html#cgschnet" id="id2"><span>[CGSchnet]</span></a>.</p>
 <p><a class="reference external" href="https://clementigroup.github.io/mlcg-tk/"><img alt="Docs badge" src="https://img.shields.io/badge/mlcg--tk-docs-blue.svg" /></a> <a class="reference external" href="https://opensource.org/licenses/MIT"><img alt="License" src="https://img.shields.io/github/license/Naereen/StrapDown.js.svg" /></a> <a class="reference external" href="https://dl.circleci.com/status-badge/redirect/gh/ClementiGroup/mlcg-tk/tree/main"><img alt="Circleci" src="https://dl.circleci.com/status-badge/img/gh/ClementiGroup/mlcg-tk/tree/main.svg?style=shield" /></a></p>
 <p>A collection of tools for processing raw simulation data for use in training a
 transferable coarse grained (CG) forcefield, using the MLCG library.</p>
 <section id="installation">
-<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading">¶</a></h2>
+<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading">#</a></h2>
 <p>Before installing mlcg-tk, you must install the mlcg package by following the
 instructions at:</p>
 <p><a class="reference external" href="https://github.com/ClementiGroup/mlcg">https://github.com/ClementiGroup/mlcg</a></p>
-<p>Once mlcg is installed, you can install mlcg-tk as follows:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="n">git</span> <span class="n">clone</span> <span class="n">git</span><span class="nd">@github</span><span class="o">.</span><span class="n">com</span><span class="p">:</span><span class="n">ClementiGroup</span><span class="o">/</span><span class="n">mlcg</span><span class="o">-</span><span class="n">tk</span><span class="o">.</span><span class="n">git</span>
-</span><span data-line="2"><span class="n">cd</span> <span class="n">mlcg</span><span class="o">-</span><span class="n">tk</span>
-</span><span data-line="3"><span class="n">pip</span> <span class="n">install</span> <span class="o">.</span>
+<p>Once mlcg is installed, you can install mlcg-tk as follows</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">git<span class="w"> </span>clone<span class="w"> </span>git@github.com:ClementiGroup/mlcg-tk.git
+</span><span data-line="2"><span class="nb">cd</span><span class="w"> </span>mlcg-tk
+</span><span data-line="3">uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>.
+</span></pre></div>
+</div>
+<p><strong>For developers</strong></p>
+<p>Add <code class="docutils literal notranslate"><span class="pre">--group</span> <span class="pre">dev</span></code> to install additional development dependencies
+(<code class="docutils literal notranslate"><span class="pre">black</span></code>, <code class="docutils literal notranslate"><span class="pre">pytest</span></code>, <code class="docutils literal notranslate"><span class="pre">coverage</span></code>), e.g.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>.<span class="w"> </span>--group<span class="w"> </span>dev
 </span></pre></div>
 </div>
 <div class="toctree-wrapper compound">

@@ -6,7 +6,7 @@
     function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
     setColorMode(localStorage._theme||"auto");
   </script><link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=e1a1ceaf" />
-    <link rel="stylesheet" type="text/css" href="../../_static/shibuya.css?v=9454f7d5" />
+    <link rel="stylesheet" type="text/css" href="../../_static/shibuya.css?v=2ceb65ce" />
     <link media="print" rel="stylesheet" type="text/css" href="../../_static/print.css?v=20ff2c19" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -160,10 +160,10 @@ data-aria-dark="Switch to auto color mode">
       <div class="relative min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
   <article class="yue" role="main">
           <section id="module-mlcg_tk.scripts.add_decoys">
-<span id="add-decoys-py"></span><h1><code class="docutils literal notranslate"><span class="pre">add_decoys.py</span></code><a class="headerlink" href="#module-mlcg_tk.scripts.add_decoys" title="Link to this heading">¶</a></h1>
+<span id="add-decoys-py"></span><h1><code class="docutils literal notranslate"><span class="pre">add_decoys.py</span></code><a class="headerlink" href="#module-mlcg_tk.scripts.add_decoys" title="Link to this heading">#</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="mlcg_tk.scripts.add_decoys.add_decoy">
-<span class="sig-prename descclassname"><span class="pre">mlcg_tk.scripts.add_decoys.</span></span><span class="sig-name descname"><span class="pre">add_decoy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">h5_files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datasets</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mol_name_prefix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">append</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mlcg_tk/scripts/add_decoys.html#add_decoy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.scripts.add_decoys.add_decoy" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">mlcg_tk.scripts.add_decoys.</span></span><span class="sig-name descname"><span class="pre">add_decoy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">h5_files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datasets</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mol_name_prefix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">append</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mlcg_tk/scripts/add_decoys.html#add_decoy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.scripts.add_decoys.add_decoy" title="Link to this definition">#</a></dt>
 <dd><p>Adds decoy molecules with Gaussian noise to the specified HDF5 datasets, optionally combines them into a single HDF5 file.</p>
 <p>This function processes multiple HDF5 files, and for each file, it generates decoy molecules by adding Gaussian noise to
 the coordinates of the molecules in the specified dataset. The decoys are stored as separate molecules in the same datasets, with the option
@@ -178,7 +178,7 @@ be provided or generated automatically based on the input files.</p>
 </dd>
 </dl>
 <section id="arguments">
-<h2>Arguments:<a class="headerlink" href="#arguments" title="Link to this heading">¶</a></h2>
+<h2>Arguments:<a class="headerlink" href="#arguments" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>h5_files: List[str]</dt><dd><p>A list of paths to the HDF5 files where decoy molecules should be added. Each file should contain one single dataset specified
 in the <cite>datasets</cite> argument.</p>
@@ -200,7 +200,7 @@ will be copied before appending the decoy molecules in the new HDF5 file.</p>
 </dl>
 </section>
 <section id="notes">
-<h2>Notes:<a class="headerlink" href="#notes" title="Link to this heading">¶</a></h2>
+<h2>Notes:<a class="headerlink" href="#notes" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p>The <cite>scale</cite> value controls the level of noise added to the decoy molecules. A larger value will result in more distorted configurations.</p></li>
 <li><p>The <cite>stride</cite> argument helps reduce the number of frames included in the decoy molecule by selecting a subset based on
@@ -211,7 +211,7 @@ the specified interval. The higher the stride the less decoys are present in the
 
 <dl class="py function">
 <dt class="sig sig-object py" id="mlcg_tk.scripts.add_decoys.add_noise_decoy_molecule">
-<span class="sig-prename descclassname"><span class="pre">mlcg_tk.scripts.add_decoys.</span></span><span class="sig-name descname"><span class="pre">add_noise_decoy_molecule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_molecule</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">location</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coords_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cg_coords'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">forces_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cg_delta_forces'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy_metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mlcg_tk/scripts/add_decoys.html#add_noise_decoy_molecule"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.scripts.add_decoys.add_noise_decoy_molecule" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">mlcg_tk.scripts.add_decoys.</span></span><span class="sig-name descname"><span class="pre">add_noise_decoy_molecule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_molecule</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">location</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coords_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cg_coords'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">forces_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cg_delta_forces'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy_metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mlcg_tk/scripts/add_decoys.html#add_noise_decoy_molecule"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.scripts.add_decoys.add_noise_decoy_molecule" title="Link to this definition">#</a></dt>
 <dd><p>Create a zero-force decoy molecule from a real molecule in an h5.</p>
 <p>Function written by Aleksander Durumeric.</p>
 <p>The molecule is created by extracting coordinats from an existing molecule, adding
@@ -224,7 +224,7 @@ is set.</p>
 </dd>
 </dl>
 <section id="id1">
-<h2>Arguments:<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
+<h2>Arguments:<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>source_molecule:</dt><dd><p>hdf5.Group that contains coordinate entries under “cg_coords”. These coordinates
 are strided by <cite>stride</cite> and then noised to create the noise molecule coordinates.</p>
@@ -252,7 +252,7 @@ This typically should be set to True.</p>
 </dl>
 </section>
 <section id="id2">
-<h2>Notes:<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h2>
+<h2>Notes:<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
 <p>This method saves coordinates and forces as float32, no matter what precision they
 originate as.</p>
 </section>
@@ -260,7 +260,7 @@ originate as.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="mlcg_tk.scripts.add_decoys.update_partition_file">
-<span class="sig-prename descclassname"><span class="pre">mlcg_tk.scripts.add_decoys.</span></span><span class="sig-name descname"><span class="pre">update_partition_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">partition_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decoy_h5_files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mol_name_prefixes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partition_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mlcg_tk/scripts/add_decoys.html#update_partition_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.scripts.add_decoys.update_partition_file" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">mlcg_tk.scripts.add_decoys.</span></span><span class="sig-name descname"><span class="pre">update_partition_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">partition_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decoy_h5_files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mol_name_prefixes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partition_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mlcg_tk/scripts/add_decoys.html#update_partition_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.scripts.add_decoys.update_partition_file" title="Link to this definition">#</a></dt>
 <dd><p>Updates a partition file by adding new molecules with specified prefixes to the “molecules” list of existing datasets.</p>
 <p>This function loads a YAML partition file, updates it by appending molecule names with specified prefixes, and then
 saves the updated partition back to a new YAML file. It is typically used in scenarios where new decoy molecules,
@@ -271,7 +271,7 @@ generated with a prefix (such as a decoy identifier), need to be added to the pa
 </dd>
 </dl>
 <section id="id3">
-<h2>Arguments:<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h2>
+<h2>Arguments:<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>partition_file: str</dt><dd><p>Path to the original partition YAML file that contains metadata about the datasets and molecules. The function will
 read this file and modify the “molecules” list within the “metasets” section of the partition.</p>
@@ -288,7 +288,7 @@ the prefixed names.</p>
 </dl>
 </section>
 <section id="id4">
-<h2>Notes:<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h2>
+<h2>Notes:<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p>The function assumes that the partition YAML file follows a specific structure, where molecule names are listed under
 the “train” section in the “metasets” -&gt; “molecules” key.</p></li>
@@ -296,7 +296,7 @@ the “train” section in the “metasets” -&gt; “molecules” key.</p></li
 </ul>
 </section>
 <section id="example">
-<h2>Example:<a class="headerlink" href="#example" title="Link to this heading">¶</a></h2>
+<h2>Example:<a class="headerlink" href="#example" title="Link to this heading">#</a></h2>
 <p>If the partition file contains the following:
 <a href="#id5"><span class="problematic" id="id6">``</span></a><a href="#id7"><span class="problematic" id="id8">`</span></a>yaml
 train:</p>

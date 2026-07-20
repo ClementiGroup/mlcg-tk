@@ -6,7 +6,7 @@
     function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
     setColorMode(localStorage._theme||"auto");
   </script><link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=e1a1ceaf" />
-    <link rel="stylesheet" type="text/css" href="../../../../../_static/shibuya.css?v=9454f7d5" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/shibuya.css?v=2ceb65ce" />
     <link media="print" rel="stylesheet" type="text/css" href="../../../../../_static/print.css?v=20ff2c19" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -168,23 +168,23 @@ data-aria-dark="Switch to auto color mode">
       <div class="relative min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
   <article class="yue" role="main">
           <section id="module-mlcg_tk.input_generator.prior_fit.utils">
-<span id="utils-module"></span><h1>utils module<a class="headerlink" href="#module-mlcg_tk.input_generator.prior_fit.utils" title="Link to this heading">¶</a></h1>
+<span id="utils-module"></span><h1>utils module<a class="headerlink" href="#module-mlcg_tk.input_generator.prior_fit.utils" title="Link to this heading">#</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_fit.utils.compute_aic">
-<span class="sig-prename descclassname"><span class="pre">mlcg_tk.input_generator.prior_fit.utils.</span></span><span class="sig-name descname"><span class="pre">compute_aic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">real_distibution</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_distribution</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">free_parameters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/mlcg_tk/input_generator/prior_fit/utils.html#compute_aic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.prior_fit.utils.compute_aic" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">mlcg_tk.input_generator.prior_fit.utils.</span></span><span class="sig-name descname"><span class="pre">compute_aic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">real_distibution</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_distribution</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">free_parameters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/mlcg_tk/input_generator/prior_fit/utils.html#compute_aic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.prior_fit.utils.compute_aic" title="Link to this definition">#</a></dt>
 <dd><p>Method for computing the AIC</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_fit.utils.compute_nl_unique_keys">
-<span class="sig-prename descclassname"><span class="pre">mlcg_tk.input_generator.prior_fit.utils.</span></span><span class="sig-name descname"><span class="pre">compute_nl_unique_keys</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atom_types</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mapping</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cpu'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/mlcg_tk/input_generator/prior_fit/utils.html#compute_nl_unique_keys"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.prior_fit.utils.compute_nl_unique_keys" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">mlcg_tk.input_generator.prior_fit.utils.</span></span><span class="sig-name descname"><span class="pre">compute_nl_unique_keys</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atom_types</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mapping</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cpu'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/mlcg_tk/input_generator/prior_fit/utils.html#compute_nl_unique_keys"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.prior_fit.utils.compute_nl_unique_keys" title="Link to this definition">#</a></dt>
 <dd><p>Computes and returns the unique atom-type interaction keys for a given neighbor list.
 This runs only once per nl_name.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_fit.utils.neg_log_likelihood">
-<span class="sig-prename descclassname"><span class="pre">mlcg_tk.input_generator.prior_fit.utils.</span></span><span class="sig-name descname"><span class="pre">neg_log_likelihood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yhat</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/mlcg_tk/input_generator/prior_fit/utils.html#neg_log_likelihood"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.prior_fit.utils.neg_log_likelihood" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">mlcg_tk.input_generator.prior_fit.utils.</span></span><span class="sig-name descname"><span class="pre">neg_log_likelihood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yhat</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/mlcg_tk/input_generator/prior_fit/utils.html#neg_log_likelihood"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.prior_fit.utils.neg_log_likelihood" title="Link to this definition">#</a></dt>
 <dd><p>Convert dG to probability and use KL divergence to get difference between
 predicted and actual</p>
 </dd></dl>

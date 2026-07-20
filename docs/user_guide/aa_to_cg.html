@@ -6,7 +6,7 @@
     function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
     setColorMode(localStorage._theme||"auto");
   </script><link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=e1a1ceaf" />
-    <link rel="stylesheet" type="text/css" href="../_static/shibuya.css?v=9454f7d5" />
+    <link rel="stylesheet" type="text/css" href="../_static/shibuya.css?v=2ceb65ce" />
     <link media="print" rel="stylesheet" type="text/css" href="../_static/print.css?v=20ff2c19" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -156,7 +156,7 @@ data-aria-dark="Switch to auto color mode">
       <div class="relative min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
   <article class="yue" role="main">
           <section id="loading-and-processing-all-atom-simulation-data">
-<h1>1) Loading and processing all-atom simulation data<a class="headerlink" href="#loading-and-processing-all-atom-simulation-data" title="Link to this heading">¶</a></h1>
+<h1>1) Loading and processing all-atom simulation data<a class="headerlink" href="#loading-and-processing-all-atom-simulation-data" title="Link to this heading">#</a></h1>
 <p>Command:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="n">mlcg</span><span class="o">-</span><span class="n">tk</span><span class="o">-</span><span class="n">gen_input_data</span> <span class="n">process_raw_dataset</span> <span class="o">--</span><span class="n">config</span> <span class="n">configuration_files</span><span class="o">/</span><span class="n">trpcage</span><span class="o">.</span><span class="n">yaml</span>
 </span><span data-line="2">
@@ -182,7 +182,7 @@ to handling the multi-dimensional time series. We provide several fixes for
 these problems which are described in the following subsections.</p>
 </div>
 <section id="matrix-multiplication-batching-for-large-molecules">
-<h2>Matrix multiplication batching for large molecules<a class="headerlink" href="#matrix-multiplication-batching-for-large-molecules" title="Link to this heading">¶</a></h2>
+<h2>Matrix multiplication batching for large molecules<a class="headerlink" href="#matrix-multiplication-batching-for-large-molecules" title="Link to this heading">#</a></h2>
 <p>If your program gets killed after the loading of the all-atom data succeeded (tqdm bar
 finished) but before <code class="docutils literal notranslate"><span class="pre">process_raw_dataset</span></code> saved the CG output, try to set
 <code class="docutils literal notranslate"><span class="pre">batch_size</span></code> in your <code class="docutils literal notranslate"><span class="pre">trpcage.yaml</span></code> file. This will batch the matrix multiplication
@@ -190,7 +190,7 @@ between atomistic coordinates/forces, which is the most memory-consuming part of
 coarse-graining at this stage.</p>
 </section>
 <section id="batch-processing-for-large-molecules">
-<h2>Batch processing for large molecules<a class="headerlink" href="#batch-processing-for-large-molecules" title="Link to this heading">¶</a></h2>
+<h2>Batch processing for large molecules<a class="headerlink" href="#batch-processing-for-large-molecules" title="Link to this heading">#</a></h2>
 <p>If the dataset loads into memory successfully (the tqdm bar completes), but the program
 fails before saving the CG output, consider setting <code class="docutils literal notranslate"><span class="pre">atoms_batch_size</span></code> in your
 <code class="docutils literal notranslate"><span class="pre">trpcage.yaml</span></code> file.</p>
@@ -202,7 +202,7 @@ assumed that the molecular structures have ordered residues.</p>
 atoms will be processed at once (the default behavior).</p>
 </section>
 <section id="batch-processing-for-large-datasets">
-<h2>Batch processing for large datasets<a class="headerlink" href="#batch-processing-for-large-datasets" title="Link to this heading">¶</a></h2>
+<h2>Batch processing for large datasets<a class="headerlink" href="#batch-processing-for-large-datasets" title="Link to this heading">#</a></h2>
 <p>Should your dataset be too big to be loaded into memory at once (the tqdm bar doesn’t
 finish before it fails), you can set the <code class="docutils literal notranslate"><span class="pre">mol_num_batches</span></code> in your <code class="docutils literal notranslate"><span class="pre">trpcage.yaml</span></code> file as
 well as your <code class="docutils literal notranslate"><span class="pre">trpcage_stats.yaml</span></code>, <code class="docutils literal notranslate"><span class="pre">trpcage_delta_forces.yaml</span></code> and

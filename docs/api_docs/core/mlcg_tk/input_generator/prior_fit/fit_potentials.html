@@ -6,7 +6,7 @@
     function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
     setColorMode(localStorage._theme||"auto");
   </script><link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=e1a1ceaf" />
-    <link rel="stylesheet" type="text/css" href="../../../../../_static/shibuya.css?v=9454f7d5" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/shibuya.css?v=2ceb65ce" />
     <link media="print" rel="stylesheet" type="text/css" href="../../../../../_static/print.css?v=20ff2c19" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -167,10 +167,10 @@ data-aria-dark="Switch to auto color mode">
       <div class="relative min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
   <article class="yue" role="main">
           <section id="module-mlcg_tk.input_generator.prior_fit.fit_potentials">
-<span id="fit-potentials-module"></span><h1>fit_potentials module<a class="headerlink" href="#module-mlcg_tk.input_generator.prior_fit.fit_potentials" title="Link to this heading">¶</a></h1>
+<span id="fit-potentials-module"></span><h1>fit_potentials module<a class="headerlink" href="#module-mlcg_tk.input_generator.prior_fit.fit_potentials" title="Link to this heading">#</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_fit.fit_potentials.fit_potentials">
-<span class="sig-prename descclassname"><span class="pre">mlcg_tk.input_generator.prior_fit.fit_potentials.</span></span><span class="sig-name descname"><span class="pre">fit_potentials</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nl_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prior_builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embedding_map</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temperature</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/mlcg_tk/input_generator/prior_fit/fit_potentials.html#fit_potentials"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.prior_fit.fit_potentials.fit_potentials" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">mlcg_tk.input_generator.prior_fit.fit_potentials.</span></span><span class="sig-name descname"><span class="pre">fit_potentials</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nl_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prior_builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embedding_map</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temperature</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/mlcg_tk/input_generator/prior_fit/fit_potentials.html#fit_potentials"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.prior_fit.fit_potentials.fit_potentials" title="Link to this definition">#</a></dt>
 <dd><p>Fits energy function to atom type-specific statistics defined
 for a group of atoms in a neighbour list.</p>
 <p>Assumes that the resulting prior energies will be in [kcal/mol]!</p>
@@ -224,7 +224,7 @@ required to alter GLY statistics if defined in PriorBuilder.nl_builder.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="mlcg_tk.input_generator.prior_fit.fit_potentials.replace_gly_stats">
-<span class="sig-prename descclassname"><span class="pre">mlcg_tk.input_generator.prior_fit.fit_potentials.</span></span><span class="sig-name descname"><span class="pre">replace_gly_stats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">statistics</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gly_bead</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ca_bead</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/mlcg_tk/input_generator/prior_fit/fit_potentials.html#replace_gly_stats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.prior_fit.fit_potentials.replace_gly_stats" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">mlcg_tk.input_generator.prior_fit.fit_potentials.</span></span><span class="sig-name descname"><span class="pre">replace_gly_stats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">statistics</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gly_bead</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ca_bead</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/mlcg_tk/input_generator/prior_fit/fit_potentials.html#replace_gly_stats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.prior_fit.fit_potentials.replace_gly_stats" title="Link to this definition">#</a></dt>
 <dd><p>Helper method for replacing poor GLY statistics for dihedral NL with statistics
 associated with general CA beads.</p>
 </dd></dl>

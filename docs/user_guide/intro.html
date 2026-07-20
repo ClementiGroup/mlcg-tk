@@ -6,7 +6,7 @@
     function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
     setColorMode(localStorage._theme||"auto");
   </script><link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=e1a1ceaf" />
-    <link rel="stylesheet" type="text/css" href="../_static/shibuya.css?v=9454f7d5" />
+    <link rel="stylesheet" type="text/css" href="../_static/shibuya.css?v=2ceb65ce" />
     <link media="print" rel="stylesheet" type="text/css" href="../_static/print.css?v=20ff2c19" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -159,9 +159,9 @@ data-aria-dark="Switch to auto color mode">
       <div class="relative min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
   <article class="yue" role="main">
           <section id="about-the-training-data-generation-pipeline">
-<h1>About the Training Data Generation Pipeline<a class="headerlink" href="#about-the-training-data-generation-pipeline" title="Link to this heading">¶</a></h1>
+<h1>About the Training Data Generation Pipeline<a class="headerlink" href="#about-the-training-data-generation-pipeline" title="Link to this heading">#</a></h1>
 <section id="introduction">
-<h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading">¶</a></h2>
+<h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading">#</a></h2>
 <p>To prepare simulation data for eventual use in training a transferable coarse grained (CG)
 force field, these data must first be mapped to the CG resolution and then processed to
 incorporate prior energy terms.</p>
@@ -182,7 +182,7 @@ can be fitted to produce new prior models, if needed.</p>
 <p>In the details below, input files are provided as an example.</p>
 </section>
 <section id="example-1ly2-toy-dataset">
-<h2>Example: 1LY2 toy dataset<a class="headerlink" href="#example-1ly2-toy-dataset" title="Link to this heading">¶</a></h2>
+<h2>Example: 1LY2 toy dataset<a class="headerlink" href="#example-1ly2-toy-dataset" title="Link to this heading">#</a></h2>
 <p>To exemplify the usage of this code, we provide an example on how to load a tiny dataset
 of All-Atom (AA) simulations of a trpcage-variant, 1L2Y.</p>
 <div class="admonition warning">
@@ -196,7 +196,7 @@ details of the simulation.</p>
 </section>
 </section>
 <section id="create-a-directory-to-output-all-the-intermediate-files">
-<h1>0) Create a directory to output all the intermediate files<a class="headerlink" href="#create-a-directory-to-output-all-the-intermediate-files" title="Link to this heading">¶</a></h1>
+<h1>0) Create a directory to output all the intermediate files<a class="headerlink" href="#create-a-directory-to-output-all-the-intermediate-files" title="Link to this heading">#</a></h1>
 <p>The commands will output a lot of data and its better to save it in a separate directory
 to ensure hygenic file management.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="n">mkdir</span> <span class="o">./</span><span class="n">demo_processed_data</span>

@@ -6,7 +6,7 @@
     function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
     setColorMode(localStorage._theme||"auto");
   </script><link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=e1a1ceaf" />
-    <link rel="stylesheet" type="text/css" href="../../../../_static/shibuya.css?v=9454f7d5" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/shibuya.css?v=2ceb65ce" />
     <link media="print" rel="stylesheet" type="text/css" href="../../../../_static/print.css?v=20ff2c19" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -166,17 +166,17 @@ data-aria-dark="Switch to auto color mode">
       <div class="relative min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
   <article class="yue" role="main">
           <section id="module-mlcg_tk.input_generator.embedding_maps">
-<span id="embedding-maps-module"></span><h1>embedding_maps module<a class="headerlink" href="#module-mlcg_tk.input_generator.embedding_maps" title="Link to this heading">¶</a></h1>
+<span id="embedding-maps-module"></span><h1>embedding_maps module<a class="headerlink" href="#module-mlcg_tk.input_generator.embedding_maps" title="Link to this heading">#</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="mlcg_tk.input_generator.embedding_maps.CGEmbeddingMap">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mlcg_tk.input_generator.embedding_maps.</span></span><span class="sig-name descname"><span class="pre">CGEmbeddingMap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embedding_map_dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/mlcg_tk/input_generator/embedding_maps.html#CGEmbeddingMap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.embedding_maps.CGEmbeddingMap" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mlcg_tk.input_generator.embedding_maps.</span></span><span class="sig-name descname"><span class="pre">CGEmbeddingMap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embedding_map_dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/mlcg_tk/input_generator/embedding_maps.html#CGEmbeddingMap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.embedding_maps.CGEmbeddingMap" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></p>
 <p>General class for defining embedding maps as Dict</p>
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="mlcg_tk.input_generator.embedding_maps.CGEmbeddingMapCA">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mlcg_tk.input_generator.embedding_maps.</span></span><span class="sig-name descname"><span class="pre">CGEmbeddingMapCA</span></span><a class="reference internal" href="../../../../_modules/mlcg_tk/input_generator/embedding_maps.html#CGEmbeddingMapCA"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.embedding_maps.CGEmbeddingMapCA" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mlcg_tk.input_generator.embedding_maps.</span></span><span class="sig-name descname"><span class="pre">CGEmbeddingMapCA</span></span><a class="reference internal" href="../../../../_modules/mlcg_tk/input_generator/embedding_maps.html#CGEmbeddingMapCA"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.embedding_maps.CGEmbeddingMapCA" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#mlcg_tk.input_generator.embedding_maps.CGEmbeddingMap" title="mlcg_tk.input_generator.embedding_maps.CGEmbeddingMap"><code class="xref py py-class docutils literal notranslate"><span class="pre">CGEmbeddingMap</span></code></a></p>
 <dl class="simple">
 <dt>One-bead embedding map defined by:</dt><dd><ul class="simple">
@@ -188,7 +188,7 @@ data-aria-dark="Switch to auto color mode">
 
 <dl class="py class">
 <dt class="sig sig-object py" id="mlcg_tk.input_generator.embedding_maps.CGEmbeddingMapFiveBead">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mlcg_tk.input_generator.embedding_maps.</span></span><span class="sig-name descname"><span class="pre">CGEmbeddingMapFiveBead</span></span><a class="reference internal" href="../../../../_modules/mlcg_tk/input_generator/embedding_maps.html#CGEmbeddingMapFiveBead"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.embedding_maps.CGEmbeddingMapFiveBead" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mlcg_tk.input_generator.embedding_maps.</span></span><span class="sig-name descname"><span class="pre">CGEmbeddingMapFiveBead</span></span><a class="reference internal" href="../../../../_modules/mlcg_tk/input_generator/embedding_maps.html#CGEmbeddingMapFiveBead"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.embedding_maps.CGEmbeddingMapFiveBead" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#mlcg_tk.input_generator.embedding_maps.CGEmbeddingMap" title="mlcg_tk.input_generator.embedding_maps.CGEmbeddingMap"><code class="xref py py-class docutils literal notranslate"><span class="pre">CGEmbeddingMap</span></code></a></p>
 <dl class="simple">
 <dt>Five-bead embedding map defined by:</dt><dd><ul class="simple">
@@ -204,14 +204,14 @@ data-aria-dark="Switch to auto color mode">
 
 <dl class="py function">
 <dt class="sig sig-object py" id="mlcg_tk.input_generator.embedding_maps.embedding_ca">
-<span class="sig-prename descclassname"><span class="pre">mlcg_tk.input_generator.embedding_maps.</span></span><span class="sig-name descname"><span class="pre">embedding_ca</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atom_df</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/mlcg_tk/input_generator/embedding_maps.html#embedding_ca"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.embedding_maps.embedding_ca" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">mlcg_tk.input_generator.embedding_maps.</span></span><span class="sig-name descname"><span class="pre">embedding_ca</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atom_df</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/mlcg_tk/input_generator/embedding_maps.html#embedding_ca"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.embedding_maps.embedding_ca" title="Link to this definition">#</a></dt>
 <dd><p>Helper function for mapping high-resolution topology to
 CA embedding map.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="mlcg_tk.input_generator.embedding_maps.embedding_fivebead">
-<span class="sig-prename descclassname"><span class="pre">mlcg_tk.input_generator.embedding_maps.</span></span><span class="sig-name descname"><span class="pre">embedding_fivebead</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atom_df</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/mlcg_tk/input_generator/embedding_maps.html#embedding_fivebead"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.embedding_maps.embedding_fivebead" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">mlcg_tk.input_generator.embedding_maps.</span></span><span class="sig-name descname"><span class="pre">embedding_fivebead</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atom_df</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/mlcg_tk/input_generator/embedding_maps.html#embedding_fivebead"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.input_generator.embedding_maps.embedding_fivebead" title="Link to this definition">#</a></dt>
 <dd><p>Helper function for mapping high-resolution topology to
 5-bead embedding map.</p>
 </dd></dl>

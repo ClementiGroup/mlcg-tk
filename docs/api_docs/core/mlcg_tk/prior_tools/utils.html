@@ -6,7 +6,7 @@
     function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
     setColorMode(localStorage._theme||"auto");
   </script><link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=e1a1ceaf" />
-    <link rel="stylesheet" type="text/css" href="../../../../_static/shibuya.css?v=9454f7d5" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/shibuya.css?v=2ceb65ce" />
     <link media="print" rel="stylesheet" type="text/css" href="../../../../_static/print.css?v=20ff2c19" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -166,10 +166,10 @@ data-aria-dark="Switch to auto color mode">
       <div class="relative min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
   <article class="yue" role="main">
           <section id="module-mlcg_tk.prior_tools.utils">
-<span id="utils-module"></span><h1>utils module<a class="headerlink" href="#module-mlcg_tk.prior_tools.utils" title="Link to this heading">¶</a></h1>
+<span id="utils-module"></span><h1>utils module<a class="headerlink" href="#module-mlcg_tk.prior_tools.utils" title="Link to this heading">#</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="mlcg_tk.prior_tools.utils.get_nonzero_keys">
-<span class="sig-prename descclassname"><span class="pre">mlcg_tk.prior_tools.utils.</span></span><span class="sig-name descname"><span class="pre">get_nonzero_keys</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prior_module</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/mlcg_tk/prior_tools/utils.html#get_nonzero_keys"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.prior_tools.utils.get_nonzero_keys" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">mlcg_tk.prior_tools.utils.</span></span><span class="sig-name descname"><span class="pre">get_nonzero_keys</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prior_module</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/mlcg_tk/prior_tools/utils.html#get_nonzero_keys"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.prior_tools.utils.get_nonzero_keys" title="Link to this definition">#</a></dt>
 <dd><p>Function to extract the key combinations of a prior that have a non-zero value for the parameters.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
@@ -180,7 +180,7 @@ data-aria-dark="Switch to auto color mode">
 
 <dl class="py function">
 <dt class="sig sig-object py" id="mlcg_tk.prior_tools.utils.get_prior_domain">
-<span class="sig-prename descclassname"><span class="pre">mlcg_tk.prior_tools.utils.</span></span><span class="sig-name descname"><span class="pre">get_prior_domain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">201</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/mlcg_tk/prior_tools/utils.html#get_prior_domain"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.prior_tools.utils.get_prior_domain" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">mlcg_tk.prior_tools.utils.</span></span><span class="sig-name descname"><span class="pre">get_prior_domain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">201</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/mlcg_tk/prior_tools/utils.html#get_prior_domain"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.prior_tools.utils.get_prior_domain" title="Link to this definition">#</a></dt>
 <dd><p>Function to return a tensor with the domain where some common priors are defined</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
@@ -191,7 +191,7 @@ data-aria-dark="Switch to auto color mode">
 
 <dl class="py function">
 <dt class="sig sig-object py" id="mlcg_tk.prior_tools.utils.optimal_offset">
-<span class="sig-prename descclassname"><span class="pre">mlcg_tk.prior_tools.utils.</span></span><span class="sig-name descname"><span class="pre">optimal_offset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fit_arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_arr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/mlcg_tk/prior_tools/utils.html#optimal_offset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.prior_tools.utils.optimal_offset" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">mlcg_tk.prior_tools.utils.</span></span><span class="sig-name descname"><span class="pre">optimal_offset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fit_arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_arr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/mlcg_tk/prior_tools/utils.html#optimal_offset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.prior_tools.utils.optimal_offset" title="Link to this definition">#</a></dt>
 <dd><p>Find optimal offset such that the difference between arrays is minimized.</p>
 <p>This functions returns the solution to the optimization problem of
 minimizing:</p>
@@ -206,7 +206,7 @@ minimizing:</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="mlcg_tk.prior_tools.utils.prior_evaluator">
-<span class="sig-prename descclassname"><span class="pre">mlcg_tk.prior_tools.utils.</span></span><span class="sig-name descname"><span class="pre">prior_evaluator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prior_module</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/mlcg_tk/prior_tools/utils.html#prior_evaluator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.prior_tools.utils.prior_evaluator" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">mlcg_tk.prior_tools.utils.</span></span><span class="sig-name descname"><span class="pre">prior_evaluator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prior_module</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/mlcg_tk/prior_tools/utils.html#prior_evaluator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.prior_tools.utils.prior_evaluator" title="Link to this definition">#</a></dt>
 <dd><p>Evaluate the <cite>prior_module</cite> for bead combination <cite>key</cite> over tensor <cite>x</cite></p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
@@ -217,7 +217,7 @@ minimizing:</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="mlcg_tk.prior_tools.utils.symmetrized_keys_generator">
-<span class="sig-prename descclassname"><span class="pre">mlcg_tk.prior_tools.utils.</span></span><span class="sig-name descname"><span class="pre">symmetrized_keys_generator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">order</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">emb_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/mlcg_tk/prior_tools/utils.html#symmetrized_keys_generator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.prior_tools.utils.symmetrized_keys_generator" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">mlcg_tk.prior_tools.utils.</span></span><span class="sig-name descname"><span class="pre">symmetrized_keys_generator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">order</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">emb_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/mlcg_tk/prior_tools/utils.html#symmetrized_keys_generator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mlcg_tk.prior_tools.utils.symmetrized_keys_generator" title="Link to this definition">#</a></dt>
 <dd><p>Auxiliar function to generate the symmetric tuples of size <cite>order</cite> with integers from 1 to <cite>emb_max</cite></p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
