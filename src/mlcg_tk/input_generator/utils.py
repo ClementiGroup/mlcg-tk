@@ -5,6 +5,7 @@ import mdtraj as md
 import warnings
 from scipy.sparse import sparray, csr_array
 from functools import wraps
+import torch
 
 from aggforce import (
     LinearMap,
@@ -12,6 +13,12 @@ from aggforce import (
     project_forces,
     constraint_aware_uni_map,
     qp_linear_map,
+)
+
+from mlcg.geometry.topology import (
+    Topology,
+    get_connectivity_matrix,
+    get_n_pairs,
 )
 
 
@@ -678,3 +685,37 @@ def get_dihedral_groups(
             atom_groups[label].append(np.concatenate(dihedral))
 
     return atom_groups
+
+
+def build_exclusion_list(
+    topology: md.Topology, order: int,
+) -> np.ndarray:
+    """
+    Parameters
+    ----------
+    topology:
+        MDTraj topology object.
+    order:
+        Maximum graph separation of excluded pairs (2 = bonds, 3 = up to angles, 4 = up to dihedrals).
+
+    Returns
+    -------
+    Integer array of pairs (2, n_pairs) to exclude during message passing.
+    """
+    if not 2 <= order <= 4:
+        raise ValueError("Order parameter must be between 2 (bonds) and 4 (dihedrals)")
+
+    mlcg_top = Topology.from_mdtraj(topology)
+    conn_mat = get_connectivity_matrix(mlcg_top)
+
+    excluded_pairs = []
+    for n in range(2,order+1):
+        edges = get_n_pairs(conn_mat, n=n).long()
+        excluded_pairs.append(edges)
+        excluded_pairs.append(edges.flip(0))
+
+    return torch.unique(
+        torch.cat(excluded_pairs, dim=1),
+        dim=1
+        ).numpy()
+

@@ -712,7 +712,7 @@ class SampleCollection:
                 return False
         return True
 
-    def load_cg_output(self, save_dir: str, prior_tag: str = "") -> Tuple:
+    def load_cg_output(self, save_dir: str, prior_tag: str = "", load_cg_structure: bool = False) -> Tuple:
         """
         Loads all cg data produced by `save_cg_output` and `get_prior_nls`
 
@@ -799,6 +799,7 @@ class SampleCollection:
         mol_num_batches: int = 1,
         keep_batches: bool = False,
         stride: int = 1,
+        load_cg_structure: bool = False,
     ) -> Tuple:
         """
         Loads all cg data produced by `save_cg_output` and `get_prior_nls`
@@ -809,7 +810,8 @@ class SampleCollection:
             Location of saved cg data including delta forces
         force_tag:
             String identifying the produced delta forces
-
+        load_cg_structure: 
+            Whether cg structure should be loaded for topology information
         Returns
         -------
         Tuple of np.ndarrays containing coarse grained coordinates, delta forces, and embeddings,
@@ -822,6 +824,10 @@ class SampleCollection:
             training_data_dir, get_output_tag([self.tag, self.name], placement="before")
         )
         cg_embeds = np.load(f"{mol_save_templ}cg_embeds.npy")
+        if load_cg_structure:
+            cg_structure = self.load_cg_structure(mol_save_templ)
+        else:
+            cg_structure = None
         if mol_num_batches > 1 and not keep_batches:
             cg_coords = []
             cg_forces = []
@@ -854,7 +860,17 @@ class SampleCollection:
             )
             force_file_path = f"{save_templ_forces}delta_forces.npy"
             cg_forces = np.load(force_file_path)[::stride]
-        return cg_coords, cg_forces, cg_embeds
+        return cg_coords, cg_forces, cg_embeds, cg_structure
+
+    def load_cg_structure(
+            self,
+            mol_save_templ: str,
+        ) -> md.Trajectory:
+
+        if os.path.isfile(f"{mol_save_templ}cg_structure.pdb"):
+            return md.load(f"{mol_save_templ}cg_structure.pdb")
+        else:
+            raise FileNotFoundError(f"No cg_structure.pdb found for {f'{self.tag}{self.name}'}")
 
 
 class RawDataset:

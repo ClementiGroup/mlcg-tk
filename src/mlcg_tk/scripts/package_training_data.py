@@ -2,7 +2,7 @@ import os.path as osp
 import sys
 
 from mlcg_tk.input_generator.raw_dataset import RawDataset
-from mlcg_tk.input_generator.utils import get_output_tag
+from mlcg_tk.input_generator.utils import get_output_tag, build_exclusion_list
 
 from tqdm import tqdm
 from time import ctime
@@ -31,21 +31,23 @@ def package_training_data(
     train_size: Union[float, int, None] = 0.8,
     train_mols: Optional[List[str]] = None,
     val_mols: Optional[List[str]] = None,
-    random_state: Optional[str] = None,
+    random_state: Optional[int] = None,
     mol_num_batches: Optional[int] = 1,
     keep_batches: Optional[bool] = False,
+    exclude_pairs: Optional[bool] = False,
+    excluded_order: Optional[int] = None,
 ):
     """
-    Computes structural features and accumulates statistics on dataset samples
+    Packages CG coordinates, delta forces and embeddings into an HDF5 dataset
 
     Parameters
     ----------
     dataset_name : str
         Name given to specific dataset
-    dataset_tag : str
-        Label given to all output files produced from dataset
     names : List[str]
         List of sample names
+    dataset_tag : str
+        Label given to all output files produced from dataset
     force_tag : str
         Label given to produced delta forces and saved packaged data
     training_data_dir : str
@@ -74,11 +76,20 @@ def package_training_data(
         Controls shuffling applied to the data before applying the split
     mol_num_batches : int
         If greater than 1, will load each molecule data from the specified number of batches
-        that were be treated as different samples
+        that will be treated as different samples
     keep_batches : bool
         If set to True, batches will be put as individual molecules in the h5 dataset and
         the partition file will be built accordingly. Otherwise, if batches exist, they will be
         accumulated into one single molecule.
+    exclude_pairs : bool
+        If set to true, bonded pairs will be computed based on the value of the excluded_order and 
+        will be stored in each molecule's h5 group; these pairs will be excluded from the model's 
+        neighbor lists.
+    excluded_order : int
+        Required if exclude_pairs is True; maximum graph separation of the excluded pairs:
+        2 = bonds
+        3 = bonds and angles
+        4 = bonds, angles, and dihedrals
     """
     if keep_batches and mol_num_batches > 1:
         dataset = RawDataset(
@@ -107,23 +118,31 @@ def package_training_data(
                         non_empty_names.append(samples.mol_name)
                     else:
                         non_empty_names.append(samples.name)
+                if exclude_pairs:
+                    if excluded_order is None:
+                        raise ValueError("excluded_order must be provided when exclude_pairs=True")
+                    load_cg_structure = True
+                else:
+                    load_cg_structure = False
 
                 (
                     cg_coords,
                     cg_delta_forces,
                     cg_embeds,
+                    cg_structure,
                 ) = samples.load_training_inputs(
                     training_data_dir=training_data_dir,
                     force_tag=force_tag,
                     mol_num_batches=mol_num_batches,
                     keep_batches=keep_batches,
+                    load_cg_structure=load_cg_structure,
                 )
 
                 if mol_num_batches > 1 and not keep_batches:
                     name = f"{samples.tag}{samples.mol_name}"
                 else:
                     name = f"{samples.tag}{samples.name}"
-                hdf_group = metaset.create_group(name)
+                hdf_group = metaset.create_group(name, track_order=True)
 
                 hdf_group.create_dataset("cg_coords", data=cg_coords.astype(np.float32))
                 hdf_group.create_dataset(
@@ -131,6 +150,13 @@ def package_training_data(
                 )
                 hdf_group.attrs["cg_embeds"] = cg_embeds
                 hdf_group.attrs["N_frames"] = cg_coords.shape[0]
+                if exclude_pairs:
+                    excluded_pairs = build_exclusion_list(
+                        topology=cg_structure.topology,
+                        order=excluded_order
+                    )
+                    hdf_group.attrs["excluded_pairs"] = excluded_pairs
+                    hdf_group.attrs["excluded_order"] = excluded_order
                 if mol_num_batches > 1 and not keep_batches:
                     print("All batches saved in one molecule - exit batch loop")
                     break
@@ -223,7 +249,8 @@ def combine_datasets(
     save_partition: Optional[bool] = True,
 ):
     """
-    Computes structural features and accumulates statistics on dataset samples
+    Builds a train/validation partition file containing the molecule names associated with the dataset
+    as well as the corresponding batch sizes
 
     Parameters
     ----------
