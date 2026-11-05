@@ -58,6 +58,11 @@ def add_excluded_pairs(
     h5_file = osp.join(save_dir, f"{output_tag[1:]}.h5")
 
     with h5py.File(h5_file, "a") as f:
+        existing = f.attrs.get("excluded_order")
+        if existing is not None and not overwrite:
+            raise ValueError(
+                f"{h5_file} already has excluded_order={existing}; use overwrite=True"
+            )
         metaset = f[dataset_name]
         if keep_batches and mol_num_batches > 1:
             dataset = RawDataset(dataset_name, names, dataset_tag, n_batches=mol_num_batches)
@@ -71,10 +76,6 @@ def add_excluded_pairs(
                 warnings.warn(f"{name} not in {h5_file}; skipping")
                 continue
             hdf_group = metaset[name]
-
-            if "excluded_pairs" in hdf_group.attrs and not overwrite:
-                raise ValueError(f"{name} already has excluded_pairs; use overwrite=True")
-
             mol_save_templ = osp.join(
                 training_data_dir,
                 get_output_tag([samples.tag, samples.mol_name], placement="before"),
@@ -86,7 +87,7 @@ def add_excluded_pairs(
                 order=excluded_order
             )
             hdf_group.attrs["excluded_pairs"] = excluded_pairs
-            hdf_group.attrs["excluded_order"] = excluded_order
+        f.attrs["excluded_order"] = excluded_order
 
 
 def main():

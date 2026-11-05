@@ -102,8 +102,15 @@ def package_training_data(
     if save_h5:
         # Create H5 of training data
         fnout_h5 = osp.join(save_dir, f"{output_tag[1:]}.h5")
-
+        if exclude_pairs:
+            if excluded_order is None:
+                raise ValueError("excluded_order must be provided when exclude_pairs=True")
+            load_cg_structure = True
+        else:
+            load_cg_structure = False
         with h5py.File(fnout_h5, "w") as f:
+            if exclude_pairs:
+                f.attrs["excluded_order"] = excluded_order
             metaset = f.create_group(dataset_name)
             for samples in tqdm(dataset, f"Packaging {dataset_name} dataset..."):
                 if not samples.has_delta_forces_output(
@@ -118,12 +125,6 @@ def package_training_data(
                         non_empty_names.append(samples.mol_name)
                     else:
                         non_empty_names.append(samples.name)
-                if exclude_pairs:
-                    if excluded_order is None:
-                        raise ValueError("excluded_order must be provided when exclude_pairs=True")
-                    load_cg_structure = True
-                else:
-                    load_cg_structure = False
 
                 (
                     cg_coords,
@@ -156,7 +157,6 @@ def package_training_data(
                         order=excluded_order
                     )
                     hdf_group.attrs["excluded_pairs"] = excluded_pairs
-                    hdf_group.attrs["excluded_order"] = excluded_order
                 if mol_num_batches > 1 and not keep_batches:
                     print("All batches saved in one molecule - exit batch loop")
                     break
