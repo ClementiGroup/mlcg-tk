@@ -22,6 +22,7 @@ def add_excluded_pairs(
     mol_num_batches: int = 1,
     keep_batches: bool = False,
     overwrite: bool = False,
+    symmetrize_excluded_pairs: bool = False,
 ):
     """
     Build excluded pairs list from topology and store them in existing h5 molecule groups
@@ -53,6 +54,8 @@ def add_excluded_pairs(
         if batches exist, they will be accumulated into one single molecule.
     overwrite : bool
         If True, replace existing exclusions.
+    symmetrize_excluded_pairs: bool
+        If true, symmetric pairs will be added to excluded pairs list.
     """
     output_tag = get_output_tag([dataset_name, force_tag], placement="after")
     h5_file = osp.join(save_dir, f"{output_tag[1:]}.h5")
@@ -84,7 +87,8 @@ def add_excluded_pairs(
 
             excluded_pairs = build_exclusion_list(
                 topology=cg_structure.topology,
-                order=excluded_order
+                order=excluded_order,
+                symmetrize=symmetrize_excluded_pairs,
             )
             hdf_group.attrs["excluded_pairs"] = excluded_pairs
         f.attrs["excluded_order"] = excluded_order

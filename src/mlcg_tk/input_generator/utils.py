@@ -688,7 +688,7 @@ def get_dihedral_groups(
 
 
 def build_exclusion_list(
-    topology: md.Topology, order: int,
+    topology: md.Topology, order: int, symmetrize: bool = False,
 ) -> np.ndarray:
     """
     Parameters
@@ -697,6 +697,8 @@ def build_exclusion_list(
         MDTraj topology object.
     order:
         Maximum graph separation of excluded pairs (2 = bonds, 3 = up to angles, 4 = up to dihedrals).
+    symmetrize:
+        If true, symmetric pairs will be added to excluded pairs list
 
     Returns
     -------
@@ -712,7 +714,8 @@ def build_exclusion_list(
     for n in range(2,order+1):
         edges = get_n_pairs(conn_mat, n=n).long()
         excluded_pairs.append(edges)
-        excluded_pairs.append(edges.flip(0))
+        if symmetrize:
+            excluded_pairs.append(edges.flip(0))
 
     return torch.unique(
         torch.cat(excluded_pairs, dim=1),

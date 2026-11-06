@@ -36,6 +36,7 @@ def package_training_data(
     keep_batches: Optional[bool] = False,
     exclude_pairs: Optional[bool] = False,
     excluded_order: Optional[int] = None,
+    symmetrize_excluded_pairs: Optional[bool] = False,
 ):
     """
     Packages CG coordinates, delta forces and embeddings into an HDF5 dataset
@@ -90,6 +91,8 @@ def package_training_data(
         2 = bonds
         3 = bonds and angles
         4 = bonds, angles, and dihedrals
+    symmetrize_excluded_pairs: bool
+        If true, symmetric pairs will be added to excluded pairs list
     """
     if keep_batches and mol_num_batches > 1:
         dataset = RawDataset(
@@ -154,7 +157,8 @@ def package_training_data(
                 if exclude_pairs:
                     excluded_pairs = build_exclusion_list(
                         topology=cg_structure.topology,
-                        order=excluded_order
+                        order=excluded_order,
+                        symmetrize=symmetrize_excluded_pairs,
                     )
                     hdf_group.attrs["excluded_pairs"] = excluded_pairs
                 if mol_num_batches > 1 and not keep_batches:
