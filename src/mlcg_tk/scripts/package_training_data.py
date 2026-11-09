@@ -37,6 +37,8 @@ def package_training_data(
     exclude_pairs: Optional[bool] = False,
     excluded_order: Optional[int] = None,
     symmetrize_excluded_pairs: Optional[bool] = False,
+    excluded_prior_nls: Optional[List[str]] = None,
+    prior_tag: Optional[str] = None,
 ):
     """
     Packages CG coordinates, delta forces and embeddings into an HDF5 dataset
@@ -91,8 +93,14 @@ def package_training_data(
         2 = bonds
         3 = bonds and angles
         4 = bonds, angles, and dihedrals
-    symmetrize_excluded_pairs: bool
+    symmetrize_excluded_pairs : bool
         If true, symmetric pairs will be added to excluded pairs list
+    excluded_prior_nls : Optional[List[str]]
+        List of names of prior neighbour lists to be used to compute excluded pairs. If None, 
+        all pairs up to excluded_order bonds apart are computed from the topology and excluded. 
+        The highest order of the selected neighbour lists must equal excluded_order.
+    prior_tag : Optional[str]
+        Tag of the prior neighbour lists to load (required if excluded_prior_nls is set)
     """
     if keep_batches and mol_num_batches > 1:
         dataset = RawDataset(
@@ -108,7 +116,13 @@ def package_training_data(
         if exclude_pairs:
             if excluded_order is None:
                 raise ValueError("excluded_order must be provided when exclude_pairs=True")
-            load_cg_structure = True
+            if excluded_prior_nls is not None:
+                if prior_tag is None:
+                    raise ValueError("prior_tag must be provided when excluded_prior_nls is set")
+                else:
+                    load_cg_structure = False
+            else:
+                load_cg_structure = True
         else:
             load_cg_structure = False
         with h5py.File(fnout_h5, "w") as f:
@@ -155,10 +169,25 @@ def package_training_data(
                 hdf_group.attrs["cg_embeds"] = cg_embeds
                 hdf_group.attrs["N_frames"] = cg_coords.shape[0]
                 if exclude_pairs:
+                    prior_nls = None
+                    if excluded_prior_nls is not None:
+                        mol_save_templ = osp.join(
+                            training_data_dir,
+                            get_output_tag([samples.tag, samples.mol_name], placement="before"),
+                        )
+                        full_prior_nls = samples.load_prior_nls(
+                                mol_save_templ,
+                                get_output_tag(prior_tag, placement="after")
+                        )
+                        missing = [n for n in excluded_prior_nls if n not in full_prior_nls]
+                        if len(missing) != 0:
+                            raise KeyError(f"{missing} not in prior nls {list(full_prior_nls.keys())}")
+                        prior_nls = [full_prior_nls[n] for n in excluded_prior_nls]
                     excluded_pairs = build_exclusion_list(
-                        topology=cg_structure.topology,
-                        order=excluded_order,
+                        excluded_order=excluded_order,
                         symmetrize=symmetrize_excluded_pairs,
+                        topology=cg_structure.topology if cg_structure is not None else None,
+                        prior_nls=prior_nls,
                     )
                     hdf_group.attrs["excluded_pairs"] = excluded_pairs
                 if mol_num_batches > 1 and not keep_batches:

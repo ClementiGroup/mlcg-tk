@@ -745,10 +745,10 @@ class SampleCollection:
         cg_embeds = np.load(f"{mol_save_templ}cg_embeds.npy")
         cg_pdb = md.load(f"{mol_save_templ}cg_structure.pdb")
         # load NLs
-        ofile = f"{mol_save_templ}prior_nls{get_output_tag(prior_tag, placement='after')}.pkl"
-
-        with open(ofile, "rb") as f:
-            cg_prior_nls = pickle.load(f)
+        cg_prior_nls = self.load_prior_nls(
+            mol_save_templ,
+            get_output_tag(prior_tag, placement='after'),
+        )
         return cg_coords, cg_forces, cg_embeds, cg_pdb, cg_prior_nls
 
     def load_cg_output_into_batches(
@@ -866,11 +866,48 @@ class SampleCollection:
             self,
             mol_save_templ: str,
         ) -> md.Trajectory:
+        """
+        Loads the cg pdb structure saved by `process_raw_dataset`
 
+        Parameters
+        ----------
+        mol_save_templ:
+            Path prefix of the molecule's saved cg data (directory + tag + molecule name)
+
+        Returns
+        -------
+        mdtraj.Trajectory of cg structure
+        """
         if os.path.isfile(f"{mol_save_templ}cg_structure.pdb"):
             return md.load(f"{mol_save_templ}cg_structure.pdb")
         else:
             raise FileNotFoundError(f"No cg_structure.pdb found for {f'{self.tag}{self.name}'}")
+
+    def load_prior_nls(
+            self,
+            mol_save_templ: str,
+            prior_templ: str,
+        ) -> Dict:
+        """
+        Loads the prior neighbour lists saved by `get_prior_nls`
+
+        Parameters
+        ----------
+        mol_save_templ:
+            Path prefix of the molecule's saved cg data (directory + tag + molecule name)
+        prior_templ:
+            Prior tag formatted with get_output_tag(prior_tag, placement="after")
+
+        Returns
+        -------
+        Dictionary of prior neighbour lists keyed by neighbour list name
+        """
+        ofile = f"{mol_save_templ}prior_nls{prior_templ}.pkl"
+        if os.path.isfile(ofile):
+            with open(ofile, "rb") as f:
+                return pickle.load(f)
+        else:
+            raise FileNotFoundError(f"No prior neighbour lists found at {ofile}")
 
 
 class RawDataset:

@@ -5,7 +5,7 @@ from mlcg_tk.input_generator.utils import get_output_tag, build_exclusion_list
 
 from tqdm import tqdm
 from time import ctime
-from typing import List
+from typing import List, Optional
 from jsonargparse import CLI
 import h5py
 import warnings
@@ -23,9 +23,11 @@ def add_excluded_pairs(
     keep_batches: bool = False,
     overwrite: bool = False,
     symmetrize_excluded_pairs: bool = False,
+    excluded_prior_nls: Optional[List[str]] = None,
+    prior_tag: Optional[str] = None,
 ):
     """
-    Build excluded pairs list from topology and store them in existing h5 molecule groups
+    Build excluded pairs list and store them in existing h5 molecule groups
 
     Parameters
     ----------
@@ -54,11 +56,19 @@ def add_excluded_pairs(
         if batches exist, they will be accumulated into one single molecule.
     overwrite : bool
         If True, replace existing exclusions.
-    symmetrize_excluded_pairs: bool
+    symmetrize_excluded_pairs : bool
         If true, symmetric pairs will be added to excluded pairs list.
+    excluded_prior_nls : Optional[List[str]]
+        List of names of prior neighbour lists to be used to compute excluded pairs. If None, 
+        all pairs up to excluded_order bonds apart are computed from the topology and excluded. 
+        The highest order of the selected neighbour lists must equal excluded_order.
+    prior_tag : Optional[str]
+        Tag of the prior neighbour lists to load (required if excluded_prior_nls is set)
     """
     output_tag = get_output_tag([dataset_name, force_tag], placement="after")
     h5_file = osp.join(save_dir, f"{output_tag[1:]}.h5")
+    if excluded_prior_nls is not None and prior_tag is None:
+        raise ValueError("prior_tag must be provided when excluded_prior_nls is set")
 
     with h5py.File(h5_file, "a") as f:
         existing = f.attrs.get("excluded_order")
@@ -83,12 +93,25 @@ def add_excluded_pairs(
                 training_data_dir,
                 get_output_tag([samples.tag, samples.mol_name], placement="before"),
             )
-            cg_structure = samples.load_cg_structure(mol_save_templ)
+            cg_structure = None
+            prior_nls = None
+            if excluded_prior_nls is not None:
+                full_prior_nls = samples.load_prior_nls(
+                        mol_save_templ,
+                        get_output_tag(prior_tag, placement="after")
+                )
+                missing = [n for n in excluded_prior_nls if n not in full_prior_nls]
+                if len(missing) != 0:
+                    raise KeyError(f"{missing} not in prior nls {list(full_prior_nls.keys())}")
+                prior_nls = [full_prior_nls[n] for n in excluded_prior_nls]
+            else:
+                cg_structure = samples.load_cg_structure(mol_save_templ)
 
             excluded_pairs = build_exclusion_list(
-                topology=cg_structure.topology,
-                order=excluded_order,
+                excluded_order=excluded_order,
                 symmetrize=symmetrize_excluded_pairs,
+                topology=cg_structure.topology if cg_structure is not None else None,
+                prior_nls=prior_nls,
             )
             hdf_group.attrs["excluded_pairs"] = excluded_pairs
         f.attrs["excluded_order"] = excluded_order

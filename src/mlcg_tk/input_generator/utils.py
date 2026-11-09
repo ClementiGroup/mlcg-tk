@@ -688,37 +688,60 @@ def get_dihedral_groups(
 
 
 def build_exclusion_list(
-    topology: md.Topology, order: int, symmetrize: bool = False,
+    excluded_order: int,
+    symmetrize: bool = False,
+    topology: Optional[md.Topology] = None,
+    prior_nls: Optional[List[Dict]] = None,
 ) -> np.ndarray:
     """
     Parameters
     ----------
-    topology:
-        MDTraj topology object.
-    order:
+    excluded_order:
         Maximum graph separation of excluded pairs (2 = bonds, 3 = up to angles, 4 = up to dihedrals).
     symmetrize:
         If true, symmetric pairs will be added to excluded pairs list
+    topology:
+        MDTraj topology object. Will be used to compute excluded pairs directly from graph.
+        Mutually exclusive with `prior_nls`.
+    prior_nls:
+        List of selected prior neighbour lists saved by `get_prior_nls`. The highest order among
+        them must equal `excluded_order`. Mutually exclusive with `topology`.
 
     Returns
     -------
     Integer array of pairs (2, n_pairs) to exclude during message passing.
     """
-    if not 2 <= order <= 4:
-        raise ValueError("Order parameter must be between 2 (bonds) and 4 (dihedrals)")
+    if not excluded_order > 1:
+        raise ValueError("Order parameter must be at least 2 (excluded bonds).")
+    if (topology is None) == (prior_nls is None):
+        raise ValueError("Exactly one of topology or prior_nls must be given")
 
-    mlcg_top = Topology.from_mdtraj(topology)
-    conn_mat = get_connectivity_matrix(mlcg_top)
+    if topology is not None:
+        mlcg_top = Topology.from_mdtraj(topology)
+        conn_mat = get_connectivity_matrix(mlcg_top)
 
-    excluded_pairs = []
-    for n in range(2,order+1):
-        edges = get_n_pairs(conn_mat, n=n).long()
-        excluded_pairs.append(edges)
-        if symmetrize:
-            excluded_pairs.append(edges.flip(0))
+        excluded_pairs = torch.cat(
+            [get_n_pairs(conn_mat, n=n).long() for n in range(2, excluded_order + 1)], dim=1
+        )
+    else:
+        if len(prior_nls) == 0:
+            raise ValueError("prior_nls is empty")
+        tags = [nl["tag"] for nl in prior_nls]
 
-    return torch.unique(
-        torch.cat(excluded_pairs, dim=1),
-        dim=1
-        ).numpy()
+        max_order = max(nl["order"] for nl in prior_nls)
+        if max_order != excluded_order:
+            raise ValueError(
+                f"Highest order of {tags} is {max_order}, but excluded_order={excluded_order}"
+            )
+
+        excluded_pairs = torch.cat(
+            [torch.as_tensor(nl["index_mapping"])[[0, -1]].long() for nl in prior_nls],
+            dim=1,
+        )
+        excluded_pairs = torch.sort(excluded_pairs, dim=0).values
+
+    if symmetrize:
+        excluded_pairs = torch.cat([excluded_pairs, excluded_pairs.flip(0)], dim=1)
+
+    return torch.unique(excluded_pairs, dim=1).numpy()
 
