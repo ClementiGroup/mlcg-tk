@@ -34,7 +34,6 @@ def package_training_data(
     random_state: Optional[int] = None,
     mol_num_batches: Optional[int] = 1,
     keep_batches: Optional[bool] = False,
-    exclude_pairs: Optional[bool] = False,
     excluded_order: Optional[int] = None,
     symmetrize_excluded_pairs: Optional[bool] = False,
     excluded_prior_nls: Optional[List[str]] = None,
@@ -84,12 +83,8 @@ def package_training_data(
         If set to True, batches will be put as individual molecules in the h5 dataset and
         the partition file will be built accordingly. Otherwise, if batches exist, they will be
         accumulated into one single molecule.
-    exclude_pairs : bool
-        If set to true, bonded pairs will be computed based on the value of the excluded_order and 
-        will be stored in each molecule's h5 group; these pairs will be excluded from the model's 
-        neighbor lists.
     excluded_order : int
-        Required if exclude_pairs is True; maximum graph separation of the excluded pairs:
+        Maximum graph separation of the excluded pairs:
         2 = bonds
         3 = bonds and angles
         4 = bonds, angles, and dihedrals
@@ -113,9 +108,7 @@ def package_training_data(
     if save_h5:
         # Create H5 of training data
         fnout_h5 = osp.join(save_dir, f"{output_tag[1:]}.h5")
-        if exclude_pairs:
-            if excluded_order is None:
-                raise ValueError("excluded_order must be provided when exclude_pairs=True")
+        if excluded_order is not None and excluded_order > 1:
             if excluded_prior_nls is not None:
                 if prior_tag is None:
                     raise ValueError("prior_tag must be provided when excluded_prior_nls is set")
@@ -126,7 +119,7 @@ def package_training_data(
         else:
             load_cg_structure = False
         with h5py.File(fnout_h5, "w") as f:
-            if exclude_pairs:
+            if excluded_order is not None and excluded_order > 1:
                 f.attrs["excluded_order"] = excluded_order
             metaset = f.create_group(dataset_name)
             for samples in tqdm(dataset, f"Packaging {dataset_name} dataset..."):
@@ -168,7 +161,7 @@ def package_training_data(
                 )
                 hdf_group.attrs["cg_embeds"] = cg_embeds
                 hdf_group.attrs["N_frames"] = cg_coords.shape[0]
-                if exclude_pairs:
+                if excluded_order is not None and excluded_order > 1:
                     prior_nls = None
                     if excluded_prior_nls is not None:
                         mol_save_templ = osp.join(
