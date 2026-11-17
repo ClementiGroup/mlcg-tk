@@ -1,6 +1,7 @@
-from typing import Callable, Optional
+from typing import Callable, Optional, Tuple
 from functools import partial
 import mdtraj as md
+import warnings
 
 from mlcg.nn.prior import (
     HarmonicBonds,
@@ -10,9 +11,11 @@ from mlcg.nn.prior import (
     _Prior,
     GeneralBonds,
     GeneralAngles,
+    ExpRepulsion,
+    CutoffExpRepulsion
 )
-from mlcg.nn.gradients import GradientsOut
 
+from mlcg.nn.gradients import GradientsOut
 from mlcg.data import AtomicData
 from .prior_fit.histogram import HistogramsNL
 
@@ -121,7 +124,9 @@ class Bonds(PriorBuilder):
         bmin: float,
         bmax: float,
         prior_fit_fn: Callable,
+        prior_cls = GeneralBonds,
     ) -> None:
+
         super().__init__(
             histograms=HistogramsNL(
                 n_bins=n_bins,
@@ -130,7 +135,7 @@ class Bonds(PriorBuilder):
             ),
             nl_builder=nl_builder,
             prior_fit_fn=prior_fit_fn,
-            prior_cls=GeneralBonds,
+            prior_cls=prior_cls,
         )
         self.name = name
         self.type = "bonds"
@@ -176,7 +181,14 @@ class Bonds(PriorBuilder):
             of the gradient properties referenced in `mlcg.data._keys`.
             At the moment only forces are implemented.
         """
-        return GradientsOut(self.prior_cls(statistics, name=name), targets=targets)
+        stat0 = next(iter(statistics.values()))
+        if "ks" not in stat0:
+            return GradientsOut(self.prior_cls(statistics, name=name), targets=targets)
+        else:    
+            prior = self.prior_cls(statistics, n_degs=len(stat0["ks"]))
+            prior.name = name
+            return GradientsOut(prior, targets=targets)
+
 
 
 class Angles(PriorBuilder):
@@ -275,43 +287,75 @@ class Angles(PriorBuilder):
 
 class NonBonded(PriorBuilder):
     """
-    Builder for order-2 groups of nonbonded priors.
+    Builder for order-2 groups of nonbonded (repulsive) priors.
 
-    Attributes
+    Collects pair-distance histograms for the non-bonded neighbour list, fits
+    a repulsion to each pair type with ``prior_fit_fn``, and builds the
+    corresponding ``prior_cls`` module.
+
+    Parameters
     ----------
     name:
-        Name of specific prior (to match neighbour list name)
+        Name of the prior (must match the neighbour list name).
     nl_builder:
-        Neighbour list class to be used in building neighbour list
+        Neighbour list class used to build the non-bonded neighbour list.
     min_pair:
-        Minimum number of bond edges between two atoms in order to be considered
-        a member of the non-bonded set
+        Minimum number of bond edges between two atoms for the pair to be
+        included in the non-bonded set.
     res_exclusion:
-        If supplied, pairs within res_exclusion residues of each other are removed
-        from the non-bonded set
+        Pairs within ``res_exclusion`` residues of each other are excluded
+        from the non-bonded set.
     separate_termini:
-        Whether statistics should be computed separately for terminal atoms
-    nbins:
-        The number of bins over which 1-D feature histograms are constructed
-        in order to estimate distributions
+        Whether statistics are computed separately for terminal atoms.
+    n_bins:
+        Number of bins of the 1-D pair-distance histograms.
     bmin:
-        Lower bound of bin edges
+        Lower bound of the histogram bin edges.
     bmax:
-        Upper bound of bin edges
+        Upper bound of the histogram bin edges. Distances above ``bmax`` are
+        not seen by the fit.
     prior_fit_fn:
-        Function to be used in fitting potential from statistics
+        Function used to fit the potential from the histograms, e.g.
+        ``fit_repulsion_from_values`` for Repulsion priors or
+        ``fit_exp_repulsion_using_genetic_algorithm`` for ExpRepulsion priors.
+        It must accept the keyword arguments this builder passes for the
+        chosen ``prior_cls`` (see below).
     percentile:
-        If specified, the sigma value is calculated using the specified
-        distance percentile (eg, percentile = 1) sets the sigma value
-        at the location of the 1th percentile of pairwise distances. This
-        option is useful for estimating repulsions for distance distribtions
-        with long lower tails or lower distance outliers. Must be a number from
-        0 to 1
+        Repulsion priors only. Sigma is set at this percentile of the
+        pair-distance distribution (``np.percentile`` convention, 0 to 100;
+        e.g. 1 = 1st percentile). Useful for distributions with long lower
+        tails or short-distance outliers.
+    prior_cls:
+        Prior class to build: ``Repulsion`` or ``ExpRepulsion``, or a subclass
+        such as ``CutoffExpRepulsion``.
     cutoff:
-        If specified, only those input values below this cutoff will be used in
-        evaluating the percentile
-    """
+        For ``CutoffExpRepulsion`` (required): truncation radius of the
+        prior, which is shifted so that energy and force vanish at the cutoff.
+        For Repulsion priors: only distances below the cutoff are used to
+        compute the percentile. Not used to fit ExpRepulsion priors (see
+        ``fit_window``).
+    fit_window:
+        ExpRepulsion priors only. Bins below this distance are used to
+        locate the repulsive region; the fit then runs up to the detected
+        region boundary (<= fit_window). If None, all bins (up to ``bmax``)
+        are used. A warning is issued if it exceeds ``cutoff``.
+    alphas:
+        ExpRepulsion priors only. ``(low, high)`` search bounds for alpha.
+        If None, they are estimated from the data per pair type.
+    r0s:
+        ExpRepulsion priors only. ``(low, high)`` search bounds for r_0, in
+        the distance units of the histograms. If None, the fit function's
+        default is used.
+    random_seed:
+        ExpRepulsion priors only. Seed for the genetic-algorithm fit, for
+        reproducible priors. If None, results can differ between runs.
 
+    Raises
+    ------
+    ValueError
+        If ``prior_cls`` is not a Repulsion or ExpRepulsion subclass, or if
+        ``prior_cls`` is ``CutoffExpRepulsion`` and ``cutoff`` is None.
+    """
     def __init__(
         self,
         name: str,
@@ -324,9 +368,32 @@ class NonBonded(PriorBuilder):
         bmax: float,
         prior_fit_fn: Callable,
         percentile: float = 1,
+        prior_cls = Repulsion,
         cutoff: Optional[float] = None,
+        fit_window: Optional[float] = None,
+        alphas: Optional[Tuple[float, float]] = None,
+        r0s: Optional[Tuple[float, float]] = None,
+        random_seed: Optional[int] = None,    
     ) -> None:
-        prior_fit_fn = partial(prior_fit_fn, percentile=percentile, cutoff=cutoff)
+        if issubclass(prior_cls, Repulsion):
+            prior_fit_fn = partial(prior_fit_fn, percentile=percentile, cutoff=cutoff)
+        elif issubclass(prior_cls, ExpRepulsion):                
+            prior_fit_fn = partial(prior_fit_fn, fit_window=fit_window, alphas=alphas, r0s=r0s, random_seed=random_seed)
+        else:
+            raise ValueError(f"prior_cls must be either Repulsion or ExpRepulsion, got {prior_cls}")
+        
+        if issubclass(prior_cls, CutoffExpRepulsion):
+            if cutoff is None:
+                raise ValueError("CutoffExpRepulsion requires a cutoff")
+            if fit_window is not None and fit_window > cutoff:
+                warnings.warn(
+                    f"fit_window ({fit_window}) > cutoff ({cutoff}): the fitted region "
+                    "may extend beyond where the prior is truncated to zero"
+                )
+            self.prior_kwargs = {"cutoff": cutoff}
+        else:
+            self.prior_kwargs = {}
+
         super().__init__(
             histograms=HistogramsNL(
                 n_bins=n_bins,
@@ -335,7 +402,7 @@ class NonBonded(PriorBuilder):
             ),
             nl_builder=nl_builder,
             prior_fit_fn=prior_fit_fn,
-            prior_cls=Repulsion,
+            prior_cls=prior_cls,
         )
         self.name = name
         self.type = "non_bonded"
@@ -394,7 +461,7 @@ class NonBonded(PriorBuilder):
             of the gradient properties referenced in `mlcg.data._keys`.
             At the moment only forces are implemented.
         """
-        prior = self.prior_cls(statistics)
+        prior = self.prior_cls(statistics, **self.prior_kwargs)
         prior.name = name
         return GradientsOut(prior, targets=targets)
 
