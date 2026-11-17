@@ -2,6 +2,7 @@ import numpy as np
 import warnings
 from scipy.integrate import trapezoid
 from scipy.optimize import curve_fit
+from scipy.optimize import lsq_linear
 import torch
 from typing import Optional
 
@@ -208,3 +209,141 @@ def fit_polynomial_from_potential_estimates(
                 stat["ks"][k1_name] = torch.tensor(float("nan"))
                 stat["x_0s"][k2_name] = torch.tensor(float("nan"))
     return stat
+
+def fit_quartic_bonds_from_potential_estimates(
+    bin_centers_nz: torch.Tensor,
+    dG_nz: torch.Tensor,
+    ncounts_nz: Optional[torch.Tensor] = None,
+    n_degs: int = 8,
+    **kwargs,
+):
+    r"""Fit a polynomial bond prior
+
+    .. math::
+
+        V(r) = V_0 + \sum_{n=1}^{N} k_n (r - x_0)^n
+
+    (as evaluated by `mlcg.nn.QuarticBonds`) to a free-energy estimate.
+
+    Unlike `fit_polynomial_from_potential_estimates` (written for
+    `QuarticAngles`, where x = cos(theta) lies in [-1, 1]), this routine
+
+    * does not check the derivative at x = +-1 and therefore never clamps the
+      cubic coefficient (which made double wells at r > 0 impossible),
+    * centres on the free-energy minimum, x_0 = argmin dG, and solves a
+      *linear* least-squares problem in float64 on u = (r - x_0) / s with
+      s = max|r - x_0|, so that u lies in [-1, 1] and the problem is well
+      conditioned,
+    * weights all bins uniformly (rarely sampled basins are not
+      down-weighted),
+    * requires the potential to be confining: the leading coefficient is
+      positive and every stationary point lies inside the sampled r range, so
+      V rises monotonically beyond the data on both sides. If the
+      unconstrained fit violates this, the lower bound on the leading
+      coefficient is raised geometrically (up to 60 times) until it holds,
+    * returns coefficients in powers of (r - x_0), not r: for N = 8 the
+      expanded coefficients in powers of r are ~1e8 and cancel to O(1)
+      kcal/mol, which float32 cannot resolve.
+
+    Parameters
+    ----------
+    bin_centers_nz:
+        Bin centers of the non-empty bins
+    dG_nz:
+        Free-energy estimate, -kT log(counts), at those bins
+    ncounts_nz:
+        Raw counts at those bins. Accepted for interface compatibility with
+        `fit_potentials`; not used in the fit.
+    n_degs:
+        Degree N of the polynomial (default 8). Must be even for the
+        potential to be confining.
+    **kwargs:
+        Ignored (including ``weighting``); accepted for interface
+        compatibility.
+
+    Returns
+    -------
+    dict
+        ``{"ks": {"k_1": .., ..., "k_N": ..}, "v_0": .., "x_0": ..}`` where
+        ``k_n`` multiplies (r - x_0)^n and ``x_0`` is the bond length at the
+        free-energy minimum.
+
+    Raises
+    ------
+    ValueError
+        If ``n_degs`` is odd.
+    RuntimeError
+        If there are fewer than ``n_degs + 1`` non-empty bins.
+
+    Warns
+    -----
+    UserWarning
+        If no confining polynomial is found; the last attempt is returned.
+    """
+    
+    if n_degs % 2 != 0:
+        raise ValueError("n_degs must be even for a confining bond potential")
+
+    x = bin_centers_nz.detach().cpu().double().numpy()
+    y = dG_nz.detach().cpu().double().numpy()
+
+    k_names = ["k_" + str(ii) for ii in range(1, n_degs + 1)]
+
+    if len(x) < n_degs + 1:
+        raise RuntimeError(
+            f"not enough data points ({len(x)}) to fit {n_degs} parameters"
+        )
+
+    # centre on the free-energy minimum and scale to ~[-1, 1]
+    x0 = x[np.argmin(y)]
+    s = max(np.max(np.abs(x - x0)), 1e-6)
+    u = (x - x0) / s
+    y_shift = y.min()
+
+    # design matrix [1, u, u^2, ..., u^n]
+    A = np.stack([u**n for n in range(n_degs + 1)], axis=1)
+    b = y - y_shift
+    
+    w = np.ones_like(b) # uniform weighting for least squares    
+
+    def _solve(lead_min):
+        lower = np.full(n_degs + 1, -np.inf)
+        upper = np.full(n_degs + 1, np.inf)
+        lower[-1] = lead_min  # leading coefficient > 0 -> confining at |r| -> inf
+        return lsq_linear(
+            A * w[:, None], b * w , bounds=(lower, upper), method="bvls"
+        ).x
+
+    def _confining(c):
+        # every stationary point must lie inside the sampled range, so that
+        # V rises monotonically outside the data (no spurious minima or
+        # cubic-like runaway beyond the last bin)
+        if c[-1] <= 0:
+            return False
+        roots = np.polynomial.Polynomial(c).deriv().roots()
+        roots = roots[np.abs(roots.imag) < 1e-9].real
+        return np.all((roots >= u.min() - 1e-9) & (roots <= u.max() + 1e-9))
+
+    c_u = _solve(0.0)
+    if not _confining(c_u):
+        # smallest leading coefficient that makes the potential confining
+        lead_min = 1e-3 * max(np.abs(c_u).max(), 1.0)
+        for _ in range(60):
+            c_u = _solve(lead_min)
+            if _confining(c_u):
+                break
+            lead_min *= 1.5
+        else:
+            warnings.warn("could not make the bond polynomial confining")
+
+    # In powers of r the degree-8 terms are ~1e8 and cancel to O(1) kcal/mol,
+    # which float32 (QuarticBonds) cannot resolve; in powers of (r - x0) with
+    # |r - x0| < ~1 Å every term stays O(kcal/mol).
+    q = c_u / s ** np.arange(n_degs + 1)
+    q[0] += y_shift
+
+    return {
+        "ks": {k_names[n - 1]: float(q[n]) for n in range(1, n_degs + 1)},
+        "v_0": float(q[0]),
+        "x_0": float(x0),
+    }
