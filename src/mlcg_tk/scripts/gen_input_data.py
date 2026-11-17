@@ -32,6 +32,7 @@ def process_raw_dataset(
     stride: int = 1,
     force_stride: int = 100,
     filter_cis: Optional[bool] = False,
+    allowed_cis_residues: Optional[List[str]] = None,
     batch_size: Optional[int] = None,
     mol_num_batches: Optional[int] = 1,
     atoms_batch_size: Optional[int] = None,
@@ -74,6 +75,9 @@ def process_raw_dataset(
         stride for inferring the force maps in aggforce
     filter_cis : bool
         if True, frames with cis-configurations will be filtered out from the dataset
+    allowed_cis_residues : List[str]
+        Residue names (e.g. ["PRO"]) for which a cis-omega angle of the preceding
+        peptide bond is accepted when `filter_cis` is True
     batch_size : int
         Optional size in which performing batches of AA mapping to CG, to avoid
         memory overhead in large AA dataset
@@ -130,6 +134,7 @@ def process_raw_dataset(
             force_stride=force_stride,
             batch_size=batch_size,
             filter_cis=filter_cis,
+            allowed_cis_residues=allowed_cis_residues,
             atoms_batch_size=atoms_batch_size,
         )
 
@@ -159,6 +164,7 @@ def build_neighborlists(
     stride: int = 1,
     force_stride: int = 100,
     filter_cis: bool = False,
+    allowed_cis_residues: Optional[List[str]] = None,
     batch_size: Optional[int] = None,
     mol_num_batches: Optional[int] = 1,
     atoms_batch_size: Optional[int] = None,
@@ -193,7 +199,6 @@ def build_neighborlists(
         String identifying the specific combination of prior terms
     prior_builders : List[PriorBuilder]
         List of PriorBuilder objects and their corresponding parameters
-
     stride : int
         unused in this function
         present to allow the use of the same .yaml config for process_raw_dataset and build_neighborlists
@@ -201,6 +206,9 @@ def build_neighborlists(
         unused in this function
         present to allow the use of the same .yaml config for process_raw_dataset and build_neighborlists
     filter_cis : bool
+        unused in this function
+        present to allow the use of the same .yaml config for process_raw_dataset and build_neighborlists
+    allowed_cis_residues : List[str]
         unused in this function
         present to allow the use of the same .yaml config for process_raw_dataset and build_neighborlists
     batch_size : bool
