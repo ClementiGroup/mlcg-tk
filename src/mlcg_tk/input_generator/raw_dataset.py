@@ -326,6 +326,7 @@ class SampleCollection:
         topology: md.Topology,
         mapping: str = "slice_aggregate",
         filter_cis: bool = False,
+        allowed_cis_residues: Optional[List[str]] = None,
         force_stride: int = 100,
         batch_size: Optional[int] = None,
         atoms_batch_size: Optional[int] = None,
@@ -345,6 +346,9 @@ class SampleCollection:
             Mapping scheme to be used, must be either 'slice_aggregate' or 'slice_optimize'.
         filter_cis:
             If True, frames containing a cis-omega angle will be filtered out
+        allowed_cis_residues:
+            Residue names (e.g. ["PRO"]) for which a cis-omega angle of the
+            preceding peptide bond is accepted when `filter_cis` is True
         force_stride:
             Striding to use for force projection results
         batch_size:
@@ -364,7 +368,11 @@ class SampleCollection:
         else:
             if filter_cis:
                 coords, forces = filter_cis_frames(
-                    coords, forces, topology, verbose=True
+                    coords,
+                    forces,
+                    topology,
+                    verbose=True,
+                    allowed_cis_residues=allowed_cis_residues,
                 )
             if coords.shape[0] != 0:
                 # since the cis-pro filtering might have removed a lot of frames

@@ -44,6 +44,9 @@ from .prior_fit import (
     fit_repulsion_from_potential_estimates,
     fit_repulsion_from_values,
     repulsion,
+    fit_exp_repulsion_using_genetic_algorithm,
+    exp_repulsion,
+    fit_quartic_bonds_from_potential_estimates,
 )
 from .prior_fit.fit_potentials import fit_potentials
 from .prior_fit import fit_dihedral_from_potential_estimates, dihedral
