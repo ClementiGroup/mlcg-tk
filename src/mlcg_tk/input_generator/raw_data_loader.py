@@ -1550,3 +1550,85 @@ class WaterMethaneLoader(DatasetLoader):
         aa_coords = np.concatenate(aa_coord_list)
         aa_forces = np.concatenate(aa_force_list)
         return aa_coords, aa_forces
+
+class WRC_loader(DatasetLoader):
+    """
+    Loader for WRC complex WT and mutations.
+    """
+
+    def get_traj_top(self, name: str, pdb_fn: str):
+
+        """
+        For a given WRC type, returns a loaded MDTraj object at the input resolution 
+        (atomistic in general) as well as the dataframe associated with its topology.
+        
+        Parameters
+        ----------
+        name : str
+            Name of the WRC.
+        pdb_fn : str
+            Path to the structure PDB file.
+        """
+
+        pdb = md.load(pdb_fn.format(name))
+        aa_traj = pdb.atom_slice(
+            [a.index for a in pdb.topology.atoms if a.residue.is_protein]
+        )
+        top_dataframe = aa_traj.topology.to_dataframe()[0]
+
+        return aa_traj, top_dataframe
+    
+    def load_coords_forces(
+            self,
+            base_dir: str,
+            name: str,
+            stride: int = 1,
+            batch: Optional[int] = None,
+            n_batches: Optional[int] = None,
+    )-> Tuple[np.ndarray, np.ndarray]:
+        """
+        For a given WRC type, returns the np.ndarray of coordinates and forces at input resolution.
+
+        Parameters
+        ----------
+        base_dir : str
+            Base directory where the WRC data (coordinates and forces) is stored.
+        name : str
+            Name of the WRC.
+        stride : int, optional
+            Interval at which to sample frames from the trajectory, by default 1.
+        batch : Optional[int] or None
+            If the data is loaded in batches, this specifies the batch number to load.
+        n_batches : Optional[int] or None
+            If n_batches is greater than 1, divide the total trajectory to load into n_batches chunks.
+        """
+        
+        h5_coords_fns = natsorted(glob(f"{base_dir}/{name}_coords_dataset.h5"))
+        h5_forces_fns = natsorted(glob(f"{base_dir}/{name}_forces_dataset.h5"))
+
+        print(h5_coords_fns)
+        print(h5_forces_fns)
+
+        h5_coords = h5py.File(h5_coords_fns[0], "r")
+        h5_forces = h5py.File(h5_forces_fns[0], "r")
+
+        aa_coords = None
+        aa_forces = None
+
+        if n_batches > 15:
+
+            raise NotImplementedError(
+                "The WRC_loader is only implemented for a max number of 15 independent batches."
+            )
+
+            # TODO: Add n_batches implementation
+            # TODO: Add chuncker to the loader
+        
+        else:
+
+            aa_coords = h5_coords[f"slot_{batch}"][:][::stride] * 10      # Convert to angstrom
+            aa_forces = h5_forces[f"slot_{batch}"][:][::stride] / 41.84   # Convert to kcal/mol/angstrom
+
+            assert aa_coords.shape == aa_forces.shape
+
+        return aa_coords, aa_forces
