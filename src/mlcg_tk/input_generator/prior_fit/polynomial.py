@@ -214,7 +214,7 @@ def fit_quartic_bonds_from_potential_estimates(
     bin_centers_nz: torch.Tensor,
     dG_nz: torch.Tensor,
     ncounts_nz: Optional[torch.Tensor] = None,
-    n_degs: int = 8,
+    n_degs: int = 4,
     **kwargs,
 ):
     r"""Fit a polynomial bond prior
@@ -255,7 +255,7 @@ def fit_quartic_bonds_from_potential_estimates(
         Raw counts at those bins. Accepted for interface compatibility with
         `fit_potentials`; not used in the fit.
     n_degs:
-        Degree N of the polynomial (default 8). Must be even for the
+        Degree N of the polynomial (default 4). Must be even for the
         potential to be confining.
     **kwargs:
         Ignored (including ``weighting``); accepted for interface
