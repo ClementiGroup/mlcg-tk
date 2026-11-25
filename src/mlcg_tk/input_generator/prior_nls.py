@@ -505,4 +505,4 @@ class CA_pseudo_dihedral:
         return [("pseudo_ca_dihedral", 4, torch.tensor(all_dihedrals_np).T)]
 
     def get_fit_kwargs(self, nl_name):
-        return {"n_degs": 5, "constrain_deg": 5}
+        return {"n_degs": 6, "constrain_deg": 6}
