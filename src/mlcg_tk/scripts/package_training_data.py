@@ -133,7 +133,8 @@ def package_training_data(
                 hdf_group.attrs["N_frames"] = cg_coords.shape[0]
                 if mol_num_batches > 1 and not keep_batches:
                     print("All batches saved in one molecule - exit batch loop")
-                    break
+                    pass
+                    #break
 
     if save_partition:
         # Create partition file
