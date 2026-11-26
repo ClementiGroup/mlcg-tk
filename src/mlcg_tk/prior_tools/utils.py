@@ -3,7 +3,15 @@ import numpy as np
 import torch
 from typing import List, Tuple
 
-from mlcg.nn.prior import _Prior, Harmonic, Repulsion, Dihedral, Polynomial, ExpRepulsion, QuarticBonds
+from mlcg.nn.prior import (
+    _Prior,
+    Harmonic,
+    Repulsion,
+    Dihedral,
+    Polynomial,
+    ExpRepulsion,
+    QuarticBonds,
+)
 
 
 def symmetrized_keys_generator(order: int, emb_max: int = 20) -> List[Tuple]:

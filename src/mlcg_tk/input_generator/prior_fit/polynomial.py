@@ -210,6 +210,7 @@ def fit_polynomial_from_potential_estimates(
                 stat["x_0s"][k2_name] = torch.tensor(float("nan"))
     return stat
 
+
 def fit_quartic_bonds_from_potential_estimates(
     bin_centers_nz: torch.Tensor,
     dG_nz: torch.Tensor,
@@ -280,7 +281,7 @@ def fit_quartic_bonds_from_potential_estimates(
     UserWarning
         If no confining polynomial is found; the last attempt is returned.
     """
-    
+
     if n_degs % 2 != 0:
         raise ValueError("n_degs must be even for a confining bond potential")
 
@@ -303,16 +304,14 @@ def fit_quartic_bonds_from_potential_estimates(
     # design matrix [1, u, u^2, ..., u^n]
     A = np.stack([u**n for n in range(n_degs + 1)], axis=1)
     b = y - y_shift
-    
-    w = np.ones_like(b) # uniform weighting for least squares    
+
+    w = np.ones_like(b)  # uniform weighting for least squares
 
     def _solve(lead_min):
         lower = np.full(n_degs + 1, -np.inf)
         upper = np.full(n_degs + 1, np.inf)
         lower[-1] = lead_min  # leading coefficient > 0 -> confining at |r| -> inf
-        return lsq_linear(
-            A * w[:, None], b * w , bounds=(lower, upper), method="bvls"
-        ).x
+        return lsq_linear(A * w[:, None], b * w, bounds=(lower, upper), method="bvls").x
 
     def _confining(c):
         # every stationary point must lie inside the sampled range, so that

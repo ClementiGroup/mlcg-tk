@@ -12,7 +12,7 @@ from mlcg.nn.prior import (
     GeneralBonds,
     GeneralAngles,
     ExpRepulsion,
-    CutoffExpRepulsion
+    CutoffExpRepulsion,
 )
 
 from mlcg.nn.gradients import GradientsOut
@@ -124,7 +124,7 @@ class Bonds(PriorBuilder):
         bmin: float,
         bmax: float,
         prior_fit_fn: Callable,
-        prior_cls = GeneralBonds,
+        prior_cls=GeneralBonds,
     ) -> None:
 
         super().__init__(
@@ -184,11 +184,10 @@ class Bonds(PriorBuilder):
         stat0 = next(iter(statistics.values()))
         if "ks" not in stat0:
             return GradientsOut(self.prior_cls(statistics, name=name), targets=targets)
-        else:    
+        else:
             prior = self.prior_cls(statistics, n_degs=len(stat0["ks"]))
             prior.name = name
             return GradientsOut(prior, targets=targets)
-
 
 
 class Angles(PriorBuilder):
@@ -356,6 +355,7 @@ class NonBonded(PriorBuilder):
         If ``prior_cls`` is not a Repulsion or ExpRepulsion subclass, or if
         ``prior_cls`` is ``CutoffExpRepulsion`` and ``cutoff`` is None.
     """
+
     def __init__(
         self,
         name: str,
@@ -368,20 +368,28 @@ class NonBonded(PriorBuilder):
         bmax: float,
         prior_fit_fn: Callable,
         percentile: float = 1,
-        prior_cls = Repulsion,
+        prior_cls=Repulsion,
         cutoff: Optional[float] = None,
         fit_window: Optional[float] = None,
         alphas: Optional[Tuple[float, float]] = None,
         r0s: Optional[Tuple[float, float]] = None,
-        random_seed: Optional[int] = None,    
+        random_seed: Optional[int] = None,
     ) -> None:
         if issubclass(prior_cls, Repulsion):
             prior_fit_fn = partial(prior_fit_fn, percentile=percentile, cutoff=cutoff)
-        elif issubclass(prior_cls, ExpRepulsion):                
-            prior_fit_fn = partial(prior_fit_fn, fit_window=fit_window, alphas=alphas, r0s=r0s, random_seed=random_seed)
+        elif issubclass(prior_cls, ExpRepulsion):
+            prior_fit_fn = partial(
+                prior_fit_fn,
+                fit_window=fit_window,
+                alphas=alphas,
+                r0s=r0s,
+                random_seed=random_seed,
+            )
         else:
-            raise ValueError(f"prior_cls must be either Repulsion or ExpRepulsion, got {prior_cls}")
-        
+            raise ValueError(
+                f"prior_cls must be either Repulsion or ExpRepulsion, got {prior_cls}"
+            )
+
         if issubclass(prior_cls, CutoffExpRepulsion):
             if cutoff is None:
                 raise ValueError("CutoffExpRepulsion requires a cutoff")

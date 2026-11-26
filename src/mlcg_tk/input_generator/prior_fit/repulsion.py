@@ -7,6 +7,7 @@ from scipy.signal import savgol_filter
 from mlcg_tk.prior_tools.utils import optimal_offset
 import warnings
 
+
 def repulsion(x, sigma):
     """Method defining the repulsion interaction"""
     rr = (sigma / x) * (sigma / x)
@@ -84,10 +85,12 @@ def fit_repulsion_from_values(
     stat = {"sigma": sigma}
     return stat
 
+
 def exp_repulsion(x, alpha, r_0):
     """Method defining the repulsion interaction"""
     rr = 1 - (x / r_0)
-    return (6 / alpha) * np.exp( alpha * rr)
+    return (6 / alpha) * np.exp(alpha * rr)
+
 
 def interpolation_crossover(parents, offspring_size, ga_instance):
     offspring = []
@@ -96,12 +99,13 @@ def interpolation_crossover(parents, offspring_size, ga_instance):
         parent1 = parents[idx % parents.shape[0], :].copy()
         parent2 = parents[(idx + 1) % parents.shape[0], :].copy()
 
-        new_offspring = 0.5*(parent1+parent2)
+        new_offspring = 0.5 * (parent1 + parent2)
         offspring.append(new_offspring)
 
         idx += 1
 
     return np.array(offspring)
+
 
 # Savitzky-Golay smoothing parameters applied to the PMF before fitting
 _SAVGOL_WINDOW_LENGTH = 5
@@ -295,7 +299,9 @@ def fit_exp_repulsion_using_genetic_algorithm(
         alpha_lo, alpha_hi = estimate_alpha_bounds(xs, ys, r0_lo, r0_hi)
 
     if not 0 < alpha_lo < alpha_hi:
-        raise ValueError(f"alphas must satisfy 0 < low < high, got {(alpha_lo, alpha_hi)}")
+        raise ValueError(
+            f"alphas must satisfy 0 < low < high, got {(alpha_lo, alpha_hi)}"
+        )
 
     gene_space = [
         {"low": alpha_lo, "high": alpha_hi},
@@ -407,11 +413,12 @@ def quartic_points_all(coeffs, a, b, tol=1e-10):
             inflections.append((x, float(p(x))))
 
     return {
-        "minima": minima,          # ALL local minima in [a,b]
-        "maxima": maxima,          # ALL local maxima in [a,b]
+        "minima": minima,  # ALL local minima in [a,b]
+        "maxima": maxima,  # ALL local maxima in [a,b]
         "inflections": inflections,
-        "stationary_flat": saddles # rare for quartics but possible
+        "stationary_flat": saddles,  # rare for quartics but possible
     }
+
 
 def estimate_alpha_bounds(
     xs: np.ndarray,
