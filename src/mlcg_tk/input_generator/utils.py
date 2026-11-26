@@ -1,5 +1,5 @@
 import pandas as pd
-from typing import List, Optional, Union, Tuple, Dict
+from typing import List, Optional, Union, Tuple, Dict, Sequence
 import numpy as np
 import mdtraj as md
 import warnings
@@ -380,7 +380,11 @@ def slice_coord_forces(
 
 
 def filter_cis_frames(
-    coords: np.ndarray, forces: np.ndarray, topology: md.Topology, verbose: bool = True
+    coords: np.ndarray,
+    forces: np.ndarray,
+    topology: md.Topology,
+    verbose: bool = True,
+    allowed_cis_residues: Optional[Sequence[str]] = None,
 ) -> Tuple[np.ndarray, np.ndarray]:
     """
     filters out frames containing cis-omega angles
@@ -395,10 +399,14 @@ def filter_cis_frames(
         mdtraj topology to load the coordinates with
     verbose:
         If True, will print a warning containing the number of discarded frames for this sample
+    allowed_cis_residues:
+        Residue names (e.g. ["PRO", "GLY"]) for which a cis-omega angle of the
+        peptide bond preceding that residue is accepted. If None, no cis bonds
+        are accepted
 
     Returns
     -------
-    Tuple of np.ndarray's for filtered coarse grained coordinates and forces
+    Tuple of np.ndarray's for filtered atomistic coordinates and forces
     """
     min_omega_atoms = set(["N", "CA", "C"])
     unique_atom_types = set([atom.name for atom in topology.atoms])
@@ -407,14 +415,25 @@ def filter_cis_frames(
             "Provided pdb file must contain at least N, CA and C atoms for cis-omega filtering"
         )
 
-    cis_omega_mask = np.zeros(coords.shape[0], dtype=bool)
     md_traj = md.Trajectory(coords, topology)
 
+    # omega_idx columns: [CA_i, C_i, N_i+1, CA_i+1]
     omega_idx, omega_values = md.compute_omega(md_traj)
 
     cis_omega_threshold = 1.0  # rad
-    mask = np.all(np.abs(omega_values) > 1, axis=1)
-    if not np.all(mask):
+    is_trans = np.abs(omega_values) > cis_omega_threshold
+
+    if allowed_cis_residues:
+        allowed_names = set(allowed_cis_residues)
+        # residue owning N_i+1, i.e. the residue after the peptide bond
+        is_allowed_bond = np.array(
+            [topology.atom(idx[2]).residue.name in allowed_names for idx in omega_idx],
+            dtype=bool,
+        )
+        is_trans = is_trans | is_allowed_bond[None, :]
+
+    mask = np.all(is_trans, axis=1)
+    if verbose and not np.all(mask):
         warnings.warn(f"Discarding {len(mask) - np.sum(mask)} cis frames")
     if np.sum(mask) == 0:
         warnings.warn(f"This amounts to removing all frames for this molecule")

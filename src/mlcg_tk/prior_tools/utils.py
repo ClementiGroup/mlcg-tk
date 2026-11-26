@@ -3,7 +3,15 @@ import numpy as np
 import torch
 from typing import List, Tuple
 
-from mlcg.nn.prior import _Prior, Harmonic, Repulsion, Dihedral, Polynomial
+from mlcg.nn.prior import (
+    _Prior,
+    Harmonic,
+    Repulsion,
+    Dihedral,
+    Polynomial,
+    ExpRepulsion,
+    QuarticBonds,
+)
 
 
 def symmetrized_keys_generator(order: int, emb_max: int = 20) -> List[Tuple]:
@@ -93,6 +101,16 @@ def prior_evaluator(prior_module: _Prior, key: Tuple, x: torch.Tensor) -> torch.
     elif isinstance(prior_module, Repulsion):
         sigma = prior_module.sigma[key[0], key[1]].item()
         res = prior_module.compute(x, sigma)
+    elif isinstance(prior_module, ExpRepulsion):
+        alpha = prior_module.alpha[key[0], key[1]].item()
+        r_0 = prior_module.r_0[key[0], key[1]].item()
+        res = prior_module.compute(x, alpha, r_0)
+    elif isinstance(prior_module, QuarticBonds):
+        # must come before Polynomial: QuarticBonds is evaluated in (r - r_0)
+        x_0 = prior_module.x_0[key].item()
+        V0s = prior_module.v_0[key]
+        ks = [prior_module.ks[idx][key] for idx in range(prior_module.n_degs)]
+        res = prior_module.compute(x - x_0, ks, V0s)
     elif isinstance(prior_module, Polynomial):
         prior_module.v_0[key]
         V0s = prior_module.v_0[key].t()

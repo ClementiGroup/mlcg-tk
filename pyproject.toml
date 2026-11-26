@@ -20,7 +20,9 @@ authors = [
 license = "MIT"
 license-files = ["LICENSE"]
 
-dependencies = []
+dependencies = [
+  "pygad",
+]
 
 classifiers = [
   "Development Status :: 4 - Beta",
